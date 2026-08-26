@@ -14,7 +14,6 @@ class CsvParser
             string[] lines = File.ReadAllLines(path);
 
             foreach(string line in lines) {
-                Console.WriteLine(line);
                 string[] values = line.Split(",");
                 rows.Add(values);
             }
