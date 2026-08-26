@@ -12,3 +12,4 @@
 /home/seanpettas/Desktop/coding/cs/Bison.CLI/obj/Debug/net8.0/Bison.CLI.pdb
 /home/seanpettas/Desktop/coding/cs/Bison.CLI/obj/Debug/net8.0/Bison.CLI.genruntimeconfig.cache
 /home/seanpettas/Desktop/coding/cs/Bison.CLI/obj/Debug/net8.0/ref/Bison.CLI.dll
+/home/seanpettas/Desktop/coding/cs/Bison.CLI/obj/Debug/net8.0/Bison.CLI.sourcelink.json
