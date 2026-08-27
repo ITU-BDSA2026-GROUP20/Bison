@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 
 class Program
@@ -13,12 +14,26 @@ class Program
 
     static void printOutput(List<string[]> list)
     {
-        foreach(string[] vals in list)
+        for (int i = 0; i < list.Count(); i++)
         {
-            foreach(string item in vals)
+            if(i == 0) continue;
+
+            string[] row = list[i];
+
+            for(int j = 0; j < row.Length; j++)
             {
-                Console.Write(item + " ");
+                
+                if(j == 2)
+                {
+                    Console.Write(UnixTimestampToDateTime(double.Parse(row[j])));
+                } else
+                {
+                    Console.Write(row[j]);
+                }
+                Console.Write(" ");
+
             }
+        
             Console.WriteLine();
         }
     }
@@ -30,7 +45,7 @@ class Program
 
         try
         {
-            string[] lines = File.ReadAllLines("../../../data/bison_observe_cli_db.csv");
+            string[] lines = File.ReadAllLines("./data/bison_observe_cli_db.csv");
 
             foreach (string line in lines)
             {
@@ -45,5 +60,13 @@ class Program
         }
 
         return rows;
+    }
+
+    public static DateTime UnixTimestampToDateTime(double UnixTimeStamp)
+    {
+        DateTime dateTime = new DateTime(1970,1,1,0,0,0,0, DateTimeKind.Utc);
+        dateTime = dateTime.AddSeconds(UnixTimeStamp).ToLocalTime();
+        return dateTime;
+
     }
 }
