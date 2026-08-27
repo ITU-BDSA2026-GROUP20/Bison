@@ -14,10 +14,8 @@ class Program
 
     static void printOutput(List<string[]> list)
     {
-        for (int i = 0; i < list.Count(); i++)
+        for (int i = 1; i < list.Count(); i++)
         {
-            if(i == 0) continue;
-
             string[] row = list[i];
 
             for(int j = 0; j < row.Length; j++)
@@ -25,7 +23,7 @@ class Program
                 
                 if(j == 2)
                 {
-                    Console.Write(UnixTimestampToDateTime(double.Parse(row[j])));
+                    Console.Write(DateTime.UnixEpoch.AddSeconds(double.Parse(row[j])));
                 } else
                 {
                     Console.Write(row[j]);
@@ -60,13 +58,5 @@ class Program
         }
 
         return rows;
-    }
-
-    public static DateTime UnixTimestampToDateTime(double UnixTimeStamp)
-    {
-        DateTime dateTime = new DateTime(1970,1,1,0,0,0,0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds(UnixTimeStamp).ToLocalTime();
-        return dateTime;
-
     }
 }
