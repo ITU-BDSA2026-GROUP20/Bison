@@ -5,11 +5,28 @@ using System.IO;
 
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
-        List<string[]> lines = getFileData();
+        if(args.Length < 1)
+        {
+            Console.WriteLine("Please provide an argument");
+            return;
+        }
 
-        printOutput(lines);
+        switch(args[0])
+        {
+            case "read":
+                List<string[]> lines = getFileData();
+                printOutput(lines);
+                break;
+            case "observe":
+                handleObservation(args[1]);
+                Console.WriteLine("Observation recorded");
+                break;
+            default:
+                Console.WriteLine("Unknown argument");
+                break;
+        }
     }
 
     static void printOutput(List<string[]> list)
@@ -18,21 +35,11 @@ class Program
         {
             string[] row = list[i];
 
-            for(int j = 0; j < row.Length; j++)
-            {
-                
-                if(j == 2)
-                {
-                    Console.Write(DateTime.UnixEpoch.AddSeconds(double.Parse(row[j])));
-                } else
-                {
-                    Console.Write(row[j]);
-                }
-                Console.Write(" ");
-
-            }
-        
-            Console.WriteLine();
+            string author = row[0];
+            string observation = row[1];
+            DateTime timestamp = DateTime.UnixEpoch.AddSeconds(long.Parse(row[2]));
+            
+            Console.WriteLine(author + " @ " + timestamp + " " + observation);
         }
     }
 
@@ -58,5 +65,26 @@ class Program
         }
 
         return rows;
+    }
+    
+    
+    static void handleObservation(string observation)
+    {
+        string author = Environment.UserName;
+        string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+        string filePath = "./data/bison_observe_cli_db.csv";
+
+        try
+        {
+            using (StreamWriter sw = File.AppendText(filePath))
+            {
+                sw.WriteLine($"{author},\"{observation}\",{timestamp}");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
     }
 }
