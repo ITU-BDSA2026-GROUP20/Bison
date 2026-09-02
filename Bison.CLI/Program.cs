@@ -1,34 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
+﻿using System.CommandLine;
 
 class Program
 {
-    static void Main(string[] args)
+    static int Main(string[] args)
     {
         inputParser parser = new inputParser();
 
-        if(args.Length < 1)
+        var readCommand = new Command("read", "Print recorded observations");
+        readCommand.SetAction(parseResult =>
         {
-            Console.WriteLine("Please provide an argument");
-            return;
-        }
+            List<string[]> lines = parser.getFileData("./data/bison_observe_cli_db.csv");
+            printOutput(lines);
+        });
 
-        switch(args[0])
+        var observationArgument = new Argument<string>("observation")
         {
-            case "read":
-                List<string[]> lines = parser.getFileData("./data/bison_observe_cli_db.csv");
-                printOutput(lines);
-                break;
-            case "observe":
-                handleObservation(args[1]);
-                Console.WriteLine("Observation recorded");
-                break;
-            default:
-                Console.WriteLine("Unknown argument");
-                break;
-        }
+            Description = "The observation to record"
+        };
+
+        var observeCommand = new Command("observe", "Record a new observation");
+        observeCommand.Arguments.Add(observationArgument);
+        observeCommand.SetAction(parseResult =>
+        {
+            handleObservation(parseResult.GetValue(observationArgument)!);
+            Console.WriteLine("Observation recorded");
+        });
+
+        var root = new RootCommand("Bison observation tracker")
+        {
+            Subcommands = { readCommand, observeCommand }
+        };
+
+        return root.Parse(args).Invoke();
     }
 
     static void printOutput(List<string[]> list)

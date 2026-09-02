@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-
 public class inputParser
 {
     public List<string[]> getFileData(string filePath)
