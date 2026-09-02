@@ -7,6 +7,8 @@ class Program
 {
     static void Main(string[] args)
     {
+        inputParser parser = new inputParser();
+
         if(args.Length < 1)
         {
             Console.WriteLine("Please provide an argument");
@@ -16,7 +18,7 @@ class Program
         switch(args[0])
         {
             case "read":
-                List<string[]> lines = getFileData();
+                List<string[]> lines = parser.getFileData("./data/bison_observe_cli_db.csv");
                 printOutput(lines);
                 break;
             case "observe":
@@ -31,7 +33,7 @@ class Program
 
     static void printOutput(List<string[]> list)
     {
-        for (int i = 1; i < list.Count(); i++)
+        for (int i = 1; i < list.Count; i++)
         {
             string[] row = list[i];
 
@@ -41,30 +43,6 @@ class Program
             
             Console.WriteLine(author + " @ " + timestamp + " " + observation);
         }
-    }
-
-    // In the future make a class we can parse into
-    static List<string[]> getFileData()
-    {
-        List<string[]> rows = new();
-
-        try
-        {
-            string[] lines = File.ReadAllLines("./data/bison_observe_cli_db.csv");
-
-            foreach (string line in lines)
-            {
-                string[] values = line.Split(",");
-                rows.Add(values);
-            }
-
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-
-        return rows;
     }
     
     
