@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using Bison.CLI.models;
 
 class Program
 {
@@ -9,7 +10,7 @@ class Program
         var readCommand = new Command("read", "Print recorded observations");
         readCommand.SetAction(parseResult =>
         {
-            List<string[]> lines = parser.getFileData("./data/bison_observe_cli_db.csv");
+            List<Reading> lines = parser.getFileData("./data/bison_observe_cli_db.csv");
             printOutput(lines);
         });
 
@@ -34,15 +35,15 @@ class Program
         return root.Parse(args).Invoke();
     }
 
-    static void printOutput(List<string[]> list)
+    static void printOutput(List<Reading> list)
     {
         for (int i = 1; i < list.Count; i++)
         {
-            string[] row = list[i];
+            Reading current = list[i];
 
-            string author = row[0];
-            string observation = row[1];
-            DateTime timestamp = DateTime.UnixEpoch.AddSeconds(long.Parse(row[2]));
+            string author = current.Author;
+            string observation = current.Observation;
+            DateTime timestamp = DateTime.UnixEpoch.AddSeconds(long.Parse(current.Timestamp));
             
             Console.WriteLine(author + " @ " + timestamp + " " + observation);
         }
