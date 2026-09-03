@@ -1,25 +1,28 @@
+using System.Globalization;
+using Bison.CLI.models;
+using CsvHelper;
+
+
 public class inputParser
 {
-    public List<string[]> getFileData(string filePath)
+    public List<Reading> getFileData(string filePath)
     {
-        List<string[]> rows = new();
+        List<Reading> readings = new();
 
         try
         {
-            string[] lines = File.ReadAllLines("./data/bison_observe_cli_db.csv");
-
-            foreach (string line in lines)
+            using (var reader = new StreamReader(filePath))
+            using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
-                string[] values = line.Split(",");
-                rows.Add(values);
+                readings = csvReader.GetRecords<Reading>().ToList();
+                Console.Out.WriteLine(readings);
             }
-
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
 
-        return rows;
+        return readings;
     }
 }
