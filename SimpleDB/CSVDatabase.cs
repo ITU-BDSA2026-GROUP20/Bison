@@ -33,7 +33,20 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
     
     public void Store(T record)
     {
-        throw new NotImplementedException();
+        bool fileNeedsHeader = !File.Exists(_filePath) || new FileInfo(_filePath).Length==0; 
+
+        using (var writer = new StreamWriter(_filePath, true))
+        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        {
+           if(fileNeedsHeader)
+            {
+                csv.WriteHeader<T>();
+                csv.NextRecord();
+            }
+
+            csv.WriteRecord(record);
+            csv.NextRecord();
+        }
     }
 
 }
