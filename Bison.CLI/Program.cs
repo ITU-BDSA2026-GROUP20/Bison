@@ -6,12 +6,13 @@ class Program
 {
     static int Main(string[] args)
     {
-        InputParser parser = new InputParser();
+        string path = "./data/bison_observe_cli_db.csv";
+        CsvHandler handler = new CsvHandler();
 
         var readCommand = new Command("read", "Print recorded observations");
         readCommand.SetAction(parseResult =>
         {
-            List<Reading> lines = parser.getFileData("./data/bison_observe_cli_db.csv");
+            List<Reading> lines = handler.getFileData(path);
             UserInterface.printOutput(lines);
         });
 
@@ -24,7 +25,7 @@ class Program
         observeCommand.Arguments.Add(observationArgument);
         observeCommand.SetAction(parseResult =>
         {
-            handleObservation(parseResult.GetValue(observationArgument)!);
+            handler.handleObservation(parseResult.GetValue(observationArgument)!);
             UserInterface.printLog("Observation recorded.");
         });
 
@@ -34,27 +35,5 @@ class Program
         };
 
         return root.Parse(args).Invoke();
-    }
-
-    
-    
-    static void handleObservation(string observation)
-    {
-        string author = Environment.UserName;
-        string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
-        string filePath = "./Bison.CLI/data/bison_observe_cli_db.csv";
-
-        try
-        {
-            using (StreamWriter sw = File.AppendText(filePath))
-            {
-                sw.WriteLine($"{author},\"{observation}\",{timestamp}");
-            }
-        }
-        catch (Exception e)
-        {
-            UserInterface.printExceptionError(e);
-        }
-
     }
 }
