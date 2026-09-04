@@ -1,5 +1,6 @@
 ﻿using System.CommandLine;
 using Bison.CLI.models;
+using Bison.CLI;
 
 class Program
 {
@@ -10,8 +11,8 @@ class Program
         var readCommand = new Command("read", "Print recorded observations");
         readCommand.SetAction(parseResult =>
         {
-            List<Reading> lines = parser.getFileData("./data/bison_observe_cli_db.csv");
-            printOutput(lines);
+            List<Reading> lines = parser.getFileData("./Bison.CLI/data/bison_observe_cli_db.csv");
+            UserInterface.printOutput(lines);
         });
 
         var observationArgument = new Argument<string>("observation")
@@ -24,7 +25,7 @@ class Program
         observeCommand.SetAction(parseResult =>
         {
             handleObservation(parseResult.GetValue(observationArgument)!);
-            Console.WriteLine("Observation recorded");
+            UserInterface.printLog("Observation recorded.");
         });
 
         var root = new RootCommand("Bison observation tracker")
@@ -35,26 +36,13 @@ class Program
         return root.Parse(args).Invoke();
     }
 
-    static void printOutput(List<Reading> list)
-    {
-        for (int i = 1; i < list.Count; i++)
-        {
-            Reading current = list[i];
-
-            string author = current.Author;
-            string observation = current.Observation;
-            DateTime timestamp = DateTime.UnixEpoch.AddSeconds(long.Parse(current.Timestamp));
-            
-            Console.WriteLine(author + " @ " + timestamp + " " + observation);
-        }
-    }
     
     
     static void handleObservation(string observation)
     {
         string author = Environment.UserName;
         string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
-        string filePath = "./data/bison_observe_cli_db.csv";
+        string filePath = "./Bison.CLI/data/bison_observe_cli_db.csv";
 
         try
         {
@@ -65,7 +53,7 @@ class Program
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            UserInterface.printExeptionError(e);
         }
 
     }
