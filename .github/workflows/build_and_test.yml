@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [ SimpleDB, Bison.CLI ]
     steps:
       - uses: actions/checkout@v3
 
@@ -17,9 +21,12 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
+        working-directory: ./${{ matrix.project }}
 
       - name: Build
         run: dotnet build --no-restore
+        working-directory: ./${{ matrix.project }}
 
       - name: Test
         run: dotnet test --no-build --verbosity normal
+        working-directory: ./${{ matrix.project }}
