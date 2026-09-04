@@ -3,7 +3,7 @@ using Bison.CLI.models;
 using CsvHelper;
 
 
-public class inputParser
+public class InputParser
 {
     public List<Reading> getFileData(string filePath)
     {

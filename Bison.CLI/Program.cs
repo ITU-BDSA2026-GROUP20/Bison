@@ -6,12 +6,12 @@ class Program
 {
     static int Main(string[] args)
     {
-        inputParser parser = new inputParser();
+        InputParser parser = new InputParser();
 
         var readCommand = new Command("read", "Print recorded observations");
         readCommand.SetAction(parseResult =>
         {
-            List<Reading> lines = parser.getFileData("./Bison.CLI/data/bison_observe_cli_db.csv");
+            List<Reading> lines = parser.getFileData("./data/bison_observe_cli_db.csv");
             UserInterface.printOutput(lines);
         });
 
@@ -53,7 +53,7 @@ class Program
         }
         catch (Exception e)
         {
-            UserInterface.printExeptionError(e);
+            UserInterface.printExceptionError(e);
         }
 
     }

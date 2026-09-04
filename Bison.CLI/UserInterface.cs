@@ -27,16 +27,17 @@ class UserInterface
     {
         Console.WriteLine(log);
     }
-
-    // Print the error log
-    public static void printExeptionError(Exception e)
+    
+    public static void printExceptionError(Exception e)
     {
-        Console.WriteLine(e);
+        if(e.InnerException != null)
+        {
+            Console.WriteLine($"Error Occurred: {e} ({e.InnerException})");
+        }
+        else
+        {
+            Console.WriteLine($"Error Occurred: {e}");
+        }
     }
     
-    // Print an error message
-    public static void printExeptionError(string message)
-    {
-        Console.WriteLine(message);
-    }
 }
