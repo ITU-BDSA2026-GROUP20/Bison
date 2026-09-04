@@ -25,7 +25,7 @@ class Program
         observeCommand.Arguments.Add(observationArgument);
         observeCommand.SetAction(parseResult =>
         {
-            handler.handleObservation(parseResult.GetValue(observationArgument)!);
+            handler.handleObservation(parseResult.GetValue(observationArgument)!, path);
             UserInterface.printLog("Observation recorded.");
         });
 

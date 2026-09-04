@@ -27,17 +27,22 @@ public class CsvHandler
         return readings;
     }
     
-    public void handleObservation(string observation)
+    public void handleObservation(string observation, string path)
     {
         string author = Environment.UserName;
         string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
-        string filePath = "./Bison.CLI/data/bison_observe_cli_db.csv";
+
+        var records = new List<Reading>
+        {
+            new Reading { Author = author, Observation = observation, Timestamp = timestamp }
+        };
 
         try
         {
-            using (StreamWriter sw = File.AppendText(filePath))
+            using (var writer = new StreamWriter(path))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
-                sw.WriteLine($"{author},\"{observation}\",{timestamp}");
+                csv.WriteRecords(records);
             }
         }
         catch (Exception e)
