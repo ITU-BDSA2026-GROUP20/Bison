@@ -1,13 +1,16 @@
-using System.Transactions;
-using Bison.CLI.Models;
+using Bison.CLI.models;
+using System;
+using System.Collections.Generic;
 
 namespace Bison.CLI;
 
+// KEEP ALL Console.WriteLine(...) IN HERE
 class UserInterface
 {
     public static void printOutput(List<Reading> list)
     {
-        for (int i = 1; i < list.Count; i++)
+        // (Author,Observation,Timestamp) is not a reading, so start with index 0
+        for (int i = 0; i < list.Count; i++)
         {
             Reading current = list[i];
             
@@ -19,6 +22,7 @@ class UserInterface
         }
     }
 
+    //Functions for printing messages to the user
     public static void printObservationRecorded()
     {
         Console.WriteLine("Observation recorded.");
@@ -38,5 +42,4 @@ class UserInterface
     {
         Console.WriteLine(e);
     }
-
 }

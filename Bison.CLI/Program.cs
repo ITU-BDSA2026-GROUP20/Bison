@@ -1,60 +1,43 @@
-﻿using System.CommandLine;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using Bison.CLI;
 using Bison.CLI.models;
 
 class Program
 {
-    static int Main(string[] args)
+    static void Main(string[] args)
     {
         inputParser parser = new inputParser();
 
-        var readCommand = new Command("read", "Print recorded observations");
-        readCommand.SetAction(parseResult =>
+        if(args.Length < 1)
         {
-            List<Reading> lines = parser.getFileData("./data/bison_observe_cli_db.csv");
-            printOutput(lines);
-        });
+            UserInterface.printMissingArgument();
+            return;
+        }
 
-        var observationArgument = new Argument<string>("observation")
+        switch(args[0])
         {
-            Description = "The observation to record"
-        };
-
-        var observeCommand = new Command("observe", "Record a new observation");
-        observeCommand.Arguments.Add(observationArgument);
-        observeCommand.SetAction(parseResult =>
-        {
-            handleObservation(parseResult.GetValue(observationArgument)!);
-            Console.WriteLine("Observation recorded");
-        });
-
-        var root = new RootCommand("Bison observation tracker")
-        {
-            Subcommands = { readCommand, observeCommand }
-        };
-
-        return root.Parse(args).Invoke();
-    }
-
-    static void printOutput(List<Reading> list)
-    {
-        for (int i = 1; i < list.Count; i++)
-        {
-            Reading current = list[i];
-
-            string author = current.Author;
-            string observation = current.Observation;
-            DateTime timestamp = DateTime.UnixEpoch.AddSeconds(long.Parse(current.Timestamp));
-            
-            Console.WriteLine(author + " @ " + timestamp + " " + observation);
+            case "read":
+                List<Reading> lines = parser.getFileData("./Bison.CLI/data/bison_observe_cli_db.csv");
+                UserInterface.printOutput(lines);
+                break;
+            case "observe":
+                handleObservation(args[1]);
+                UserInterface.printObservationRecorded();
+                break;
+            default:
+                UserInterface.printUnkownArgument();
+                break;
         }
     }
-    
     
     static void handleObservation(string observation)
     {
         string author = Environment.UserName;
         string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
-        string filePath = "./data/bison_observe_cli_db.csv";
+        string filePath = "./Bison.CLI/data/bison_observe_cli_db.csv";
 
         try
         {
@@ -65,7 +48,7 @@ class Program
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            UserInterface.printExeptionError(e);
         }
 
     }
