@@ -22,24 +22,21 @@ class UserInterface
         }
     }
 
-    //Functions for printing messages to the user
-    public static void printObservationRecorded()
+    //Function for printing messages to the user.
+    public static void printLog(string log)
     {
-        Console.WriteLine("Observation recorded.");
+        Console.WriteLine(log);
     }
 
-    public static void printMissingArgument()
-    {
-        Console.WriteLine("Please provide an argument");
-    }
-
-    public static void printUnkownArgument()
-    {
-        Console.WriteLine("Unknown argument");
-    }
-
+    // Print the error log
     public static void printExeptionError(Exception e)
     {
         Console.WriteLine(e);
+    }
+    
+    // Print an error message
+    public static void printExeptionError(string message)
+    {
+        Console.WriteLine(message);
     }
 }

@@ -25,7 +25,7 @@ class Program
         observeCommand.SetAction(parseResult =>
         {
             handleObservation(parseResult.GetValue(observationArgument)!);
-            UserInterface.printObservationRecorded();
+            UserInterface.printLog("Observation recorded.");
         });
 
         var root = new RootCommand("Bison observation tracker")
@@ -58,30 +58,3 @@ class Program
 
     }
 }
- /*
- static void Main(string[] args)
-    {
-        inputParser parser = new inputParser();
-
-        if(args.Length < 1)
-        {
-            UserInterface.printMissingArgument();
-            return;
-        }
-
-        switch(args[0])
-        {
-            case "read":
-                List<Reading> lines = parser.getFileData("./Bison.CLI/data/bison_observe_cli_db.csv");
-                UserInterface.printOutput(lines);
-                break;
-            case "observe":
-                handleObservation(args[1]);
-                UserInterface.printObservationRecorded();
-                break;
-            default:
-                UserInterface.printUnkownArgument();
-                break;
-        }
-    }
- */
