@@ -5,17 +5,16 @@ namespace SimpleDB;
 
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
-
-    private readonly string _filePath;
+    private readonly string csvFilePath;
 
     public CSVDatabase(string filePath)
     {
-        _filePath = filePath; 
+        csvFilePath = filePath; 
     }
 
     public IEnumerable<T> Read(int? limit = null)
     {
-        using (var reader = new StreamReader(_filePath)) 
+        using (var reader = new StreamReader(csvFilePath)) 
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
             IEnumerable<T> records = csv.GetRecords<T>();
@@ -33,9 +32,9 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
     
     public void Store(T record)
     {
-        bool fileNeedsHeader = !File.Exists(_filePath) || new FileInfo(_filePath).Length==0; 
+        bool fileNeedsHeader = !File.Exists(csvFilePath) || new FileInfo(csvFilePath).Length==0; 
 
-        using (var writer = new StreamWriter(_filePath, true))
+        using (var writer = new StreamWriter(csvFilePath, true))
         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
            if(fileNeedsHeader)
