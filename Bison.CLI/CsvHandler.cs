@@ -16,7 +16,6 @@ public class CsvHandler
             using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 readings = csvReader.GetRecords<Reading>().ToList();
-                Console.Out.WriteLine(readings);
             }
         }
         catch (Exception e)
