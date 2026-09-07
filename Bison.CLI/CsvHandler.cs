@@ -27,8 +27,14 @@ public class CsvHandler
         return readings;
     }
     
-    public void handleObservation(string observation, string path)
+    public void handleObservation(string? observation, string path)
     {
+
+        if (observation == null)
+        {
+            Console.WriteLine("Observation is null");
+            return;
+        }
         string author = Environment.UserName;
         string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
 
