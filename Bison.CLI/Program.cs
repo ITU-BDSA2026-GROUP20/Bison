@@ -25,7 +25,10 @@ class Program
         observeCommand.Arguments.Add(observationArgument);
         observeCommand.SetAction(parseResult =>
         {
-            string observation = parseResult.GetValue(observationArgument)!;
+            string observation = parseResult.GetValue(observationArgument)
+                                 ?? throw new ArgumentNullException(nameof(observationArgument),
+                                     "Observation is required");
+            
             handler.handleObservation(observation, path);
             UserInterface.printLog("Observation recorded.");
         });
