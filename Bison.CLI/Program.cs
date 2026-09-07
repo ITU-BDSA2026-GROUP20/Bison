@@ -1,18 +1,19 @@
 ﻿using System.CommandLine;
 using Bison.CLI.models;
 using Bison.CLI;
+using SimpleDB;
 
 class Program
 {
     static int Main(string[] args)
     {
         string path = "./data/bison_observe_cli_db.csv";
-        CsvHandler handler = new CsvHandler();
+        IDatabaseRepository<Reading> handler = new CSVDatabase<Reading>(path);
 
         var readCommand = new Command("read", "Print recorded observations");
         readCommand.SetAction(parseResult =>
         {
-            List<Reading> lines = handler.getFileData(path);
+            List<Reading> lines = handler.Read().ToList();
             UserInterface.printOutput(lines);
         });
 
@@ -29,7 +30,12 @@ class Program
                                  ?? throw new ArgumentNullException(nameof(observationArgument),
                                      "Observation is required");
             
-            handler.handleObservation(observation, path);
+            var reading = new Reading();
+            reading.Author = Environment.UserName;
+            reading.Observation = observation;
+            reading.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+            handler.Store(reading);
+            
             UserInterface.printLog("Observation recorded.");
         });
 
