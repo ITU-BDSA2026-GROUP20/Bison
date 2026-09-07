@@ -1,6 +1,6 @@
 ﻿namespace Bison.CLI.models;
 
-public class Reading
+internal class Reading
 {
     public Reading() { }
 
