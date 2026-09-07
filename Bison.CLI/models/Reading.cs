@@ -1,8 +1,17 @@
 ﻿namespace Bison.CLI.models;
 
-public class Reading
+internal class Reading
 {
-    public string Author { get; set; } = string.Empty;
-    public string Observation { get; set; } = string.Empty;
-    public string Timestamp { get; set; } = string.Empty;
+    internal Reading() { }
+
+    internal Reading(string Author, string Observation, string Timestamp)
+    {
+        this.Author = Author;
+        this.Observation = Observation;
+        this.Timestamp = Timestamp;
+    }
+
+    internal string Author { get; set; } = string.Empty;
+    internal string Observation { get; set; } = string.Empty;
+    internal string Timestamp { get; set; } = string.Empty;
 }

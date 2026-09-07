@@ -27,15 +27,16 @@ class Program
         observeCommand.SetAction(parseResult =>
         {
             string observation = parseResult.GetValue(observationArgument)
-                                 ?? throw new ArgumentNullException(nameof(observationArgument),
-                                     "Observation is required");
+                ?? throw new ArgumentNullException(nameof(observationArgument), "Observation is required");
             
-            var reading = new Reading();
-            reading.Author = Environment.UserName;
-            reading.Observation = observation;
-            reading.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+            var reading = new Reading
+            (
+                Environment.UserName, 
+                observation, 
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()
+            );
+
             handler.Store(reading);
-            
             UserInterface.printLog("Observation recorded.");
         });
 
