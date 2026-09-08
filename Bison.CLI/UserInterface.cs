@@ -1,15 +1,11 @@
 using Bison.CLI.models;
-using System;
-using System.Collections.Generic;
 
 namespace Bison.CLI;
 
-// KEEP ALL Console.WriteLine(...) IN HERE
 class UserInterface
 {
     public static void printOutput(List<Reading> list)
     {
-        // (Author,Observation,Timestamp) is not a reading, so start with index 0
         for (int i = 0; i < list.Count; i++)
         {
             Reading current = list[i];
@@ -22,7 +18,6 @@ class UserInterface
         }
     }
 
-    //Function for printing messages to the user.
     public static void printLog(string log)
     {
         Console.WriteLine(log);
