@@ -67,9 +67,21 @@ class Program
             commentDatabase.Store(comment);
         });
 
+        var discussionCommand = new Command("discussion", "Print all comments for a specific observation ID");
+        discussionCommand.Arguments.Add(commentIdArgument);
+        discussionCommand.SetAction(ParseResult => {
+            string commentId = ParseResult.GetValue(commentIdArgument)
+                ?? throw new ArgumentNullException(nameof(commentIdArgument), "Comment ID is required");
+
+            Guid commentGuid = Guid.Parse(commentId);
+
+            List<Comment> comments = commentDatabase.Read().ToList();
+            UserInterface.printOutput(comments.Where(c => c.Id == commentGuid).ToList());
+        });
+
         var root = new RootCommand("Bison observation tracker")
         {
-            Subcommands = { readCommand, observeCommand, commentCommand }
+            Subcommands = { readCommand, observeCommand, commentCommand, discussionCommand }
         };
 
         return root.Parse(args).Invoke();

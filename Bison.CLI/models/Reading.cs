@@ -2,7 +2,7 @@
 
 namespace Bison.CLI.models;
 
-public class Reading
+public class Reading : Printable
 {
     public Reading() { }
 
@@ -17,4 +17,10 @@ public class Reading
     public string Observation { get; set; } = string.Empty;
     public string Timestamp { get; set; } = string.Empty;
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    public override string ToString()
+    {
+        DateTime fTimeStamp = DateTime.UnixEpoch.AddSeconds(long.Parse(Timestamp));
+        return Author + " @ " + fTimeStamp + " " + Observation + " " + Id.ToString();
+    }
 }
