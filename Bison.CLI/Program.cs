@@ -8,12 +8,12 @@ class Program
     static int Main(string[] args)
     {
         string path = "./data/bison_observe_cli_db.csv";
-        IDatabaseRepository<Reading> handler = new CSVDatabase<Reading>(path);
+        IDatabaseRepository<Reading> csvDatabase = new IDatabaseRepositoryImpl<Reading>(path);
 
         var readCommand = new Command("read", "Print recorded observations");
         readCommand.SetAction(parseResult =>
         {
-            List<Reading> lines = handler.Read().ToList();
+            List<Reading> lines = csvDatabase.Read().ToList();
             UserInterface.printOutput(lines);
         });
 
@@ -36,7 +36,7 @@ class Program
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()
             );
 
-            handler.Store(reading);
+            csvDatabase.Store(reading);
             UserInterface.printLog("Observation recorded.");
         });
 
