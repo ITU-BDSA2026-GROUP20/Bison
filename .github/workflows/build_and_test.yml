@@ -21,12 +21,12 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
-        working-directory: ./${{ matrix.project }}
+        working-directory: ./src/${{ matrix.project }}
 
       - name: Build
         run: dotnet build --no-restore
-        working-directory: ./${{ matrix.project }}
+        working-directory: ./src/${{ matrix.project }}
 
       - name: Test
         run: dotnet test --no-build --verbosity normal
-        working-directory: ./${{ matrix.project }}
+        working-directory: ./src/${{ matrix.project }}
