@@ -1,6 +1,8 @@
-﻿namespace Bison.CLI.models;
+﻿using System;
 
-public class Reading
+namespace Bison.CLI.models;
+
+public class Reading : IPrintable
 {
     public Reading() { }
 
@@ -14,4 +16,11 @@ public class Reading
     public string Author { get; set; } = string.Empty;
     public string Observation { get; set; } = string.Empty;
     public string Timestamp { get; set; } = string.Empty;
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    public override string ToString()
+    {
+        DateTime fTimeStamp = DateTime.UnixEpoch.AddSeconds(long.Parse(Timestamp));
+        return Author + " @ " + fTimeStamp + " " + Observation + " " + Id.ToString();
+    }
 }

@@ -3,11 +3,11 @@ using CsvHelper;
 
 namespace SimpleDB;
 
-public sealed class CSVDatabase<T> : IDatabaseRepository<T>
+public sealed class IDatabaseRepositoryImpl<T> : IDatabaseRepository<T>
 {
     private readonly string csvFilePath;
 
-    public CSVDatabase(string filePath)
+    public IDatabaseRepositoryImpl(string filePath)
     {
         csvFilePath = filePath; 
     }

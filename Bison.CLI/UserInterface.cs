@@ -1,28 +1,17 @@
 using Bison.CLI.models;
-using System;
-using System.Collections.Generic;
 
 namespace Bison.CLI;
 
-// KEEP ALL Console.WriteLine(...) IN HERE
 class UserInterface
 {
-    public static void printOutput(List<Reading> list)
+    public static void printOutput<T>(IEnumerable<T> output) where T : IPrintable
     {
-        // (Author,Observation,Timestamp) is not a reading, so start with index 0
-        for (int i = 0; i < list.Count; i++)
+        foreach (T item in output)
         {
-            Reading current = list[i];
-            
-            string author = current.Author;
-            string observation = current.Observation;
-            DateTime timestamp = DateTime.UnixEpoch.AddSeconds(long.Parse(current.Timestamp));
-            
-            Console.WriteLine(author + " @ " + timestamp + " " + observation);
+            Console.WriteLine(item.ToString());
         }
     }
-
-    //Function for printing messages to the user.
+            
     public static void printLog(string log)
     {
         Console.WriteLine(log);
