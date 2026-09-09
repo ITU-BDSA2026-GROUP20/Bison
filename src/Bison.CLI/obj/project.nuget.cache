@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "QtZB5RJH6pE=",
+  "success": true,
+  "projectFilePath": "/Users/ossie/Documents/GitHub/Bison/src/Bison.CLI/Bison.CLI.csproj",
+  "expectedPackageFiles": [
+    "/Users/ossie/.nuget/packages/csvhelper/33.1.0/csvhelper.33.1.0.nupkg.sha512",
+    "/Users/ossie/.nuget/packages/system.commandline/2.0.11/system.commandline.2.0.11.nupkg.sha512"
+  ],
+  "logs": []
+}
