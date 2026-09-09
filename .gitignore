@@ -1,6 +1,6 @@
-*/.vs
-*/obj
-*/bin
+**/.vs/
+**/bin/
+**/obj/
 */.DS_Store
 */*.sln
 .idea/
