@@ -4,7 +4,7 @@ namespace Bison.CLI;
 
 class UserInterface
 {
-    public static void printOutput<T>(IEnumerable<T> output) where T : Printable
+    public static void printOutput<T>(IEnumerable<T> output) where T : IPrintable
     {
         foreach (T item in output)
         {

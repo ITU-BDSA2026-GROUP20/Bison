@@ -1,4 +1,4 @@
-public interface Printable
+public interface IPrintable
 {
     public string ToString();
 }

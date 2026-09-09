@@ -2,7 +2,7 @@
 
 namespace Bison.CLI.models;
 
-public class Reading : Printable
+public class Reading : IPrintable
 {
     public Reading() { }
 

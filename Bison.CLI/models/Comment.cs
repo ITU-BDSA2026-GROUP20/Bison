@@ -2,7 +2,7 @@ using System;
 
 namespace Bison.CLI.models;
 
-public class Comment : Printable
+public class Comment : IPrintable
 {
     public Comment() { }
 
