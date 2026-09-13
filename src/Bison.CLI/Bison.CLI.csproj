@@ -16,4 +16,8 @@
     <ProjectReference Include="..\SimpleDB\SimpleDB.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+  <InternalsVisibleTo Include="Bison.Tests" />
+  </ItemGroup>
+
 </Project>

@@ -15,10 +15,16 @@ public class DiscussionCommand(IDatabaseRepository<Comment> database) : ICliComm
             string commentId = ParseResult.GetValue(commentIdArgument)
                 ?? throw new ArgumentNullException(nameof(commentIdArgument), "Comment ID is required");
 
-            Guid commentGuid = Guid.Parse(commentId);
+
+            if (!Guid.TryParse(commentId, out Guid commentGuid))
+            {
+                Console.WriteLine("Unrecognized id format. Id needs to be a Guid");
+                return;
+            }
 
             List<Comment> comments = database.Read().ToList();
             UserInterface.printOutput(comments.Where(c => c.Id == commentGuid).ToList());
+
         });
         
         return discussionCommand;
