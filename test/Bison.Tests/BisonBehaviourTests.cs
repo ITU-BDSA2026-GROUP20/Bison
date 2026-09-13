@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Xunit;
+using Bison.CLI.utils;
 
 namespace Bison.Tests;
 
@@ -24,6 +25,17 @@ public class BisonBehaviourTests
         await process.WaitForExitAsync();
 
         Assert.Contains(expected, output);
+    }
+
+    [Fact]
+    public void FromUnixSeconds_ConvertsTimestamp()
+    {
+        long input = 1609459200; // 2021-01-01 at 00:00:00
+        DateTime expected = new DateTime(2021,1,1,0,0,0, DateTimeKind.Utc);
+
+        DateTime actual = TimestampConverter.FromUnixSeconds(input.ToString());
+
+        Assert.Equal(expected, actual);
     }
 
     private static string GetCliProjectPath([CallerFilePath] string here = "")
