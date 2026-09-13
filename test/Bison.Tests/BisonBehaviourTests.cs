@@ -8,7 +8,7 @@ namespace Bison.Tests;
 public class BisonBehaviourTests
 {
     [Fact]
-    public async Task PrintsCorrectErrorOnInvalidCommentId()
+    public async Task DiscussionCommandPrintsCorrectErrorOnInvalidCommentId()
     {
         string expected = "Unrecognized id format. Id needs to be a Guid";
 
@@ -16,6 +16,26 @@ public class BisonBehaviourTests
         {
             FileName = "dotnet",
             Arguments = $"run --project \"{GetCliProjectPath()}\" -- discussion invalid-id",
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+        };
+
+        using var process = Process.Start(psi)!;
+        string output = await process.StandardOutput.ReadToEndAsync();
+        await process.WaitForExitAsync();
+
+        Assert.Contains(expected, output);
+    }
+
+    [Fact]
+    public async Task CommentCommandPrintsCorrectErrorOnInvalidCommentId()
+    {
+        string expected = "Unrecognized id format. Id needs to be a Guid";
+
+        var psi = new ProcessStartInfo
+        {
+            FileName = "dotnet",
+            Arguments = $"run --project \"{GetCliProjectPath()}\" -- comment \"example message\" invalid-id",
             RedirectStandardOutput = true,
             UseShellExecute = false,
         };

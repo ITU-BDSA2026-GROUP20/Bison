@@ -21,7 +21,12 @@ public class CommentCommand(IDatabaseRepository<Comment> database) : ICliCommand
             string commentId = parseResult.GetValue(commentIdArgument)
                 ?? throw new ArgumentNullException(nameof(commentIdArgument), "Comment ID is required");
 
-            Guid commentGuid = Guid.Parse(commentId);
+            if (!Guid.TryParse(commentId, out Guid commentGuid))
+            {
+                Console.WriteLine("Unrecognized id format. Id needs to be a Guid");
+                return;
+            }
+            
             Comment comment = new Comment(commentVal, commentGuid, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
             database.Store(comment);
             UserInterface.printLog("Comment recorded.");
