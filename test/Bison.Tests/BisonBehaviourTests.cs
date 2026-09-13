@@ -7,42 +7,42 @@ namespace Bison.Tests;
 
 public class BisonBehaviourTests
 {
+
+    private static string RunCli(string args)
+        {
+            
+            var psi = new ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = $"\"{typeof(ICliCommand).Assembly.Location}\" {args}",
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            };
+
+            using var process = Process.Start(psi)!;
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+            return output;
+        }
+
     [Fact]
     public async Task DiscussionCommandPrintsCorrectErrorOnInvalidCommentId()
     {
         string expected = "Unrecognized id format. Id needs to be a Guid";
 
-        var psi = new ProcessStartInfo
-        {
-            FileName = "dotnet",
-            Arguments = $"run --project \"{GetCliProjectPath()}\" -- discussion invalid-id",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-        };
-
-        using var process = Process.Start(psi)!;
-        string output = await process.StandardOutput.ReadToEndAsync();
-        await process.WaitForExitAsync();
+        string output = RunCli("discussion invalid-id");
 
         Assert.Contains(expected, output);
     }
 
     [Fact]
-    public async Task CommentCommandPrintsCorrectErrorOnInvalidCommentId()
+    public void CommentCommandPrintsCorrectErrorOnInvalidCommentId()
     {
         string expected = "Unrecognized id format. Id needs to be a Guid";
 
-        var psi = new ProcessStartInfo
-        {
-            FileName = "dotnet",
-            Arguments = $"run --project \"{GetCliProjectPath()}\" -- comment \"example message\" invalid-id",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-        };
+        string output = RunCli("comment \"comment\" invalid-id");
 
-        using var process = Process.Start(psi)!;
-        string output = await process.StandardOutput.ReadToEndAsync();
-        await process.WaitForExitAsync();
+        Console.WriteLine(output);
 
         Assert.Contains(expected, output);
     }
@@ -58,6 +58,5 @@ public class BisonBehaviourTests
         Assert.Equal(expected, actual);
     }
 
-    private static string GetCliProjectPath([CallerFilePath] string here = "")
-        => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(here)!, "..", "..", "src", "Bison.CLI", "Bison.CLI.csproj"));
+
 }
