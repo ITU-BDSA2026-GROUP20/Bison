@@ -1,4 +1,5 @@
 ﻿using System;
+using Bison.CLI.utils;
 
 namespace Bison.CLI.models;
 
@@ -20,7 +21,7 @@ public class Reading : IPrintable
 
     public override string ToString()
     {
-        DateTime fTimeStamp = DateTime.UnixEpoch.AddSeconds(long.Parse(Timestamp));
+        DateTime fTimeStamp = TimestampConverter.FromUnixSeconds(Timestamp);
         return Author + " @ " + fTimeStamp + " " + Observation + " " + Id.ToString();
     }
 }
