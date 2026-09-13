@@ -2,17 +2,20 @@
 using Bison.CLI.models;
 using Bison.CLI.commands;
 using SimpleDB;
+using System.Linq.Expressions;
 
 class Program
 {
     static int Main(string[] args)
     {
-        IDatabaseRepository<Reading> csvDatabase = new IDatabaseRepositoryImpl<Reading>("./data/bison_observe_cli_db.csv");
-        IDatabaseRepository<Comment> commentDatabase = new IDatabaseRepositoryImpl<Comment>("./data/bison_comment_cli_db.csv");
+        // Singleton instance of the CSVDatabase (No possibilities for duplicate databases)
+        CSVDatabase csvDatabase = CSVDatabase.Instance;
+        IDatabaseRepository<Reading> readingDatabase = csvDatabase.GetRepository<Reading>(CSVFile.Reading);
+        IDatabaseRepository<Comment> commentDatabase = csvDatabase.GetRepository<Comment>(CSVFile.Comment);
 
         ICliCommand[] commands = [
-            new ReadCommand(csvDatabase),
-            new ObserveCommand(csvDatabase),
+            new ReadCommand(readingDatabase),
+            new ObserveCommand(readingDatabase),
             new CommentCommand(commentDatabase),
             new DiscussionCommand(commentDatabase),
         ];
