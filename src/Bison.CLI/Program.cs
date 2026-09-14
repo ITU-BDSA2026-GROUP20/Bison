@@ -10,8 +10,8 @@ class Program
     {
         // Singleton instance of the CSVDatabase (No possibilities for duplicate databases)
         CSVDatabase csvDatabase = CSVDatabase.Instance;
-        IDatabaseRepository<Reading> readingDatabase = csvDatabase.GetRepository<Reading>(CSVFile.Reading);
-        IDatabaseRepository<Comment> commentDatabase = csvDatabase.GetRepository<Comment>(CSVFile.Comment);
+        IDatabaseRepository<Reading> readingDatabase = csvDatabase.GetRepository<Reading>("reading");
+        IDatabaseRepository<Comment> commentDatabase = csvDatabase.GetRepository<Comment>("comment");
 
         ICliCommand[] commands = [
             new ReadCommand(readingDatabase),
