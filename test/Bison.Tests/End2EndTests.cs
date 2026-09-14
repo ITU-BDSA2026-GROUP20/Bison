@@ -31,17 +31,50 @@ public class End2EndTest
         string output = RunCli("read");
 
         Assert.Contains("Saw a bird near ITU", output);
+
+        DeleteTestFolder(TestFolder);
     }
 
     [Fact]
-    public void ObserverePigdeonStoresRecordInDatabase()
+    public void ObserveStoresRecordInDatabase()
     {
         string dbPath = Path.Combine(TestFolder, "data", "bison_observe_cli_db.csv");
 
-        RunCli("observe \"Pigdeon\"");
+        RunCli("observe \"Pidgeon\"");
 
         Assert.True(File.Exists(dbPath));
         string dbContents = File.ReadAllText(dbPath);
-        Assert.Contains("Pigdeon", dbContents);
+        Assert.Contains("Pidgeon", dbContents);
+
+        DeleteTestFolder(TestFolder);
+    }
+
+    [Fact]
+    public void AllCommandsTested ()
+    {
+         
+        string observeOutput = RunCli("observe \"Sean saw a fox\"");
+        Assert.Contains("Observation recorded.", observeOutput);
+
+      
+        string readOutput = RunCli("read");
+        Assert.Contains("Sean saw a fox", readOutput);
+        string observationId = readOutput.Trim().Split(' ').Last();
+
+      
+        string commentOutput = RunCli($"comment \"Nice find!\" {observationId}");
+        Assert.Contains("Comment recorded.", commentOutput);
+
+        
+        string discussionOutput = RunCli($"discussion {observationId}");
+        Assert.Contains("Nice find!", discussionOutput);
+
+        DeleteTestFolder(TestFolder);
+    }
+
+    private static void DeleteTestFolder(string testFolder)
+    {
+        if (Directory.Exists(testFolder))
+            Directory.Delete(testFolder, recursive: true);
     }
 }
