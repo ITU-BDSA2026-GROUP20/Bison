@@ -1,0 +1,80 @@
+using System.Diagnostics;
+using Xunit;
+
+public class End2EndTest
+{
+    private static readonly string TestFolder = Path.Combine(Path.GetTempPath(), "bison_e2e_test");
+   
+    private static string RunCli(string args)
+    {
+        Directory.CreateDirectory(Path.Combine(TestFolder, "data"));
+        var psi = new ProcessStartInfo
+        {
+             FileName = "dotnet",
+            Arguments = $"\"{typeof(ICliCommand).Assembly.Location}\" {args}",
+            WorkingDirectory = TestFolder,
+            RedirectStandardOutput = true,
+            UseShellExecute = false
+        };
+
+        using var process = Process.Start(psi)!;
+        string output = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+        return output;
+    }
+
+    [Fact]
+    public void ObserveThenReadAndShowTheObservation()
+    {
+        RunCli("observe \"Saw a bird near ITU\"");
+
+        string output = RunCli("read");
+
+        Assert.Contains("Saw a bird near ITU", output);
+
+        DeleteTestFolder(TestFolder);
+    }
+
+    [Fact]
+    public void ObserveStoresRecordInDatabase()
+    {
+        string dbPath = Path.Combine(TestFolder, "data", "bison_observe_cli_db.csv");
+
+        RunCli("observe \"Pidgeon\"");
+
+        Assert.True(File.Exists(dbPath));
+        string dbContents = File.ReadAllText(dbPath);
+        Assert.Contains("Pidgeon", dbContents);
+
+        DeleteTestFolder(TestFolder);
+    }
+
+    [Fact]
+    public void AllCommandsTested ()
+    {
+         
+        string observeOutput = RunCli("observe \"Sean saw a fox\"");
+        Assert.Contains("Observation recorded.", observeOutput);
+
+      
+        string readOutput = RunCli("read");
+        Assert.Contains("Sean saw a fox", readOutput);
+        string observationId = readOutput.Trim().Split(' ').Last();
+
+      
+        string commentOutput = RunCli($"comment \"Nice find!\" {observationId}");
+        Assert.Contains("Comment recorded.", commentOutput);
+
+        
+        string discussionOutput = RunCli($"discussion {observationId}");
+        Assert.Contains("Nice find!", discussionOutput);
+
+        DeleteTestFolder(TestFolder);
+    }
+
+    private static void DeleteTestFolder(string testFolder)
+    {
+        if (Directory.Exists(testFolder))
+            Directory.Delete(testFolder, recursive: true);
+    }
+}
