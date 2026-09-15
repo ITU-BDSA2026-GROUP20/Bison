@@ -9,9 +9,12 @@ public class ReadCommand(IDatabaseRepository<Reading> database) : ICliCommand
     public Command Build()
     {
         Command readCommand = new Command("read", "Read all readings from the database");
-        readCommand.SetAction(parseResult =>
+        readCommand.SetAction(async parseResult =>
         {
-            List<Reading> lines = database.Read().ToList();
+            List<Reading> lines = await Client.GetAsync<List<Reading>>("/observations")
+                ?? throw new ArgumentNullException("Returned null");
+            
+            
             UserInterface.printOutput(lines);
         });
         

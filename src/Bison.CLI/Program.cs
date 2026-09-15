@@ -3,6 +3,7 @@ using Bison.CLI.models;
 using Bison.CLI.commands;
 using SimpleDB;
 using System.Linq.Expressions;
+using Bison.CLI;
 
 class Program
 {

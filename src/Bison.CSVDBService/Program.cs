@@ -1,4 +1,4 @@
-using Bison.CLI.models;
+using Bison.CSVDBService.models;
 using SimpleDB;
 
 var builder = WebApplication.CreateBuilder(args);
