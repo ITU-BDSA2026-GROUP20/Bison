@@ -26,18 +26,28 @@ public class End2EndTest
     [Fact]
     public void ObserveThenReadAndShowTheObservation()
     {
+        try
+        {
         RunCli("observe \"Saw a bird near ITU\"");
 
         string output = RunCli("read");
 
         Assert.Contains("Saw a bird near ITU", output);
+            
+        }
+        finally
+        {
+            DeleteTestFolder(TestFolder);
+        }
 
-        DeleteTestFolder(TestFolder);
     }
 
     [Fact]
     public void ObserveStoresRecordInDatabase()
     {
+        
+        try
+        {
         string dbPath = Path.Combine(TestFolder, "data", "bison_observe_cli_db.csv");
 
         RunCli("observe \"Pidgeon\"");
@@ -46,13 +56,21 @@ public class End2EndTest
         string dbContents = File.ReadAllText(dbPath);
         Assert.Contains("Pidgeon", dbContents);
 
-        DeleteTestFolder(TestFolder);
+        }
+
+        finally
+        {
+            DeleteTestFolder(TestFolder);
+        }
+
+
     }
 
     [Fact]
     public void AllCommandsTested ()
     {
-         
+        try
+        {
         string observeOutput = RunCli("observe \"Sean saw a fox\"");
         Assert.Contains("Observation recorded.", observeOutput);
 
@@ -67,9 +85,15 @@ public class End2EndTest
 
         
         string discussionOutput = RunCli($"discussion {observationId}");
-        Assert.Contains("Nice find!", discussionOutput);
+        Assert.Contains("Nice find!", discussionOutput); 
 
-        DeleteTestFolder(TestFolder);
+        }
+         
+         finally
+        {
+            DeleteTestFolder(TestFolder);
+        }
+
     }
 
     private static void DeleteTestFolder(string testFolder)
