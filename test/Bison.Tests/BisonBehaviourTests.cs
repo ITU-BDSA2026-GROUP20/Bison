@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Xunit;
-using Bison.CLI.utils;
+using Bison.Core.utils;
 
 namespace Bison.Tests;
 

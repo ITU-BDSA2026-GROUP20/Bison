@@ -7,7 +7,7 @@ namespace Bison.CLI;
 
 public static class Client
 {
-    private const string BaseUrl = "http://localhost:5251";
+    private const string BaseUrl = "http://localhost:5251/";
 
     public static HttpClient Instance { get; } = BuildClient();
 
@@ -21,6 +21,13 @@ public static class Client
     }
 
     public static async Task<T?> GetAsync<T>(string endpoint)
+    {
+        var response = await Instance.GetAsync(endpoint);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<T>();
+    }
+
+    public static async Task<T?> GetAsync<T>(string endpoint, object obj)
     {
         var response = await Instance.GetAsync(endpoint);
         response.EnsureSuccessStatusCode();

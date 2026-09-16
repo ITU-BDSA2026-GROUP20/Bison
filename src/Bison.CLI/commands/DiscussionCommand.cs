@@ -23,13 +23,13 @@ public class DiscussionCommand() : ICliCommand
             }
 
             //List<Comment> comments = database.Read().ToList();
-            List<Comment> comments = Client.GetAsync<List<Comment>>("/comments").GetAwaiter().GetResult()
+            List<Comment> comments = Client.GetAsync<List<Comment>>($"/comments?guid={commentGuid}").GetAwaiter().GetResult()
                 ?? throw new ArgumentNullException("No values in database");
 
-            UserInterface.printOutput(comments.Where(c => c.Id == commentGuid).ToList());
+            UserInterface.printOutput(comments);
 
         });
-        
+
         return discussionCommand;
     }
 }
