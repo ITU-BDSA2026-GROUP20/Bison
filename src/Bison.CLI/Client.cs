@@ -27,13 +27,6 @@ public static class Client
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
-    public static async Task<T?> GetAsync<T>(string endpoint, object obj)
-    {
-        var response = await Instance.GetAsync(endpoint);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<T>();
-    }
-
     public static async Task<T?> PostAsync<T>(string tempEndpoint, object obj)
     {
         var response = await Instance.PostAsJsonAsync(tempEndpoint, obj);
