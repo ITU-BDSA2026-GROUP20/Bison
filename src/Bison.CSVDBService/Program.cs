@@ -1,5 +1,5 @@
-using Bison.CSVDBService.models;
 using SimpleDB;
+using Bison.Core.models;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -22,11 +22,13 @@ app.MapGet("/comments", (Guid guid) =>
 app.MapPost("/observation", (Reading reading) =>
 {
     readingDatabase.Store(reading);
+    return reading;
 });
 
 app.MapPost("/comment", (Comment comment) =>
 {
     commentDatabase.Store(comment);
+    return comment;
 });
 
 app.Run();

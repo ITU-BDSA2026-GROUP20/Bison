@@ -1,4 +1,4 @@
-namespace Bison.CLI.utils;
+namespace Bison.Core.utils;
 
 public static class TimestampConverter
 {

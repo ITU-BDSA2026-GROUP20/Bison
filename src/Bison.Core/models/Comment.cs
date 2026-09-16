@@ -1,7 +1,7 @@
 using System;
-using Bison.CLI.utils;
+using Bison.Core.utils;
 
-namespace Bison.CSVDBService.models;
+namespace Bison.Core.models;
 
 public class Comment : IPrintable
 {

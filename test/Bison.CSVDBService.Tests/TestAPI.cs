@@ -1,6 +1,6 @@
 namespace Bison.CSVDBService.Tests;
 
-using Bison.CLI.models;
+using Bison.Core.models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http.Json;
