@@ -1,10 +1,10 @@
 using SimpleDB;
-using Bison.CLI.models;
+using Bison.Core.models;
 using System.CommandLine;
 
 namespace Bison.CLI.commands;
 
-public class DiscussionCommand(IDatabaseRepository<Comment> database) : ICliCommand
+public class DiscussionCommand() : ICliCommand
 {
     public Command Build()
     {
@@ -22,11 +22,14 @@ public class DiscussionCommand(IDatabaseRepository<Comment> database) : ICliComm
                 return;
             }
 
-            List<Comment> comments = database.Read().ToList();
-            UserInterface.printOutput(comments.Where(c => c.Id == commentGuid).ToList());
+            //List<Comment> comments = database.Read().ToList();
+            List<Comment> comments = Client.GetAsync<List<Comment>>($"/comments?guid={commentGuid}").GetAwaiter().GetResult()
+                ?? throw new ArgumentNullException("No values in database");
+
+            UserInterface.printOutput(comments);
 
         });
-        
+
         return discussionCommand;
     }
 }

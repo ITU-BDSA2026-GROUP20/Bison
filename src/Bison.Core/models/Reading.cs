@@ -1,7 +1,7 @@
 ﻿using System;
-using Bison.CLI.utils;
+using Bison.Core.utils;
 
-namespace Bison.CLI.models;
+namespace Bison.Core.models;
 
 public class Reading : IPrintable
 {

@@ -1,10 +1,10 @@
 using SimpleDB;
-using Bison.CLI.models;
+using Bison.Core.models;
 using System.CommandLine;
 
 namespace Bison.CLI.commands;
 
-public class ObserveCommand(IDatabaseRepository<Reading> database) : ICliCommand
+public class ObserveCommand() : ICliCommand
 {
     public Command Build()
     {
@@ -24,7 +24,8 @@ public class ObserveCommand(IDatabaseRepository<Reading> database) : ICliCommand
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()
             );
 
-            database.Store(reading);
+            Reading result = Client.PostAsync<Reading>("/observation", reading).GetAwaiter().GetResult()
+                ?? throw new InvalidDataException("Data has been returned null, data not stored in database");
             UserInterface.printLog("Observation recorded.");
         });
 

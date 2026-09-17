@@ -1,4 +1,4 @@
-using Bison.CLI.models;
+using Bison.Core.models;
 
 namespace Bison.CLI;
 

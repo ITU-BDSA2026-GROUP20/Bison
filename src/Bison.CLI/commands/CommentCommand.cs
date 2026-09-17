@@ -1,10 +1,10 @@
 using SimpleDB;
-using Bison.CLI.models;
+using Bison.Core.models;
 using System.CommandLine;
 
 namespace Bison.CLI.commands;
 
-public class CommentCommand(IDatabaseRepository<Comment> database) : ICliCommand
+public class CommentCommand() : ICliCommand
 {
     public Command Build()
     {
@@ -28,7 +28,9 @@ public class CommentCommand(IDatabaseRepository<Comment> database) : ICliCommand
             }
             
             Comment comment = new Comment(commentVal, commentGuid, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
-            database.Store(comment);
+            Comment result = Client.PostAsync<Comment>("/comment", comment).GetAwaiter().GetResult()
+                ?? throw new InvalidDataException("Data has been returned null, data not stored in database");
+
             UserInterface.printLog("Comment recorded.");
         });
 
