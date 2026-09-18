@@ -1,4 +1,4 @@
-name: Build and Test
+name: Test
 on:
   push:
     branches: [ main ]
@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [ SimpleDB, Bison.CLI ]
+        project: [ Bison.Tests, Bison.CSVDBService.Tests, SimpleDB.Tests ]
     steps:
       - uses: actions/checkout@v3
 
@@ -21,12 +21,8 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
-        working-directory: ./src/${{ matrix.project }}
-
-      - name: Build
-        run: dotnet build --no-restore
-        working-directory: ./src/${{ matrix.project }}
+        working-directory: ./test/${{ matrix.project }}
 
       - name: Test
-        run: dotnet test --no-build --verbosity normal
-        working-directory: ./src/${{ matrix.project }}
+        run: dotnet test --no-restore --verbosity normal
+        working-directory: ./test/${{ matrix.project }}
