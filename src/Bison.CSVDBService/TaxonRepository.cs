@@ -2,55 +2,52 @@ using Bison.Core.models;
 using CsvHelper;
 using System.Reflection;
 using System.Globalization;
+using SimpleDB;
 
 namespace Bison.CSVDBService;
 
 
 public sealed class TaxonRepository
 {
-    private readonly Dictionary<string, Taxon> byID = new();
+    private readonly Dictionary<string, Taxon> byId = new();
     private readonly Dictionary<string, Taxon> byVernacularName = new();
-
 
     public TaxonRepository(string resourceName, Assembly? assembly = null)
     {
         Load(resourceName, assembly ?? Assembly.GetExecutingAssembly());
     }
 
-    public Taxon? GetByID(string taxonId) => byID.TryGetValue(taxonId, out var taxon) ? taxon : null;
+    public Taxon? GetByID(string taxonId) => byId.TryGetValue(taxonId, out var taxon) ? taxon : null;
 
     public Taxon? GetByVernacularName(string vernacularName) => byVernacularName.TryGetValue(vernacularName, out var taxon) ? taxon : null;
 
-    public IReadOnlyCollection<Taxon> All => byID.Values;
-
+    public IReadOnlyCollection<Taxon> All => byId.Values;
 
     private void Load(string resourceName, Assembly assembly)
     {
         using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new FileNotFoundException($"Embedded resource '{resourceName}' not found. " + $"Available resources: {string.Join(", ", assembly.GetManifestResourceNames())}");
-        using var reader = new StreamReader(stream);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        var repository = new IDatabaseRepositoryImpl<Taxon>(stream);
+        var taxons = repository.Read().ToList();
 
-        var records = csv.GetRecords<TaxonReading>().ToList();
-        var parentIdByTaxonId = new Dictionary<string, string?>();
+        
 
-        foreach (var row in records)
+
+        foreach (var taxon in taxons)
         {
-            var taxon = new Taxon(row.TaxonID, row.TaxonRank, row.ScientificName, row.VernacularName);
 
-            byID[row.TaxonID] = taxon;
-            parentIdByTaxonId[row.TaxonID] = string.IsNullOrEmpty(row.ParentNameUsageID) ? null : row.ParentNameUsageID;
+            byId[taxon.TaxonId] = taxon;
 
-            if (!string.IsNullOrEmpty(row.VernacularName))
-                byVernacularName[row.VernacularName] = taxon;
+            if (!string.IsNullOrEmpty(taxon.VernacularName))
+                byVernacularName[taxon.VernacularName] = taxon;
         }
 
-        foreach (var (taxonId, ParentNameUsageId) in parentIdByTaxonId)
+        foreach (var taxon in taxons)
         {
-            if (ParentNameUsageId != null && byID.TryGetValue(ParentNameUsageId, out var parentTaxon))
+            if (!string.IsNullOrEmpty(taxon.ParentTaxonId) && byId.TryGetValue(taxon.ParentTaxonId, out var parentTaxon))
             {
-                byID[taxonId].SetParent(parentTaxon);
+                taxon.SetParent(parentTaxon);
+        
             }
         }
     }
-
 }
