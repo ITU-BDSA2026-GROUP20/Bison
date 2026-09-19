@@ -7,10 +7,8 @@ namespace Bison.Tests;
 
 public class BisonBehaviourTests
 {
-
     private static string RunCli(string args)
-        {
-            
+        {  
             var psi = new ProcessStartInfo
             {
                 FileName = "dotnet",

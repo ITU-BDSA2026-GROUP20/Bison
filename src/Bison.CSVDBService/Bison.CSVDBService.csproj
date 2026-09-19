@@ -14,6 +14,10 @@
     <ProjectReference Include="..\SimpleDB\SimpleDB.csproj" />
     <ProjectReference Include="..\Bison.Core\Bison.Core.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="../data/TaxonCsvDatabase.csv" />
+  </ItemGroup>
 
 
 </Project>

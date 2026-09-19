@@ -2,7 +2,7 @@ using SimpleDB;
 
 public sealed class CSVDatabase
 {
-    private static CSVDatabase? instance;    
+    private static CSVDatabase? instance;
     public static CSVDatabase Instance
     {
         get // The singleton pattern for the CSVDatabase
