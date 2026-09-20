@@ -24,8 +24,14 @@ public class ObserveCommand() : ICliCommand
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()
             );
 
-            Reading result = Client.PostAsync<Reading>("/observation", reading).GetAwaiter().GetResult()
-                ?? throw new InvalidDataException("Data has been returned null, data not stored in database");
+            bool result = Client.PostAsync("/observation", reading).GetAwaiter().GetResult();
+
+            if (!result)
+            {
+                Console.WriteLine("Observation failed to record. Please check the observation data.");
+                return;
+            }
+
             UserInterface.printLog("Observation recorded.");
         });
 
