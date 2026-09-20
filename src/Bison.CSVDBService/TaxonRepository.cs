@@ -6,7 +6,6 @@ using SimpleDB;
 
 namespace Bison.CSVDBService;
 
-
 public sealed class TaxonRepository
 {
     private readonly Dictionary<string, Taxon> byId = new();
@@ -29,12 +28,8 @@ public sealed class TaxonRepository
         var repository = new IDatabaseRepositoryImpl<Taxon>(stream);
         var taxons = repository.Read().ToList();
 
-        
-
-
         foreach (var taxon in taxons)
         {
-
             byId[taxon.TaxonId] = taxon;
 
             if (!string.IsNullOrEmpty(taxon.VernacularName))
@@ -46,7 +41,6 @@ public sealed class TaxonRepository
             if (!string.IsNullOrEmpty(taxon.ParentTaxonId) && byId.TryGetValue(taxon.ParentTaxonId, out var parentTaxon))
             {
                 taxon.SetParent(parentTaxon);
-        
             }
         }
     }

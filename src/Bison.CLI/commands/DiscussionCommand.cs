@@ -27,7 +27,6 @@ public class DiscussionCommand() : ICliCommand
                 ?? throw new ArgumentNullException("No values in database");
 
             UserInterface.printOutput(comments);
-
         });
 
         return discussionCommand;

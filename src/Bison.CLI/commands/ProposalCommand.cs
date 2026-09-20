@@ -28,8 +28,13 @@ public class ProposalCommand() : ICliCommand
             }
             
             Proposal proposal = new Proposal(taxonId, observationGuid, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
-            Proposal result = Client.PostAsync<Proposal>("/proposal", proposal).GetAwaiter().GetResult()
-                ?? throw new InvalidDataException("Data has been returned null, data not stored in database");
+            bool result = Client.PostAsync("/proposal", proposal).GetAwaiter().GetResult();
+
+            if (!result)
+            {
+                Console.WriteLine("Proposal failed to record. Please check the taxon ID and observation ID.");
+                return;
+            }
 
             UserInterface.printLog("Proposal recorded.");
         });

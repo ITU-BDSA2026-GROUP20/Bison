@@ -4,10 +4,10 @@ namespace Bison.Core.models;
 
 public class Taxon
 {
-    [Name("dwc:taxonId")]
+    [Name("dwc:taxonID")]
     public string TaxonId {get; set; } = "";
     
-    [Name("dwc:parentNameUsageId")]
+    [Name("dwc:parentNameUsageID")]
     public string? ParentTaxonId {get; set; }
     public Taxon? Parent {get; private set; }
     

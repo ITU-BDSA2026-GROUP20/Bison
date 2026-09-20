@@ -15,6 +15,7 @@ class Program
             new CommentCommand(),
             new DiscussionCommand(),
             new ProposalCommand(),
+            new ProposalsCommand(),
         ];
 
         RootCommand root = new RootCommand("Bison observation tracker");

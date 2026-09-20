@@ -27,12 +27,26 @@ public static class Client
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
-    public static async Task<T?> PostAsync<T>(string tempEndpoint, object obj)
+    // Needs to be rewritten in the future to use params object[] and then wrap them into the query 
+    // automatically using the type of the object to determine the name of the query parameter. 
+    // For now, this is a quick and dirty solution to get the job done.
+    public static async Task<T?> GetAsync<T>(string endpoint, Guid id)
     {
-        var response = await Instance.PostAsJsonAsync(tempEndpoint, obj);
+        var response = await Instance.GetAsync($"{endpoint}?guid={id}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
+    public static async Task<T?> PostAsync<T>(string endpoint, object obj)
+    {
+        var response = await Instance.PostAsJsonAsync(endpoint, obj);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<T>();
+    }
 
+    public static async Task<bool> PostAsync(string endpoint, object obj)
+    {
+        var response = await Instance.PostAsJsonAsync(endpoint, obj);
+        return response.StatusCode == HttpStatusCode.OK;
+    }
 }

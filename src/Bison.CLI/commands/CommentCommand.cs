@@ -28,8 +28,13 @@ public class CommentCommand() : ICliCommand
             }
             
             Comment comment = new Comment(commentVal, commentGuid, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
-            Comment result = Client.PostAsync<Comment>("/comment", comment).GetAwaiter().GetResult()
-                ?? throw new InvalidDataException("Data has been returned null, data not stored in database");
+            bool result = Client.PostAsync("/comment", comment).GetAwaiter().GetResult();
+
+            if (!result)
+            {
+                Console.WriteLine("Comment failed to record. Please check the comment data.");
+                return;
+            }
 
             UserInterface.printLog("Comment recorded.");
         });
