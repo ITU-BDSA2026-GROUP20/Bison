@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string dbPath = Environment.GetEnvironmentVariable("BISONDBPATH") ?? "data/bison.db";
+string dbPath = Environment.GetEnvironmentVariable("BISONDBPATH") ?? "temp/bison.db";
 
 Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!); //creates if it doesnt exist
 
