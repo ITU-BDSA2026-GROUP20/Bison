@@ -7,7 +7,7 @@ namespace Bison.CLI;
 
 public static class Client
 {
-    private const string BaseUrl = "http://localhost:5251/";
+    private const string BaseUrl = "http://localhost:5000/";
 
     public static HttpClient Instance { get; } = BuildClient();
 
