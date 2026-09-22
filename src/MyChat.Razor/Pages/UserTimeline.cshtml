@@ -1,13 +1,12 @@
-﻿@page "/{author}"
+﻿@page "/{author}/{pageNum:int:min(1)?}"
 @model MyChat.Razor.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
-    var routeName = HttpContext.GetRouteValue("author");
 }
 
 <div>
-    <h2> @routeName's Observations </h2>
+    <h2> @Model.Author's Observations </h2>
 
     @if (Model.Observations.Any())
     {

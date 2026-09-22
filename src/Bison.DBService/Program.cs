@@ -35,6 +35,8 @@ using (var scope = app.Services.CreateScope())
 
 // endpoints
 
+
+//GET
 app.MapGet("/comments", async (Database db) => await db.comments.ToListAsync());
 app.MapGet("/proposals", async (Database db) => await db.proposals.ToListAsync());
 app.MapGet("/taxons", async (Database db) => await db.taxons.ToListAsync());
@@ -47,6 +49,14 @@ app.MapGet("/observations", async (Guid? guid, Database db) =>
     var reading = await db.readings.FindAsync(guid.Value);
     return reading is null ? Results.NotFound() : Results.Ok(reading);
 });
+
+
+
+//Get method for getting a page of requests:
+
+
+
+
 
 //POST
 
@@ -79,6 +89,7 @@ app.MapPost("/taxon", async (Taxon taxon, Database db) =>
     await db.SaveChangesAsync();
     return Results.Ok(taxon);
 });
+
 
 
 app.Run();
