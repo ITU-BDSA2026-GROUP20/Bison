@@ -6,9 +6,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string dbPath = Environment.GetEnvironmentVariable("BISONDBPATH") ?? "temp/bison.db";
+string dbPath = Environment.GetEnvironmentVariable("BISONDBPATH") ?? Path.GetTempPath();
 
-Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!); //creates if it doesnt exist
+var dir = Path.GetDirectoryName(dbPath);
+if (!string.IsNullOrEmpty(dir))
+{
+    Directory.CreateDirectory(dir);
+} else
+{
+    Console.Error.WriteLine("Invalid path given");
+}
 
 builder.Services.AddDbContext<Database>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
