@@ -5,17 +5,17 @@ namespace MyChat.Razor.Pages;
 
 public class PublicModel : PageModel
 {
-    private readonly IObservationService _service;
+    private readonly IObservationService service;
     public List<ObservationViewModel> Observations { get; set; }
 
-    public PublicModel(IObservationService service)
+    public PublicModel(IObservationService ser)
     {
-        _service = service;
+        service = ser;
     }
 
     public ActionResult OnGet()
     {
-        Observations = _service.GetObservations();
+        Observations = service.GetObservations();
         return Page();
     }
 }

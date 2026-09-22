@@ -5,17 +5,17 @@ namespace MyChat.Razor.Pages;
 
 public class UserTimelineModel : PageModel
 {
-    private readonly IObservationService _service;
+    private readonly IObservationService service;
     public List<ObservationViewModel> Observations { get; set; }
 
-    public UserTimelineModel(IObservationService service)
+    public UserTimelineModel(IObservationService ser)
     {
-        _service = service;
+        service = ser;
     }
 
     public ActionResult OnGet(string author)
     {
-        Observations = _service.GetObservationsFromAuthor(author);
+        Observations = service.GetObservationsFromAuthor(author);
         return Page();
     }
 }
