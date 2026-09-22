@@ -9,7 +9,7 @@ CSVDatabase csvDatabase = CSVDatabase.Instance;
 IDatabaseRepository<Reading> readingDatabase = csvDatabase.GetRepository<Reading>("reading");
 IDatabaseRepository<Comment> commentDatabase = csvDatabase.GetRepository<Comment>("comment");
 IDatabaseRepository<Proposal> proposalDatabase = csvDatabase.GetRepository<Proposal>("proposal");
-TaxonRepository taxonRepository = new TaxonRepository("TaxonCsvDatabase.csv");
+TaxonRepository taxonRepository = new TaxonRepository();
 
 //Gets
 app.MapGet("/observations", () => readingDatabase.Read().ToList());

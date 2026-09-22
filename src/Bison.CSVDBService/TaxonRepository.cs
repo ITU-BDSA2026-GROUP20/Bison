@@ -6,14 +6,15 @@ using SimpleDB;
 
 namespace Bison.CSVDBService;
 
+
 public sealed class TaxonRepository
 {
     private readonly Dictionary<string, Taxon> byId = new();
     private readonly Dictionary<string, Taxon> byVernacularName = new();
 
-    public TaxonRepository(string resourceName, Assembly? assembly = null)
+    public TaxonRepository(Assembly? assembly = null)
     {
-        Load(resourceName, assembly ?? Assembly.GetExecutingAssembly());
+        Load(assembly ?? Assembly.GetExecutingAssembly());
     }
 
     public Taxon? GetByID(string taxonId) => byId.TryGetValue(taxonId, out var taxon) ? taxon : null;
@@ -22,14 +23,20 @@ public sealed class TaxonRepository
 
     public IReadOnlyCollection<Taxon> All => byId.Values;
 
-    private void Load(string resourceName, Assembly assembly)
+    private const string ResourceName = "TaxonCsvDatabase.csv";
+    private void Load(Assembly assembly)
     {
-        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new FileNotFoundException($"Embedded resource '{resourceName}' not found. " + $"Available resources: {string.Join(", ", assembly.GetManifestResourceNames())}");
+        using var stream = assembly.GetManifestResourceStream(ResourceName)
+        ?? throw new FileNotFoundException($"Embedded resource '{ResourceName}' not found.");
         var repository = new IDatabaseRepositoryImpl<Taxon>(stream);
         var taxons = repository.Read().ToList();
 
+        
+
+
         foreach (var taxon in taxons)
         {
+
             byId[taxon.TaxonId] = taxon;
 
             if (!string.IsNullOrEmpty(taxon.VernacularName))
@@ -41,6 +48,7 @@ public sealed class TaxonRepository
             if (!string.IsNullOrEmpty(taxon.ParentTaxonId) && byId.TryGetValue(taxon.ParentTaxonId, out var parentTaxon))
             {
                 taxon.SetParent(parentTaxon);
+        
             }
         }
     }
