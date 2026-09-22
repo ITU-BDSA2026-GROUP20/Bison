@@ -31,18 +31,13 @@ public sealed class TaxonRepository
         var repository = new IDatabaseRepositoryImpl<Taxon>(stream);
         var taxons = repository.Read().ToList();
 
-        
-
-
         foreach (var taxon in taxons)
         {
-
             byId[taxon.TaxonId] = taxon;
 
             if (!string.IsNullOrEmpty(taxon.VernacularName))
                 byVernacularName[taxon.VernacularName] = taxon;
         }
-
         foreach (var taxon in taxons)
         {
             if (!string.IsNullOrEmpty(taxon.ParentTaxonId) && byId.TryGetValue(taxon.ParentTaxonId, out var parentTaxon))
