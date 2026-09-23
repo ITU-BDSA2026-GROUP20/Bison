@@ -147,10 +147,6 @@ public class End2EndTest
         }
 
     }
-
-    //---------------------------------------
-    //-------Fuzz Testing Environment--------
-    //---------------------------------------
     private const int FuzzLoops = 1000;
     [Fact]
     public async Task FuzzObservations()
@@ -162,7 +158,7 @@ public class End2EndTest
         {
             using var client = new HttpClient{BaseAddress = new Uri(BaseUrl)};
         
-            var taxonRepository = new TaxonRepository("TaxonCsvDatabase.csv");
+            var taxonRepository = new TaxonRepository();
             var generator = new RandomDataGenerator(taxonRepository.All.Select(t => t.TaxonId), seed);
             var expectedObservations = new List<Reading>();
             for (int i = 0; i < FuzzLoops; i++)
@@ -204,7 +200,7 @@ public class End2EndTest
         {
             using var client = new HttpClient{BaseAddress = new Uri(BaseUrl)};
         
-            var taxonRepository = new TaxonRepository("TaxonCsvDatabase.csv");
+            var taxonRepository = new TaxonRepository();
             var generator = new RandomDataGenerator(taxonRepository.All.Select(t => t.TaxonId), seed);
             
             var reading = generator.NextReading();
@@ -259,7 +255,7 @@ public class End2EndTest
         {
            using var client = new HttpClient{BaseAddress = new Uri(BaseUrl)};
 
-           var taxonRepository = new TaxonRepository("TaxonCsvDatabase.csv");
+           var taxonRepository = new TaxonRepository();
            var generator = new RandomDataGenerator(taxonRepository.All.Select(t => t.TaxonId), seed);
 
            const int observationCount = 50;
@@ -312,10 +308,6 @@ public class End2EndTest
             DeleteTestFolder(TestFolder); 
         }
     }
-
-    //---------------------------------------
-    //----------------Methods----------------
-    //---------------------------------------
     private static void DeleteTestFolder(string testFolder)
     {
         if (Directory.Exists(testFolder))
