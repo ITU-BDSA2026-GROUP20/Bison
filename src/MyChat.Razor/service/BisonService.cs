@@ -8,7 +8,7 @@ public class ObservationService : IObservationService
     //Note to self: IMPLEMENT THIS
     public List<ObservationViewModel> GetObservations()
     {
-        //Need to return 
+        //Need to return
         return null;
     }
 
@@ -18,6 +18,11 @@ public class ObservationService : IObservationService
     {
         // filter by the provided author name
        // return observations.Where(x => x.Author == author).ToList();
+       return null;
+    }
+
+    public List<ObservationViewModel> GetObservationsFromAuthorAndPage(string author, int page)
+    {
        return null;
     }
 

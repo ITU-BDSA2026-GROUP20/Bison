@@ -50,6 +50,15 @@ app.MapGet("/observations", async (Guid? guid, Database db) =>
     return reading is null ? Results.NotFound() : Results.Ok(reading);
 });
 
+app.MapGet("/obs", async (Database db, string author, int pageNum) =>
+{
+    List<Reading> readings = await db.readings.ToListAsync();
+    return readings.Where(r => r.Author == author)
+    .OrderBy(r => r.Timestamp)
+    .Skip(32*pageNum-32)
+    .Take(32);
+});
+
 
 
 //Get method for getting a page of requests:

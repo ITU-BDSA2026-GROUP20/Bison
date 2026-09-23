@@ -19,6 +19,13 @@ public static class Client
         return client;
     }
 
+    public static async Task<T?> GetAsync<T>(string endpoint, params (string Key, object? Value)[] query)
+    {
+        var response = await Instance.GetAsync($"{endpoint}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<T>();
+    }
+
     
     // Needs to be rewritten in the future to use params object[] and then wrap them into the query 
     // automatically using the type of the object to determine the name of the query parameter. 
