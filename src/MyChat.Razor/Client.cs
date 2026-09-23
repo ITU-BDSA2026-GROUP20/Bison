@@ -19,22 +19,19 @@ public static class Client
         return client;
     }
 
-    public static async Task<T?> GetAsync<T>(string endpoint, params (string Key, object? Value)[] query)
+    public static async Task<T?> GetAsync<T>(string endpoint)
     {
-        var response = await Instance.GetAsync($"{endpoint}");
+        var response = await Instance.GetAsync(endpoint);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
-    
-    // Needs to be rewritten in the future to use params object[] and then wrap them into the query 
-    // automatically using the type of the object to determine the name of the query parameter. 
-    // For now, this is a quick and dirty solution to get the job done.
-
-    //Methods
-    public static async Task<T?> GetAsync<T>(string endpoint)
+    // GetAsync("http://xxx/yyy", ("Key1", "Value1"), ("Key2", "Value2"));
+    public static async Task<T?> GetAsync<T>(string endpoint, params (string Key, object? Value)[] query)
     {
-        var response = await Instance.GetAsync(endpoint);
+        var qs = string.Join("&", query.Where(q => q.Value != null).Select(q => $"{Uri.EscapeDataString(q.Key)}={Uri.EscapeDataString(q.Value!.ToString() ?? "")}"));
+        var url = qs.Length > 0 ? $"{endpoint}?{qs}" : endpoint;
+        var response = await Instance.GetAsync(url);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
@@ -44,12 +41,5 @@ public static class Client
         var response = await Instance.GetAsync($"{endpoint}?author={author}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<List<Reading>>();
-    }
-
-    public static async Task<T?> GetAsync<T>(string endpoint, Guid id)
-    {
-        var response = await Instance.GetAsync($"{endpoint}?guid={id}");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<T>();
     }
 }

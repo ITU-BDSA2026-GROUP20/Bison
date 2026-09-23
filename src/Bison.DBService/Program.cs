@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string dbPath = Environment.GetEnvironmentVariable("BISONDBPATH") ?? Path.GetTempPath();
+string dbPath = Environment.GetEnvironmentVariable("BISONDBPATH") ?? Path.Combine(Path.GetTempPath(), "bison.db");
 
 var dir = Path.GetDirectoryName(dbPath);
 if (!string.IsNullOrEmpty(dir))
@@ -34,8 +34,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 // endpoints
-
-
 //GET
 app.MapGet("/comments", async (Database db) => await db.comments.ToListAsync());
 app.MapGet("/proposals", async (Database db) => await db.proposals.ToListAsync());
@@ -50,25 +48,17 @@ app.MapGet("/observations", async (Guid? guid, Database db) =>
     return reading is null ? Results.NotFound() : Results.Ok(reading);
 });
 
-app.MapGet("/obs", async (Database db, string author, int pageNum) =>
+
+app.MapGet("/obs", async (Database db, string? author, int page = 1) =>
 {
-    List<Reading> readings = await db.readings.ToListAsync();
-    return readings.Where(r => r.Author == author)
-    .OrderBy(r => r.Timestamp)
-    .Skip(32*pageNum-32)
-    .Take(32);
+    IQueryable<Reading> q = db.readings;
+    if (author is not null)
+        q = q.Where(r => r.Author == author);
+
+    return await q.OrderBy(r => r.Timestamp).Skip((page - 1) * 32).Take(32).ToListAsync();
 });
 
-
-
-//Get method for getting a page of requests:
-
-
-
-
-
 //POST
-
 app.MapPost("/proposal", async (Proposal proposal, Database db) =>
 {
     db.proposals.Add(proposal);

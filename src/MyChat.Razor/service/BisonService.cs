@@ -1,37 +1,18 @@
 using MyChat.Razor;
 
-public record ObservationViewModel(string Author, string Message, string Timestamp);
+public record ObservationViewModel(string Author, string Observation, string Timestamp);
 
 public class ObservationService : IObservationService
 {
-
-    //Note to self: IMPLEMENT THIS
-    public List<ObservationViewModel> GetObservations()
+    public List<ObservationViewModel> GetObservations(int? page = null)
     {
-        //Need to return
-        return null;
+        List<ObservationViewModel>? observations = Client.GetAsync<List<ObservationViewModel>>("/obs", ("page", page ?? 1)).GetAwaiter().GetResult();
+        return observations ?? new List<ObservationViewModel>();
     }
 
-
-    //Note to self: IMPLEMENT THIS
-    public List<ObservationViewModel> GetObservationsFromAuthor(string author)
+    public List<ObservationViewModel> GetObservations(string author, int? page = null)
     {
-        // filter by the provided author name
-       // return observations.Where(x => x.Author == author).ToList();
-       return null;
+        List<ObservationViewModel>? observations = Client.GetAsync<List<ObservationViewModel>>("/obs", ("author", author), ("page", page ?? 1)).GetAwaiter().GetResult();
+        return observations ?? new List<ObservationViewModel>();
     }
-
-    public List<ObservationViewModel> GetObservationsFromAuthorAndPage(string author, int page)
-    {
-       return null;
-    }
-
-    private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
-    {
-        // Unix timestamp is seconds past epoch
-        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds(unixTimeStamp);
-        return dateTime.ToString("MM/dd/yy H:mm:ss");
-    }
-
 }

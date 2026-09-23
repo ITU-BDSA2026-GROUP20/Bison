@@ -15,16 +15,15 @@ public class UserTimelineModel : PageModel
         service = ser;
     }
 
-    public ActionResult OnGet(string author, int? pageNum)
+    public ActionResult OnGet(string author, [FromQuery] int? page)
     {
-        Observations = service.GetObservationsFromAuthor(author);
+        if (page is null or < 1)
+            return Redirect($"/obs/{Uri.EscapeDataString(author)}?page=1");
 
-        if(pageNum is null or < 1)
-            return RedirectToPage(new {author, pageNum=1});
-
+        Observations = service.GetObservations(author, page);
         Author = author;
-        PageNum = pageNum.Value;
-        
+        PageNum = page.Value;
+
         return Page();
     }
 }

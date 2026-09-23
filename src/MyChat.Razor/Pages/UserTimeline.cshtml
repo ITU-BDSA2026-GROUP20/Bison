@@ -1,4 +1,4 @@
-﻿@page "/{author}/{pageNum:int:min(1)?}"
+﻿@page "/obs/{author}"
 @model MyChat.Razor.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Bison";
@@ -16,9 +16,9 @@
                 <li>
                     <p>
                         <strong>
-                            <a href="/@ob.Author">@ob.Author</a>
+                            <a href="/obs/@ob.Author">@ob.Author</a>
                         </strong>
-                        @ob.Message
+                        @ob.Observation
                         <small>&mdash; @ob.Timestamp</small>
                     </p>
                 </li>
