@@ -11,7 +11,7 @@ using Bison.Core.models;
 public class End2EndTest
 {
     private static readonly string TestFolder = Path.Combine(Path.GetTempPath(), "bison_e2e_test");
-    private const string BaseUrl = "https://localhost:5251";
+    private const string BaseUrl = "http://localhost:5251";
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
