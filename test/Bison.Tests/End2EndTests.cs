@@ -45,7 +45,7 @@ public class End2EndTest
         var psi = new ProcessStartInfo
         {
             FileName = "dotnet",
-            Arguments = $"\"{servicePath}\" --urls http://localhost:5251",
+            Arguments = $"\"{servicePath}\" --urls {BaseUrl}",
             WorkingDirectory = serverFolder,
             RedirectStandardOutput = true,
             UseShellExecute = false
