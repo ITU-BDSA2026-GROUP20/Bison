@@ -47,7 +47,7 @@ public class End2EndTest
             FileName = "dotnet",
             Arguments = $"\"{servicePath}\" --urls {BaseUrl}",
             WorkingDirectory = serverFolder,
-            RedirectStandardOutput = true,
+            RedirectStandardOutput = false,
             UseShellExecute = false
         };
 
