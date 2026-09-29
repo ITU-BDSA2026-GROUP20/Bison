@@ -23,6 +23,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bison.Core\Bison.Core.csproj" />
+    <ProjectReference Include="..\..\src\Bison.DBService\Bison.DBService.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Bison.Razor.Tests" />
   </ItemGroup>
 
 </Project>
