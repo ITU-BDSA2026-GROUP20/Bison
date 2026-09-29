@@ -1,0 +1,50 @@
+@page "/ob/{id?}"
+@model MyChat.Razor.Pages.ObservationDetailsModel
+@{
+    ViewData["Title"] = "Bison";
+    Layout = "Shared/_Layout";
+}
+<div>
+    <h2> Observation details </h2>
+    <ul id="messagelist" class="observations">
+        <li>
+            <p>
+                @* Display the observation *@
+                <strong>
+                    <a href="/ob/@Model.Observation.id">@Model.Observation.id</a>
+                </strong>
+                @Model.Observation.Author
+                @Model.Observation.Observation
+                <small>&mdash; @Model.Observation.Timestamp</small>
+            </p>
+
+            @* Display the proposals and comments *@
+            @if (!Model.Proposals.Any())
+            {
+                <em>There are no Proposals so far.</em>
+            } else
+            {
+                @foreach (var ob in Model.Proposals)
+                {
+                    <p>
+                    @ob.TaxonID
+                    <small>&mdash; @ob.Timestamp</small>
+                    </p>
+                }
+            }
+            @if (!Model.Comments.Any())
+            {
+                <em>There are no Comments so far.</em>
+            } else
+            {
+                @foreach (var ob in Model.Comments)
+                {
+                <p>
+                @ob.CommentVal
+                <small>&mdash; @ob.Timestamp</small>
+                </p>
+                }
+            }  
+        </li>
+    </ul>
+</div>

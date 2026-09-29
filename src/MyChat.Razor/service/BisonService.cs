@@ -1,6 +1,6 @@
 using MyChat.Razor;
 
-public record ObservationViewModel(string Author, string Observation, string Timestamp);
+public record ObservationViewModel(Guid id, string Author, string Observation, string Timestamp);
 
 public class ObservationService : IObservationService
 {
@@ -14,5 +14,11 @@ public class ObservationService : IObservationService
     {
         List<ObservationViewModel>? observations = Client.GetAsync<List<ObservationViewModel>>("/obs", ("author", author), ("page", page ?? 1)).GetAwaiter().GetResult();
         return observations ?? new List<ObservationViewModel>();
+    }
+
+    public ObservationViewModel GetObservation(Guid? id)
+    {
+        ObservationViewModel? observation = Client.GetAsync<ObservationViewModel>($"/ob/{id}").GetAwaiter().GetResult();
+        return observation ?? new ObservationViewModel(Guid.Empty, "", "", "");
     }
 }
