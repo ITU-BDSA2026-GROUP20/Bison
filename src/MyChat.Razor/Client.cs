@@ -1,9 +1,8 @@
 using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using Bison.Core.models;
 
-namespace Bison.CLI;
+namespace MyChat.Razor;
 
 public static class Client
 {
@@ -27,26 +26,20 @@ public static class Client
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
-    // Needs to be rewritten in the future to use params object[] and then wrap them into the query 
-    // automatically using the type of the object to determine the name of the query parameter. 
-    // For now, this is a quick and dirty solution to get the job done.
-    public static async Task<T?> GetAsync<T>(string endpoint, Guid id)
+    // GetAsync("http://xxx/yyy", ("Key1", "Value1"), ("Key2", "Value2"));
+    public static async Task<T?> GetAsync<T>(string endpoint, params (string Key, object? Value)[] query)
     {
-        var response = await Instance.GetAsync($"{endpoint}?guid={id}");
+        var qs = string.Join("&", query.Where(q => q.Value != null).Select(q => $"{Uri.EscapeDataString(q.Key)}={Uri.EscapeDataString(q.Value!.ToString() ?? "")}"));
+        var url = qs.Length > 0 ? $"{endpoint}?{qs}" : endpoint;
+        var response = await Instance.GetAsync(url);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
-    public static async Task<T?> PostAsync<T>(string endpoint, object obj)
+    public static async Task<List<Reading>?> GetPostsByUser(string endpoint, string author)
     {
-        var response = await Instance.PostAsJsonAsync(endpoint, obj);
+        var response = await Instance.GetAsync($"{endpoint}?author={author}");
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<T>();
-    }
-
-    public static async Task<bool> PostAsync(string endpoint, object obj)
-    {
-        var response = await Instance.PostAsJsonAsync(endpoint, obj);
-        return response.StatusCode == HttpStatusCode.OK;
+        return await response.Content.ReadFromJsonAsync<List<Reading>>();
     }
 }

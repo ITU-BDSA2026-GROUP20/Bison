@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [ SimpleDB, Bison.CLI, Bison.Core, Bison.CSVDBService ]
+        project: [ MyChat.Razor, Bison.Core, Bison.DBService ]
     steps:
       - uses: actions/checkout@v3
 
@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [ Bison.Tests, Bison.CSVDBService.Tests, SimpleDB.Tests ]
+        project: [ ]
     steps:
       - uses: actions/checkout@v3
 
