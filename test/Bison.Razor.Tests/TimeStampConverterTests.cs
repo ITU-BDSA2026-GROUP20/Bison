@@ -2,7 +2,7 @@ using Bison.Core.utils;
 
 namespace Bison.Razor.Tests;
 
-public class UnitTest
+public class TimeStampConverterTests
 {
     [Fact]
     public void FromUnixSecondsString_ConvertsTimestamp()
