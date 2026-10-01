@@ -11,5 +11,6 @@ public class Database : DbContext
     public DbSet<Comment> comments { get; set; }
     public DbSet<Proposal> proposals { get; set; }
     public DbSet<Taxon> taxons { get; set; }
+    public DbSet<User> users { get; set; }
 
 }
