@@ -17,9 +17,9 @@ public class UserTimelineModel : PageModel
 
     public ActionResult OnGet(string author, [FromQuery] int? page)
     {
-        if (page is null or < 1)
+        if (page is null or < 1) 
             return Redirect($"/obs/{Uri.EscapeDataString(author)}?page=1");
-
+    
         Observations = service.GetObservations(author, page);
         Author = author;
         PageNum = page.Value;
