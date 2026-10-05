@@ -35,8 +35,20 @@ using (var scope = app.Services.CreateScope())
 
 // endpoints
 //GET
-app.MapGet("/comments", async (Database db) => await db.comments.ToListAsync());
-app.MapGet("/proposals", async (Database db) => await db.proposals.ToListAsync());
+app.MapGet("/comments", async (Guid? guid, Database db) => 
+    {
+    if(guid is null)
+        return Results.Ok(await db.comments.ToListAsync()); 
+        return Results.Ok(await db.comments.Where(c => c.Id == guid.Value).ToListAsync());
+    });
+    
+app.MapGet("/proposals", async (Guid? guid, Database db) => 
+    {
+    if(guid is null)
+        return Results.Ok(await db.proposals.ToListAsync());
+        return Results.Ok(await db.proposals.Where(p => p.Id == guid.Value).ToListAsync());
+    });
+    
 app.MapGet("/taxons", async (Database db) => await db.taxons.ToListAsync());
 
 app.MapGet("/observations", async (Guid? guid, Database db) =>
