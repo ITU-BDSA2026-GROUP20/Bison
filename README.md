@@ -5,4 +5,4 @@ git commit -m "Refactor main to print CLI arguments.
 
 Longer description...
 
-Co-authored-by: Example <Example@itu.dk>"
+Co-authored-by: Example <<Example@itu.dk>>"
