@@ -49,13 +49,15 @@ app.MapGet("/observations", async (Guid? guid, Database db) =>
 });
 
 
-app.MapGet("/obs", async (Database db, string? author, int page = 1) =>
+app.MapGet("/obs", async (Database db, int? userId, int page = 1) =>
 {
     IQueryable<Reading> q = db.readings;
-    if (author is not null)
-        q = q.Where(r => r.Author == author);
+    if (userId is not null) 
+        q = q.Where(r => r.UserId == userId);
 
-    return await q.OrderBy(r => r.Timestamp).Skip((page - 1) * 32).Take(32).ToListAsync();
+    return await q.OrderBy(r => r.Timestamp).Skip((page - 1) * 32).Take(32)                                                                                                                                
+        .Select(r => new { r.UserId, Username = r.User!.Username, r.Observation, r.Timestamp })                                                                                                            
+        .ToListAsync();
 });
 
 //POST
