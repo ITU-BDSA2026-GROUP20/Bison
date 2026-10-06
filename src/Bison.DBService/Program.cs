@@ -106,3 +106,4 @@ app.MapPost("/taxon", async (Taxon taxon, Database db) =>
 
 
 app.Run();
+ public partial class Program { }
