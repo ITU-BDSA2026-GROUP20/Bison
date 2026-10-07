@@ -1,7 +1,7 @@
 using Bison.Core.models;
 using MyChat.Razor;
 
-public record ObservationViewModel(int UserId, string Username, string Observation, string Timestamp);
+public record ObservationViewModel(int AuthorId, string Authorname, string Observation, string Timestamp);
 
 public class ObservationService : IObservationService
 {

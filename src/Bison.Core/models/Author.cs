@@ -1,5 +1,4 @@
-namespace MyChat.Razor.Models;
-
+﻿namespace Bison.Core.models;
 public class Author
 {
     public int Id { get; set; }

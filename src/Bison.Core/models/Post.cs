@@ -1,4 +1,4 @@
-namespace MyChat.Razor.Models;
+namespace Bison.Core.models;
 
 public abstract class Post
 {

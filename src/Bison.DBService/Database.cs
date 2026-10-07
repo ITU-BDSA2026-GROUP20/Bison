@@ -7,10 +7,10 @@ public class Database : DbContext
     {
         
     }
-    public DbSet<Reading> readings { get; set; }
+    public DbSet<Observation> readings { get; set; }
     public DbSet<Comment> comments { get; set; }
     public DbSet<Proposal> proposals { get; set; }
     public DbSet<Taxon> taxons { get; set; }
-    public DbSet<User> users { get; set; }
+    public DbSet<Author> users { get; set; }
 
 }

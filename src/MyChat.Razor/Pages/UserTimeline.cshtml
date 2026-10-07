@@ -1,12 +1,12 @@
 ﻿@page "/obs/{userId:int}"
-@model MyChat.Razor.Pages.UserTimelineModel
+@model MyChat.Razor.Pages.AuthorTimelineModel
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
 }
 
 <div>
-    <h2> @Model.Username's Observations </h2>
+    <h2> @Model.Authorname's Observations </h2>
 
     @if (Model.Observations.Any())
     {
@@ -16,7 +16,7 @@
                 <li>
                     <p>
                         <strong>
-                            <a href="/obs/@ob.UserId">@ob.Username</a>
+                            <a href="/obs/@ob.AuthorId">@ob.Authorname</a>
                         </strong>
                         @ob.Observation
                         <small>&mdash; @ob.Timestamp</small>
