@@ -1,24 +1,8 @@
-using System;
-using Bison.Core.utils;
-
 namespace Bison.Core.models;
-
-public class Proposal : IPrintable
+public class Proposal : Post
 {
-    public Proposal(string TaxonID, Guid Id, string Timestamp)
-    {
-        this.TaxonID = TaxonID;
-        this.Id = Id;
-        this.Timestamp = Timestamp;
-    }
-
-    public string TaxonID { get; set; } = string.Empty;
-    public Guid Id { get; set; } = new Guid(); // Empty by default, needs to come from Constructor
-    public string Timestamp { get; set; } = string.Empty;
-    
-    public override string ToString()
-    {
-        DateTime fTimeStamp = TimestampConverter.FromUnixSeconds(Timestamp);
-        return TaxonID + " @ " + fTimeStamp + " " + Id.ToString();
-    }
+    public int ObservationId { get; set; }
+    public Observation Observation { get; set; } = null!;
+    public string TaxonId { get; set; } = string.Empty;
+    public Taxon Taxon { get; set; } = null!;
 }

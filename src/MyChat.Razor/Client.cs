@@ -36,10 +36,10 @@ public static class Client
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
-    public static async Task<List<Reading>?> GetPostsByUser(string endpoint, string author)
+    public static async Task<List<Observation>?> GetPostsByAuthor(string endpoint, string author)
     {
         var response = await Instance.GetAsync($"{endpoint}?author={author}");
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<List<Reading>>();
+        return await response.Content.ReadFromJsonAsync<List<Observation>>();
     }
 }

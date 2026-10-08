@@ -35,40 +35,39 @@ using (var scope = app.Services.CreateScope())
 
 // endpoints
 //GET
-app.MapGet("/comments", async (Guid? guid, Database db) => 
-    {
-    if(guid is null)
-        return Results.Ok(await db.comments.ToListAsync()); 
-        return Results.Ok(await db.comments.Where(c => c.Id == guid.Value).ToListAsync());
-    });
-    
-app.MapGet("/proposals", async (Guid? guid, Database db) => 
-    {
-    if(guid is null)
-        return Results.Ok(await db.proposals.ToListAsync());
-        return Results.Ok(await db.proposals.Where(p => p.Id == guid.Value).ToListAsync());
-    });
-    
-app.MapGet("/taxons", async (Database db) => await db.taxons.ToListAsync());
-
-app.MapGet("/observations", async (Guid? guid, Database db) =>
+app.MapGet("/comments", async (int? id, Database db) => 
 {
-    if(guid is null)
-        return Results.Ok(await db.readings.ToListAsync());
-
-    var reading = await db.readings.FindAsync(guid.Value);
-    return reading is null ? Results.NotFound() : Results.Ok(reading);
+    if (id is null)
+        return Results.Ok(await db.comments.ToListAsync());
+    return Results.Ok(await db.comments.Where(c => c.ObservationId == id.Value).ToListAsync());
 });
 
+app.MapGet("/proposals", async (int? id, Database db) =>
+{
+    if (id is null)
+        return Results.Ok(await db.proposals.ToListAsync());
+    return Results.Ok(await db.proposals.Where(p => p.ObservationId == id.Value).ToListAsync());
+});
+
+app.MapGet("/taxons", async (Database db) => await db.taxons.ToListAsync());
+
+app.MapGet("/observations", async (int? id, Database db) =>   // CHANGED
+{
+    if (id is null)
+        return Results.Ok(await db.readings.ToListAsync());
+
+    var observation = await db.readings.FindAsync(id.Value);
+    return observation is null ? Results.NotFound() : Results.Ok(observation);
+});
 
 app.MapGet("/obs", async (Database db, int? userId, int page = 1) =>
 {
-    IQueryable<Reading> q = db.readings;
-    if (userId is not null) 
-        q = q.Where(r => r.UserId == userId);
+    IQueryable<Observation> q = db.readings;
+    if (userId is not null)
+        q = q.Where(r => r.AuthorId == userId);
 
-    return await q.OrderBy(r => r.Timestamp).Skip((page - 1) * 32).Take(32)                                                                                                                                
-        .Select(r => new { r.UserId, Username = r.User!.Username, r.Observation, r.Timestamp })                                                                                                            
+    return await q.OrderBy(r => r.TimeStamp).Skip((page - 1) * 32).Take(32)
+        .Select(r => new { r.Id, r.AuthorId, AuthorName = r.Author.Name, r.Text, r.TimeStamp })
         .ToListAsync();
 });
 
@@ -89,7 +88,7 @@ app.MapPost("/comment", async (Comment comment, Database db) =>
 });
 
 
-app.MapPost("/observation", async (Reading reading, Database db) =>
+app.MapPost("/observation", async (Observation reading, Database db) =>
 {
     db.readings.Add(reading);
     await db.SaveChangesAsync();

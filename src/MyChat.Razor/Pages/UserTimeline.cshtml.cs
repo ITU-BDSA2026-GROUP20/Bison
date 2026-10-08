@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace MyChat.Razor.Pages;
 
-public class UserTimelineModel : PageModel
+public class AuthorTimelineModel : PageModel
 {
     private readonly IObservationService service;
     public List<ObservationViewModel> Observations { get; set; }
-    public int UserId { get; private set; }
-    public string Username { get; private set; } = "";
+    public int AuthorId { get; private set; }
+    public string Authorname { get; private set; } = "";
     public int PageNum {get; private set;}
 
-    public UserTimelineModel(IObservationService ser)
+    public AuthorTimelineModel(IObservationService ser)
     {
         service = ser;
     }
@@ -22,8 +22,8 @@ public class UserTimelineModel : PageModel
           return Redirect($"/obs/{userId}?page=1");                                                                                                                                                      
                                                                                                                                                                                                          
       Observations = service.GetObservations(userId, page);                                                                                                                                              
-      UserId = userId;                                                                                                                                                                                   
-      Username = Observations.FirstOrDefault()?.Username ?? $"User {userId}";                                                                                                                            
+      AuthorId = userId;                                                                                                                                                                                   
+      Authorname = Observations.FirstOrDefault()?.Authorname ?? $"Author {userId}";                                                                                                                            
       PageNum = page.Value;                                                                                                                                                                              
                                                                                                                                                                                                          
       return Page();                                                                                                                                                                                     
