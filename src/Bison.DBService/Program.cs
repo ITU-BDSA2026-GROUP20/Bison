@@ -39,14 +39,14 @@ app.MapGet("/comments", async (int? id, Database db) =>
 {
     if (id is null)
         return Results.Ok(await db.comments.ToListAsync());
-    return Results.Ok(await db.comments.Where(c => c.Id == id.Value).ToListAsync());
+    return Results.Ok(await db.comments.Where(c => c.ObservationId == id.Value).ToListAsync());
 });
 
 app.MapGet("/proposals", async (int? id, Database db) =>
 {
     if (id is null)
         return Results.Ok(await db.proposals.ToListAsync());
-    return Results.Ok(await db.proposals.Where(p => p.Id == id.Value).ToListAsync());
+    return Results.Ok(await db.proposals.Where(p => p.ObservationId == id.Value).ToListAsync());
 });
 
 app.MapGet("/taxons", async (Database db) => await db.taxons.ToListAsync());
