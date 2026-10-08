@@ -2,6 +2,7 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,8 @@ if (!string.IsNullOrEmpty(dir))
 builder.Services.AddDbContext<Database>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
 
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+
 builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.ReferenceHandler = 
         System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
@@ -35,64 +38,54 @@ using (var scope = app.Services.CreateScope())
 
 // endpoints
 //GET
-app.MapGet("/comments", async (int? id, Database db) => 
+app.MapGet("/comments", async (int? id, IPostRepository repository) => 
 {
-    if (id is null)
-        return Results.Ok(await db.comments.ToListAsync());
-    return Results.Ok(await db.comments.Where(c => c.ObservationId == id.Value).ToListAsync());
+    var comments = await repository.GetComments(id);
+    return Results.Ok(comments);
 });
 
-app.MapGet("/proposals", async (int? id, Database db) =>
+app.MapGet("/proposals", async (int? id, IPostRepository repository) =>
 {
-    if (id is null)
-        return Results.Ok(await db.proposals.ToListAsync());
-    return Results.Ok(await db.proposals.Where(p => p.ObservationId == id.Value).ToListAsync());
+    var proposals = await repository.GetProposals(id);
+    return Results.Ok(proposals);
 });
 
 app.MapGet("/taxons", async (Database db) => await db.taxons.ToListAsync());
 
-app.MapGet("/observations", async (int? id, Database db) =>   // CHANGED
+app.MapGet("/observations", async (int? id, IPostRepository repository) =>   // CHANGED
 {
     if (id is null)
-        return Results.Ok(await db.readings.ToListAsync());
+        return Results.Ok(await repository.GetObservations());
 
-    var observation = await db.readings.FindAsync(id.Value);
+    var observation = await repository.GetObservation(id.Value);
     return observation is null ? Results.NotFound() : Results.Ok(observation);
 });
 
-app.MapGet("/obs", async (Database db, int? userId, int page = 1) =>
+app.MapGet("/obs", async (IPostRepository repository, int? userId, int page = 1) =>
 {
-    IQueryable<Observation> q = db.readings;
-    if (userId is not null)
-        q = q.Where(r => r.AuthorId == userId);
-
-    return await q.OrderBy(r => r.TimeStamp).Skip((page - 1) * 32).Take(32)
-        .Select(r => new { r.Id, r.AuthorId, AuthorName = r.Author.Name, r.Text, r.TimeStamp })
-        .ToListAsync();
+    var observations = await repository.GetTimelineObservations(userId, page);
+    return observations.Select(r=> new{r.Id, r.AuthorId, AuthorName = r.Author.Name, r.Text, r.TimeStamp}).ToList();
 });
 
 //POST
-app.MapPost("/proposal", async (Proposal proposal, Database db) =>
+app.MapPost("/proposal", async (Proposal proposal, IPostRepository repository) =>
 {
-    db.proposals.Add(proposal);
-    await db.SaveChangesAsync();
-    return Results.Ok(proposal);
+    await repository.AddProposal(proposal);
+    return Results.Ok(proposal); 
 });
 
 
-app.MapPost("/comment", async (Comment comment, Database db) =>
+app.MapPost("/comment", async (Comment comment, IPostRepository repository) =>
 {
-    db.comments.Add(comment);
-    await db.SaveChangesAsync();
+    await repository.AddComment(comment);
     return Results.Ok(comment);
 });
 
 
-app.MapPost("/observation", async (Observation reading, Database db) =>
+app.MapPost("/observation", async (Observation observation, IPostRepository repository) =>
 {
-    db.readings.Add(reading);
-    await db.SaveChangesAsync();
-    return Results.Ok(reading);
+    await repository.AddObservation(observation);
+    return Results.Ok(observation);
 });
 
 app.MapPost("/taxon", async (Taxon taxon, Database db) =>
