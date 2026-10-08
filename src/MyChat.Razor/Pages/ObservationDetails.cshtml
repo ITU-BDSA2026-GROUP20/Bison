@@ -11,11 +11,11 @@
             <p>
                 @* Display the observation *@
                 <strong>
-                    <a href="/ob/@Model.Observation.id">@Model.Observation.id</a>
+                    <a href="/ob/@Model.Observation.Id">@Model.Observation.Id</a>
                 </strong>
-                @Model.Observation.Author?.Authorname
-                @Model.Observation.Observation
-                <small>&mdash; @Model.Observation.Timestamp</small>
+                @Model.Observation.Authorname
+                @Model.Observation.Text
+                <small>&mdash; @Model.Observation.TimeStamp</small>
             </p>
 
             @* Display the proposals and comments *@
