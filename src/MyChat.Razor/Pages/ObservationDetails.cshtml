@@ -27,8 +27,8 @@
                 @foreach (var ob in Model.Proposals)
                 {
                     <p>
-                    @ob.TaxonID
-                    <small>&mdash; @ob.Timestamp</small>
+                    @ob.TaxonId
+                    <small>&mdash; @ob.TimeStamp</small>
                     </p>
                 }
             }
@@ -40,8 +40,8 @@
                 @foreach (var ob in Model.Comments)
                 {
                 <p>
-                @ob.CommentVal
-                <small>&mdash; @ob.Timestamp</small>
+                @ob.Text
+                <small>&mdash; @ob.TimeStamp</small>
                 </p>
                 }
             }  
