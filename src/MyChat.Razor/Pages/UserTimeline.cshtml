@@ -1,4 +1,4 @@
-@page "/obs/{userId:int?}"
+﻿@page "/obs/{userId:int?}"
 @model MyChat.Razor.Pages.AuthorTimelineModel
 @{
     ViewData["Title"] = "Bison";
@@ -18,8 +18,8 @@
                         <strong>
                             <a href="/obs/@ob.AuthorId">@ob.Authorname</a>
                         </strong>
-                        @ob.Observation
-                        <small>&mdash; @ob.Timestamp</small>
+                        @ob.Text
+                        <small>&mdash; @ob.TimeStamp</small>
                     </p>
                 </li>
             }
