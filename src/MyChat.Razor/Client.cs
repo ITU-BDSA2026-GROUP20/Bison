@@ -32,6 +32,8 @@ public static class Client
         var qs = string.Join("&", query.Where(q => q.Value != null).Select(q => $"{Uri.EscapeDataString(q.Key)}={Uri.EscapeDataString(q.Value!.ToString() ?? "")}"));
         var url = qs.Length > 0 ? $"{endpoint}?{qs}" : endpoint;
         var response = await Instance.GetAsync(url);
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            return default;
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }

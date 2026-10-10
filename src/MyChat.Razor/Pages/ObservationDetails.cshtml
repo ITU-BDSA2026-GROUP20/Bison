@@ -13,7 +13,7 @@
                 <strong>
                     <a href="/ob/@Model.Observation.Id">@Model.Observation.Id</a>
                 </strong>
-                @Model.Observation.Authorname
+                @Model.Observation.AuthorName
                 @Model.Observation.Text
                 <small>&mdash; @Model.Observation.TimeStamp</small>
             </p>
@@ -27,7 +27,7 @@
                 @foreach (var ob in Model.Proposals)
                 {
                     <p>
-                    @ob.TaxonId
+                    @ob.TaxonName
                     <small>&mdash; @ob.TimeStamp</small>
                     </p>
                 }

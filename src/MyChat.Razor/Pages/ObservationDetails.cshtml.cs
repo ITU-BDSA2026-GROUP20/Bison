@@ -8,19 +8,19 @@ namespace MyChat.Razor.Pages;
 public class ObservationDetailsModel : PageModel
 {
     private readonly IObservationService service;
-    public ObservationViewModel Observation { get; set; }
-    public List<Proposal> Proposals { get; set; }
-    public List<Comment> Comments { get; set; }
-    public Guid? Id {get; private set;} = null;
+    required public ObservationDTO Observation { get; set; }
+    required public List<ProposalDTO> Proposals { get; set; }
+    required public List<CommentDTO> Comments { get; set; }
+    public int? Id {get; private set;} = null;
 
     public ObservationDetailsModel(IObservationService ser)
     {
         service = ser;
     }
 
-    public ActionResult OnGet(Guid? id)
+    public ActionResult OnGet(int? id)
     {
-        if (id == Guid.Empty || id is null)
+        if (id is null || id < 0)
             return Redirect("/obs");
 
         Observation = service.GetObservation(id);
