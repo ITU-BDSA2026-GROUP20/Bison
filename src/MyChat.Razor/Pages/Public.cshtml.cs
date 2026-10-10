@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Bison.Core.models;
 
 namespace MyChat.Razor.Pages;
 
 public class PublicModel : PageModel
 {
     private readonly IObservationService service;
-    public List<ObservationViewModel> Observations { get; set; }
+    required public List<ObservationDTO> Observations { get; set; }
 
     public PublicModel(IObservationService ser)
     {

@@ -11,12 +11,12 @@
     @if (Model.Observations.Any())
     {
         <ul id="messagelist" class="observations">
-            @foreach (ObservationViewModel obs in Model.Observations)
+            @foreach (var obs in Model.Observations)
             {
                 <li>
                     <p>
                         <strong>
-                            <a href="/obs/@obs.AuthorId">@obs.Authorname</a>
+                            <a href="/obs/@obs.AuthorId">@obs.AuthorName</a>
                         </strong>
                         @obs.Text
                         <small>&mdash; @obs.TimeStamp</small>

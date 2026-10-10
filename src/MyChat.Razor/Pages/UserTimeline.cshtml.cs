@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Bison.Core.models;
 
 namespace MyChat.Razor.Pages;
 
 public class AuthorTimelineModel : PageModel
 {
     private readonly IObservationService service;
-    public List<ObservationViewModel> Observations { get; set; }
+    required public List<ObservationDTO> Observations { get; set; }
     public int AuthorId { get; private set; }
-    public string Authorname { get; private set; } = "";
+    public string AuthorName { get; private set; } = "";
     public int PageNum {get; private set;}
 
     public AuthorTimelineModel(IObservationService ser)
@@ -23,7 +24,7 @@ public class AuthorTimelineModel : PageModel
                                                                                                                                                                                                          
       Observations = service.GetObservations(userId, page);                                                                                                                                              
       AuthorId = userId;                                                                                                                                                                                   
-      Authorname = Observations.FirstOrDefault()?.Authorname ?? $"Author {userId}";                                                                                                                            
+      AuthorName = Observations.FirstOrDefault()?.AuthorName ?? $"Author {userId}";                                                                                                                            
       PageNum = page.Value;                                                                                                                                                                              
                                                                                                                                                                                                          
       return Page();                                                                                                                                                                                     

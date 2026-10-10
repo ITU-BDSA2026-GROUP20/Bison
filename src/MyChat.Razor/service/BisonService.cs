@@ -1,36 +1,66 @@
 using Bison.Core.models;
 using MyChat.Razor;
 
-public record ObservationViewModel(int Id, int AuthorId, string Authorname, string Text, string TimeStamp);
-
 public class ObservationService : IObservationService
 {
-    public List<ObservationViewModel> GetObservations(int? page = null)
+    public List<ObservationDTO> GetObservations(int? page = null)
     {
-        List<ObservationViewModel>? observations = Client.GetAsync<List<ObservationViewModel>>("/obs", ("page", page ?? 1)).GetAwaiter().GetResult();
-        return observations ?? new List<ObservationViewModel>();
+        return Client.GetAsync<List<ObservationDTO>>("/obs", ("page", page ?? 1)).GetAwaiter().GetResult()?
+        .Select(o => new ObservationDTO(
+            o.Id,
+            o.Text,
+            o.AuthorId,
+            o.AuthorName,
+            o.TimeStamp))
+        .ToList()
+        ?? new();
     }
 
-    public List<ObservationViewModel> GetObservations(int userId, int? page = null)
+    public List<ObservationDTO> GetObservations(int userId, int? page = null)
     {
-        List<ObservationViewModel>? observations = Client.GetAsync<List<ObservationViewModel>>("/obs", ("userId", userId), ("page", page ?? 1)).GetAwaiter().GetResult();
-        return observations ?? new List<ObservationViewModel>();
+        return Client.GetAsync<List<ObservationDTO>>("/obs", ("userId", userId), ("page", page ?? 1)).GetAwaiter().GetResult()?
+        .Select(o => new ObservationDTO(
+            o.Id,
+            o.Text,
+            o.AuthorId,
+            o.AuthorName,
+            o.TimeStamp))
+        .ToList()
+        ?? new();
     }
 
-    public ObservationViewModel? GetObservation(Guid? id)
+    public ObservationDTO? GetObservation(int? id)
     {
-        ObservationViewModel? observation = Client.GetAsync<ObservationViewModel>("/observations", ("guid", id)).GetAwaiter().GetResult();
-        return observation ?? null;
+        ObservationDTO? o = Client.GetAsync<ObservationDTO>("/observations", ("id", id)).GetAwaiter().GetResult();
+
+        if (o is null)
+        return null;
+
+        return new ObservationDTO(
+            o.Id,
+            o.Text,
+            o.AuthorId,
+            o.AuthorName,
+            o.TimeStamp
+        );
     }
-    public List<Comment> GetComments(Guid id)
+    public List<CommentDTO> GetComments(int id)
     {
-        List<Comment>? comments = Client.GetAsync<List<Comment>>("/comments",("guid", id)).GetAwaiter().GetResult();
-        return comments ?? new List<Comment>();
+        return Client.GetAsync<List<Comment>>("/comments", ("id", id)).GetAwaiter().GetResult()?
+        .Select(c => new CommentDTO(
+            c.Text,
+            c.TimeStamp))
+        .ToList()
+        ?? new();
     }
 
-    public List<Proposal> GetProposals(Guid id)
+    public List<ProposalDTO> GetProposals(int id)
     {
-        List<Proposal>? proposals = Client.GetAsync<List<Proposal>>("/proposals",("guid", id)).GetAwaiter().GetResult();
-        return proposals ?? new List<Proposal>();
+        return Client.GetAsync<List<Proposal>>("/proposals", ("id", id)).GetAwaiter().GetResult()?
+        .Select(p => new ProposalDTO(
+            p.Taxon.VernacularName,
+            p.TimeStamp))
+        .ToList()
+        ?? new();
     }
 }
