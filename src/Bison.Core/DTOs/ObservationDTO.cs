@@ -2,7 +2,7 @@
 public record ObservationDTO(
     int Id,
     string Text,
-    string AuthorId,
+    int AuthorId,
     string AuthorName,
-    DateTime TimeStamp
+    string TimeStamp
 );
