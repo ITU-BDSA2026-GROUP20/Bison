@@ -1,6 +1,5 @@
 namespace Bison.Core.models;
-public class Comment : Post
-{
-    public int ObservationId { get; set; }
-    public Observation Observation { get; set; } = null!;
-}
+public record CommentDTO(
+    string Text,
+    string TimeStamp
+);
