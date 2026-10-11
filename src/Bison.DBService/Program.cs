@@ -95,6 +95,13 @@ app.MapPost("/taxon", async (Taxon taxon, Database db) =>
     return Results.Ok(taxon);
 });
 
+app.MapGet("/seed", (Database db) =>
+{
+    DbInitializer.SeedDatabase(db);
+    return Results.Ok();
+});
+
+
 
 
 app.Run();

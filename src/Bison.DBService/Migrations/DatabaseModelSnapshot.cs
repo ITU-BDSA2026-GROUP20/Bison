@@ -69,18 +69,25 @@ namespace Bison.DBService.Migrations
 
             modelBuilder.Entity("Bison.Core.models.Taxon", b =>
                 {
-                    b.Property<string>("TaxonId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TaxonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ParentTaxonId")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("ParentTaxonId1")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("VernacularName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("dwc_TaxonID")
                         .HasColumnType("TEXT");
 
                     b.HasKey("TaxonId");
 
-                    b.HasIndex("ParentTaxonId");
+                    b.HasIndex("ParentTaxonId1");
 
                     b.ToTable("taxons");
                 });
@@ -104,7 +111,10 @@ namespace Bison.DBService.Migrations
                     b.Property<string>("TaxonId")
                         .HasColumnType("TEXT");
 
-                    b.HasIndex("TaxonId");
+                    b.Property<int?>("TaxonId1")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("TaxonId1");
 
                     b.HasDiscriminator().HasValue("Observation");
                 });
@@ -116,9 +126,8 @@ namespace Bison.DBService.Migrations
                     b.Property<int>("ObservationId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("TaxonId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TaxonId")
+                        .HasColumnType("INTEGER");
 
                     b.HasIndex("ObservationId");
 
@@ -151,7 +160,7 @@ namespace Bison.DBService.Migrations
                 {
                     b.HasOne("Bison.Core.models.Taxon", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentTaxonId");
+                        .HasForeignKey("ParentTaxonId1");
 
                     b.Navigation("Parent");
                 });
@@ -171,7 +180,7 @@ namespace Bison.DBService.Migrations
                 {
                     b.HasOne("Bison.Core.models.Taxon", "Taxon")
                         .WithMany()
-                        .HasForeignKey("TaxonId");
+                        .HasForeignKey("TaxonId1");
 
                     b.Navigation("Taxon");
                 });
