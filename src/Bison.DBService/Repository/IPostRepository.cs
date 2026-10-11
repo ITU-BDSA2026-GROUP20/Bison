@@ -10,5 +10,9 @@ public interface IPostRepository
     Task<List<Observation>> GetTimelineObservations(int? authorId, int page);
     Task AddObservation(Observation observation);
     Task AddComment(Comment comment);
-    Task AddProposal(Proposal proposal); 
+    Task AddProposal(Proposal proposal);
+
+    Task AddObservations(IEnumerable<Observation> observations);
+    Task AddComments(IEnumerable<Comment> comments);
+    Task AddProposals(IEnumerable<Proposal> proposals);
 }

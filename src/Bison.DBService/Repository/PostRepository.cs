@@ -58,4 +58,20 @@ public class PostRepository : IPostRepository
         database.proposals.Add(proposal);
         await database.SaveChangesAsync();
     }
+
+    public async Task AddObservations(IEnumerable<Observation> observations)
+    {
+        database.readings.AddRange(observations);
+        await database.SaveChangesAsync();
+    }
+    public async Task AddComments(IEnumerable<Comment> comments)
+    {
+        database.comments.AddRange(comments);
+        await database.SaveChangesAsync();
+    }
+    public async Task AddProposals(IEnumerable<Proposal> proposals)
+    {
+        database.proposals.AddRange(proposals);
+        await database.SaveChangesAsync();
+    }
 }
