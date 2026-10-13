@@ -1,3 +1,5 @@
+using MyChat.Razor;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -21,5 +23,15 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapRazorPages();
+
+try
+{
+    bool response = await Client.InitializeDatabase();
+
+}
+catch (HttpRequestException ex)
+{
+    app.Logger.LogWarning(ex, "Startup API call failed");
+}
 
 app.Run();

@@ -44,4 +44,11 @@ public static class Client
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<List<Observation>>();
     }
+
+    public static async Task<bool> InitializeDatabase()
+    {
+        var response = await Instance.GetAsync("seed");
+        return response.IsSuccessStatusCode;
+    
+    }
 }
