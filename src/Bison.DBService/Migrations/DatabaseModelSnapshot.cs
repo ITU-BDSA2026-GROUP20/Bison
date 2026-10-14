@@ -73,10 +73,7 @@ namespace Bison.DBService.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ParentTaxonId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("ParentTaxonId1")
+                    b.Property<int?>("ParentTaxonId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("VernacularName")
@@ -87,7 +84,7 @@ namespace Bison.DBService.Migrations
 
                     b.HasKey("TaxonId");
 
-                    b.HasIndex("ParentTaxonId1");
+                    b.HasIndex("ParentTaxonId");
 
                     b.ToTable("taxons");
                 });
@@ -108,13 +105,10 @@ namespace Bison.DBService.Migrations
                 {
                     b.HasBaseType("Bison.Core.models.Post");
 
-                    b.Property<string>("TaxonId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("TaxonId1")
+                    b.Property<int?>("TaxonId")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("TaxonId1");
+                    b.HasIndex("TaxonId");
 
                     b.HasDiscriminator().HasValue("Observation");
                 });
@@ -160,7 +154,7 @@ namespace Bison.DBService.Migrations
                 {
                     b.HasOne("Bison.Core.models.Taxon", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentTaxonId1");
+                        .HasForeignKey("ParentTaxonId");
 
                     b.Navigation("Parent");
                 });
@@ -180,7 +174,7 @@ namespace Bison.DBService.Migrations
                 {
                     b.HasOne("Bison.Core.models.Taxon", "Taxon")
                         .WithMany()
-                        .HasForeignKey("TaxonId1");
+                        .HasForeignKey("TaxonId");
 
                     b.Navigation("Taxon");
                 });

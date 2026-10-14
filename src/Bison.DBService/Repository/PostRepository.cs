@@ -17,7 +17,7 @@ public class PostRepository : IPostRepository
     }
     public async Task<Observation?> GetObservation(int id)
     {
-        return await database.readings.FindAsync(id);
+        return await database.readings.Include(o => o.Author).FirstOrDefaultAsync(o => o.Id == id);
     }
     public async Task<List<Comment>> GetComments(int? observationId)
     {
