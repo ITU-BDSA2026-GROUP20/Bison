@@ -17,7 +17,7 @@ public class PostRepository : IPostRepository
     }
     public async Task<Observation?> GetObservation(int id)
     {
-        return await database.readings.FindAsync(id);
+        return await database.readings.Include(o => o.Author).FirstOrDefaultAsync(o => o.Id == id);
     }
     public async Task<List<Comment>> GetComments(int? observationId)
     {
@@ -56,6 +56,22 @@ public class PostRepository : IPostRepository
     public async Task AddProposal(Proposal proposal)
     {
         database.proposals.Add(proposal);
+        await database.SaveChangesAsync();
+    }
+
+    public async Task AddObservations(IEnumerable<Observation> observations)
+    {
+        database.readings.AddRange(observations);
+        await database.SaveChangesAsync();
+    }
+    public async Task AddComments(IEnumerable<Comment> comments)
+    {
+        database.comments.AddRange(comments);
+        await database.SaveChangesAsync();
+    }
+    public async Task AddProposals(IEnumerable<Proposal> proposals)
+    {
+        database.proposals.AddRange(proposals);
         await database.SaveChangesAsync();
     }
 }

@@ -64,7 +64,8 @@ app.MapGet("/observations", async (int? id, IPostRepository repository) =>   // 
 app.MapGet("/obs", async (IPostRepository repository, int? userId, int page = 1) =>
 {
     var observations = await repository.GetTimelineObservations(userId, page);
-    return observations.Select(r=> new{r.Id, r.AuthorId, AuthorName = r.Author.Name, r.Text, r.TimeStamp}).ToList();
+    return observations.Select(o => new ObservationDTO(
+    o.Id, o.Text, o.AuthorId, o.Author.Name, o.TimeStamp.ToString("yyyy-MM-dd"))).ToList();
 });
 
 //POST
@@ -94,6 +95,13 @@ app.MapPost("/taxon", async (Taxon taxon, Database db) =>
     await db.SaveChangesAsync();
     return Results.Ok(taxon);
 });
+
+app.MapGet("/seed", (Database db) =>
+{
+    DbInitializer.SeedDatabase(db);
+    return Results.Ok();
+});
+
 
 
 

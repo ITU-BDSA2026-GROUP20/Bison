@@ -5,44 +5,17 @@ public class ObservationService : IObservationService
 {
     public List<ObservationDTO> GetObservations(int? page = null)
     {
-        return Client.GetAsync<List<Observation>>("/obs", ("page", page ?? 1)).GetAwaiter().GetResult()?
-        .Select(o => new ObservationDTO(
-            o.Id,
-            o.Text,
-            o.AuthorId,
-            o.Author.Name,
-            o.TimeStamp.ToString("yyyy-MM-dd")))
-        .ToList()
-        ?? new();
+        return Client.GetAsync<List<ObservationDTO>>("/obs", ("page", page ?? 1)).GetAwaiter().GetResult() ?? new();
     }
 
     public List<ObservationDTO> GetObservations(int userId, int? page = null)
     {
-        return Client.GetAsync<List<Observation>>("/obs", ("userId", userId), ("page", page ?? 1)).GetAwaiter().GetResult()?
-        .Select(o => new ObservationDTO(
-            o.Id,
-            o.Text,
-            o.AuthorId,
-            o.Author.Name,
-            o.TimeStamp.ToString("yyyy-MM-dd")))
-        .ToList()
-        ?? new();
+        return Client.GetAsync<List<ObservationDTO>>("/obs", ("userId", userId), ("page", page ?? 1)).GetAwaiter().GetResult() ?? new();
     }
 
     public ObservationDTO? GetObservation(int? id)
     {
-        Observation? o = Client.GetAsync<Observation>("/observations", ("id", id)).GetAwaiter().GetResult();
-
-        if (o is null)
-        return null;
-
-        return new ObservationDTO(
-            o.Id,
-            o.Text,
-            o.AuthorId,
-            o.Author.Name,
-            o.TimeStamp.ToString("yyyy-MM-dd")
-        );
+        return Client.GetAsync<ObservationDTO>("/observations", ("id", id)).GetAwaiter().GetResult();
     }
     public List<CommentDTO> GetComments(int id)
     {

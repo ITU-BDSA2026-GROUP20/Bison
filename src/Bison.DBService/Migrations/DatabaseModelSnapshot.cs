@@ -69,13 +69,17 @@ namespace Bison.DBService.Migrations
 
             modelBuilder.Entity("Bison.Core.models.Taxon", b =>
                 {
-                    b.Property<string>("TaxonId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TaxonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("ParentTaxonId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("ParentTaxonId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("VernacularName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("dwc_TaxonID")
                         .HasColumnType("TEXT");
 
                     b.HasKey("TaxonId");
@@ -101,8 +105,8 @@ namespace Bison.DBService.Migrations
                 {
                     b.HasBaseType("Bison.Core.models.Post");
 
-                    b.Property<string>("TaxonId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("TaxonId")
+                        .HasColumnType("INTEGER");
 
                     b.HasIndex("TaxonId");
 
@@ -116,9 +120,8 @@ namespace Bison.DBService.Migrations
                     b.Property<int>("ObservationId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("TaxonId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TaxonId")
+                        .HasColumnType("INTEGER");
 
                     b.HasIndex("ObservationId");
 
