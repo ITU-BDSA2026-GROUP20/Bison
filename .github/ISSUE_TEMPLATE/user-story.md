@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ## User story
-As a **<user type>**, I want to **<task>** so that **<goal>**.
+As a <user type>, I want to <task> so that <goal>.
 
 ## Who
 <!-- Which kind of user is this for? -->
