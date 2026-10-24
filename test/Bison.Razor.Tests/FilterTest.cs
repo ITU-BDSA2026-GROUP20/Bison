@@ -1,14 +1,17 @@
 using Bison.Core.models;
 
 namespace Bison.Razor.Tests;
-
+/*
+When the filter service has been implemented in MyChat.Razor service, we need to refactor the test.
+This is bare minimum test to ensure that the IsSubTaxonOf method works as expected.
+    */
 public class FilterTest
 {
     private static readonly Taxon Animal = new() { TaxonId = 1, VernacularName = "Animal" };
     private static readonly Taxon Tiger  = new() { TaxonId = 2, VernacularName = "Tiger", Parent = Animal };
     private static readonly Taxon Cat    = new() { TaxonId = 3, VernacularName = "Cat",   Parent = Tiger };
     private static readonly Taxon Bird   = new() { TaxonId = 4, VernacularName = "Bird",  Parent = Animal };
-    
+
     [Fact]
     public void TaxonIsSubTaxonOfItself()
     {
