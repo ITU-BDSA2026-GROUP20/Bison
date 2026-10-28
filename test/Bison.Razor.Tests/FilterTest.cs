@@ -8,8 +8,8 @@ This is bare minimum test to ensure that the IsSubTaxonOf method works as expect
 public class FilterTest
 {
     private static readonly Taxon Animal = new() { TaxonId = 1, VernacularName = "Animal" };
-    private static readonly Taxon Tiger  = new() { TaxonId = 2, VernacularName = "Tiger", Parent = Animal };
-    private static readonly Taxon Cat    = new() { TaxonId = 3, VernacularName = "Cat",   Parent = Tiger };
+    private static readonly Taxon Tiger  = new() { TaxonId = 2, VernacularName = "Tiger", Parent = Cat };
+    private static readonly Taxon Cat    = new() { TaxonId = 3, VernacularName = "Cat",   Parent = Animal };
     private static readonly Taxon Bird   = new() { TaxonId = 4, VernacularName = "Bird",  Parent = Animal };
 
     [Fact]
@@ -21,7 +21,7 @@ public class FilterTest
     [Fact]
     public void TaxonIsSubTaxonOfParent()
     {
-        Assert.True(Cat.IsSubTaxonOf(Tiger));
+        Assert.True(Tiger.IsSubTaxonOf(Cat));
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class FilterTest
     [Fact]
     public void ParentIsNotSubTaxonOfChild()
     {
-        Assert.False(Tiger.IsSubTaxonOf(Cat));
+        Assert.False(Cat.IsSubTaxonOf(Tiger));
     }
 
     [Fact]
