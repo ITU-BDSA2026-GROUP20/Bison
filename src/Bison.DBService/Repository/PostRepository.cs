@@ -13,7 +13,10 @@ public class PostRepository : IPostRepository
     
     public async Task<List<Observation>> GetObservations()
     {
-        return await database.readings.ToListAsync();
+        await database.taxons.ToListAsync();
+        return await database.readings
+        .Include(o => o.Taxon)
+        .ToListAsync();
     }
     public async Task<Observation?> GetObservation(int id)
     {
@@ -33,10 +36,20 @@ public class PostRepository : IPostRepository
 
         return await database.proposals.Where(p=> p.ObservationId == observationId).ToListAsync();
     }
+    public async Task<List<Taxon>> GetTaxons()
+    {
+        return await database.taxons.OrderBy(t => t.VernacularName).ToListAsync();
+    }
+    public async Task<Taxon?> GetTaxon(int id)
+    {
+        return await database.taxons.FirstOrDefaultAsync(t => t.TaxonId == id);
+    }
    
     public async Task<List<Observation>> GetTimelineObservations(int? userId, int page)
     {
-        IQueryable<Observation> query = database.readings.Include(o=> o.Author);
+        IQueryable<Observation> query = database.readings
+        .Include(o=> o.Author)
+        .Include(o=> o.Taxon);
         
         if(userId is not null) query = query.Where(o=> o.AuthorId == userId.Value); 
 

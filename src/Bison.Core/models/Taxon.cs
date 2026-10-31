@@ -13,11 +13,11 @@ public class Taxon
         var current = this;
         while(current != null)
         {
-            if(current == other) return true;
+            if(current.TaxonId == other.TaxonId) return true;
             current = current.Parent;
         }
         return false;
     }
-    //function {:extern} IsSubtaxon(other: Taxon): bool
+    //function {:extern} {:axiom} IsSubtaxonOf(other: Taxon): bool
     
 }

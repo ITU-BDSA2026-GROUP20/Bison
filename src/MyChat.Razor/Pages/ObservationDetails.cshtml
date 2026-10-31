@@ -19,19 +19,23 @@
             </p>
 
             @* Display the proposals and comments *@
+            <p>Proposals:</p>
             @if (!Model.Proposals.Any())
             {
                 <em>There are no Proposals so far.</em>
             } else
             {
                 @foreach (var ob in Model.Proposals)
-                {
+                {   
+                    if (ob.TaxonName is null)
+                        continue;
                     <p>
                     @ob.TaxonName
                     <small>&mdash; @ob.TimeStamp</small>
                     </p>
                 }
             }
+            <p>Comments:</p>
             @if (!Model.Comments.Any())
             {
                 <em>There are no Comments so far.</em>

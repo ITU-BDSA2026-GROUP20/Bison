@@ -50,7 +50,22 @@ app.MapGet("/proposals", async (int? id, IPostRepository repository) =>
     return Results.Ok(proposals);
 });
 
-app.MapGet("/taxons", async (Database db) => await db.taxons.ToListAsync());
+app.MapGet("/taxons", async (IPostRepository repository) => 
+{
+    var taxons = await repository.GetTaxons();
+    return Results.Ok(taxons);
+});
+app.MapGet("/taxon", async (int id, IPostRepository repository) => 
+{
+    var taxon = await repository.GetTaxon(id);
+    return taxon is null ? Results.NotFound() : Results.Ok(taxon);
+});
+
+app.MapGet("/observationEntitiy", async (IPostRepository repository) =>
+{
+    var obsEntities = await repository.GetObservations();
+    return Results.Ok(obsEntities);
+});
 
 app.MapGet("/observations", async (int? id, IPostRepository repository) =>   // CHANGED
 {
@@ -65,7 +80,7 @@ app.MapGet("/obs", async (IPostRepository repository, int? userId, int page = 1)
 {
     var observations = await repository.GetTimelineObservations(userId, page);
     return observations.Select(o => new ObservationDTO(
-    o.Id, o.Text, o.AuthorId, o.Author.Name, o.TimeStamp.ToString("yyyy-MM-dd"))).ToList();
+    o.Id, o.Text, o.AuthorId, o.Author.Name, o.TimeStamp.ToString("yyyy-MM-dd"), o.TaxonId, o.Taxon?.VernacularName)).ToList();
 });
 
 //POST
