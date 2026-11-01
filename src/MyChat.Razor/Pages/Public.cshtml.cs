@@ -26,6 +26,9 @@ public class PublicModel : PageModel
         if (TaxonFilter is int id)
         {
             var root = service.GetTaxon(TaxonFilter.Value);
+            if (root is null)
+                return Redirect("/");
+
             var raw = service.GetObservationEntities();
             
             var entities = service.GetObservationEntities().Where(e => e.Taxon is not null).ToArray();
