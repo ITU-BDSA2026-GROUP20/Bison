@@ -13,6 +13,10 @@ env:
 jobs:
   dafny:
     runs-on: ubuntu-latest
+
+    env:
+      DAFNY_FILE: src/Bison.Core/dafny/Taxonomy.dfy
+
     steps:
       - uses: actions/checkout@v3
 
@@ -30,8 +34,8 @@ jobs:
           unzip -q z3.zip -d "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/z3-${Z3_VERSION}-x64-glibc-2.35/bin" >> "$GITHUB_PATH"
 
-      - name: Verify Dafny code
-        run: dotnet dafny verify "$DAFNY_FILE"
+      - name: Verify Dafny
+        run: dafny verify "$DAFNY_FILE"
 
       - name: Generate C# from Dafny
         run: dotnet dafny translate cs --include-runtime --no-verify "$DAFNY_FILE" --output "$GENERATED_FILE"
