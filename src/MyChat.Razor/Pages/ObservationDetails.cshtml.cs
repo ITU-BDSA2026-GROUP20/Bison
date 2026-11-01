@@ -21,13 +21,13 @@ public class ObservationDetailsModel : PageModel
     public ActionResult OnGet(int? id)
     {
         if (id is null || id < 0)
-            return Redirect("/obs");
+            return Redirect("/");
 
         Observation = service.GetObservation(id);
         
         // Invalid observation id, redirect to the list of observations
         if (Observation is null)
-            return Redirect("/obs");
+            return Redirect("/");
  
         Id = id;
         Proposals = service.GetProposals(id.Value); 

@@ -4,8 +4,30 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
 jobs:
+  dafny:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dafny-lang/setup-dafny-action@v1
+        with:
+          dafny-version: "4.11.0"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore .NET tools (Dafny)
+        run: dotnet tool restore
+
+      - name: Verify Dafny code
+        run: dafny verify "src/Bison.Core/dafny/Taxonomy.dfy"
+
   build:
+    needs: dafny
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -26,12 +48,14 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
         working-directory: ./src/${{ matrix.project }}
+
   test:
+    needs: dafny
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        project: [ ]
+        project: [ Bison.Razor.Tests ]
     steps:
       - uses: actions/checkout@v3
 

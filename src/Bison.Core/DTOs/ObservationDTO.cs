@@ -4,5 +4,7 @@ public record ObservationDTO(
     string Text,
     int AuthorId,
     string AuthorName,
-    string TimeStamp
+    string TimeStamp,
+    int? TaxonId,
+    string TaxonName
 );

@@ -7,7 +7,15 @@
 
 <div>
     <h2> Public Timeline </h2>
-
+    <form method="get">
+        <select name="taxon", style="max-width: 200px; width: 100%;", onchange="this.form.submit()">
+            <option value=""selected="@(Model.TaxonFilter == null)">No taxon filter</option>
+            @foreach (var taxs in Model.UniTaxons)
+            {
+                <option value="@taxs.Id" selected="@(taxs.Id == Model.TaxonFilter)">@taxs.VernacularName</option>
+            }
+        </select>
+    </form>
     @if (Model.Observations.Any())
     {
         <ul id="messagelist" class="observations">
@@ -20,6 +28,9 @@
                         </strong>
                         @obs.Text
                         <small>&mdash; @obs.TimeStamp</small>
+                    </p>
+                    <p>
+                        <small>&mdash; @obs.TaxonName</small>
                     </p>
                 </li>
             }
