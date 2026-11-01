@@ -24,7 +24,7 @@ jobs:
         run: dotnet tool restore
 
       - name: Verify Dafny code
-        run: dafny verify "$DAFNY_FILE"
+        run: dafny verify "src/Bison.Core/dafny/Taxonomy.dfy"
 
   build:
     needs: dafny
