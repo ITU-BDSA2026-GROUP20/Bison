@@ -5,11 +5,6 @@ on:
   pull_request:
     branches: [ main ]
 
-env:
-  DAFNY_FILE: src/Bison.Core/dafny/Taxonomy.dfy
-  GENERATED_FILE: src/Bison.Core/Generated.cs
-  Z3_VERSION: 4.12.1
-
 jobs:
   dafny:
     runs-on: ubuntu-latest
@@ -28,23 +23,8 @@ jobs:
       - name: Restore .NET tools (Dafny)
         run: dotnet tool restore
 
-      - name: Install Z3
-        run: |
-          curl -sSL -o z3.zip "https://github.com/Z3Prover/z3/releases/download/z3-${Z3_VERSION}/z3-${Z3_VERSION}-x64-glibc-2.35.zip"
-          unzip -q z3.zip -d "$RUNNER_TEMP"
-          echo "$RUNNER_TEMP/z3-${Z3_VERSION}-x64-glibc-2.35/bin" >> "$GITHUB_PATH"
-
       - name: Verify Dafny code
         run: dafny verify "$DAFNY_FILE"
-
-      - name: Generate C# from Dafny
-        run: dafny translate cs --include-runtime --no-verify "$DAFNY_FILE" --output "$GENERATED_FILE"
-
-      - name: Upload generated C#
-        uses: actions/upload-artifact@v4
-        with:
-          name: dafny-generated
-          path: ${{ env.GENERATED_FILE }}
 
   build:
     needs: dafny
@@ -55,12 +35,6 @@ jobs:
         project: [ MyChat.Razor, Bison.Core, Bison.DBService ]
     steps:
       - uses: actions/checkout@v3
-
-      - name: Download generated C#
-        uses: actions/download-artifact@v4
-        with:
-          name: dafny-generated
-          path: src/Bison.Core
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -84,12 +58,6 @@ jobs:
         project: [ Bison.Razor.Tests ]
     steps:
       - uses: actions/checkout@v3
-
-      - name: Download generated C#
-        uses: actions/download-artifact@v4
-        with:
-          name: dafny-generated
-          path: src/Bison.Core
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3

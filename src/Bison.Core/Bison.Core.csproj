@@ -12,8 +12,5 @@
   <ItemGroup>
     <PackageReference Include="DafnyRuntime" Version="4.11.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="dafny/Generated.cs" />
-  </ItemGroup>
 
 </Project>
