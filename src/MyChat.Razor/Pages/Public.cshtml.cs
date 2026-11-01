@@ -36,7 +36,7 @@ public class PublicModel : PageModel
             Observations = all.Where(d => kept.Contains(d.Id)).ToList();
         }
         else 
-            Observations = all;
+            Observations = service.GetObservations();
 
         return Page();
     }

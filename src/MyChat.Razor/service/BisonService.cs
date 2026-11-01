@@ -5,11 +5,21 @@ public class ObservationService : IObservationService
 {
     public List<Observation> GetObservationEntities()
     {
-        return Client.GetAsync<List<Observation>>("/observationEntitiy").GetAwaiter().GetResult() ?? new();
+        return Client.GetAsync<List<Observation>>("/allobs").GetAwaiter().GetResult() ?? new();
     }
     public List<ObservationDTO> GetAllObservations()
     {
-        return Client.GetAsync<List<ObservationDTO>>("/obs").GetAwaiter().GetResult() ?? new();
+        return Client.GetAsync<List<Observation>>("/allobs").GetAwaiter().GetResult()?
+        .Select(o => new ObservationDTO(
+            o.Id, 
+            o.Text, 
+            o.AuthorId, 
+            o.Author.Name, 
+            o.TimeStamp.ToString("yyyy-MM-dd"), 
+            o.TaxonId, 
+            o.Taxon?.VernacularName))
+        .ToList() 
+        ?? new();
     }
     public List<ObservationDTO> GetObservations(int? page = null)
     {

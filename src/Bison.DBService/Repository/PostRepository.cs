@@ -15,7 +15,8 @@ public class PostRepository : IPostRepository
     {
         await database.taxons.ToListAsync();
         return await database.readings
-        .Include(o => o.Taxon)
+        .Include(o=> o.Author)
+        .Include(o=> o.Taxon)
         .ToListAsync();
     }
     public async Task<Observation?> GetObservation(int id)
