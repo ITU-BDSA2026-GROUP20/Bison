@@ -20,7 +20,7 @@ public class PublicModel : PageModel
 
     public ActionResult OnGet()
     {
-        var all = service.GetObservations();
+        var all = service.GetAllObservations();
         UniTaxons = service.GetUniqueTaxons();
 
         if (TaxonFilter is int id)

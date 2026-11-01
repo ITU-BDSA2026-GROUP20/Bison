@@ -2,6 +2,7 @@ using Bison.Core.models;
 public interface IObservationService
 {
     public List<Observation> GetObservationEntities();
+    public List<ObservationDTO> GetAllObservations();
     public List<ObservationDTO> GetObservations(int? page = null);
     public List<ObservationDTO> GetObservations(int userId, int? page = null);
     public ObservationDTO? GetObservation(int? id = null);

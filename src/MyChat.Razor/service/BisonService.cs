@@ -7,11 +7,14 @@ public class ObservationService : IObservationService
     {
         return Client.GetAsync<List<Observation>>("/observationEntitiy").GetAwaiter().GetResult() ?? new();
     }
+    public List<ObservationDTO> GetAllObservations()
+    {
+        return Client.GetAsync<List<ObservationDTO>>("/obs").GetAwaiter().GetResult() ?? new();
+    }
     public List<ObservationDTO> GetObservations(int? page = null)
     {
         return Client.GetAsync<List<ObservationDTO>>("/obs", ("page", page ?? 1)).GetAwaiter().GetResult() ?? new();
     }
-
     public List<ObservationDTO> GetObservations(int userId, int? page = null)
     {
         return Client.GetAsync<List<ObservationDTO>>("/obs", ("userId", userId), ("page", page ?? 1)).GetAwaiter().GetResult() ?? new();

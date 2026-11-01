@@ -61,10 +61,10 @@ app.MapGet("/taxon", async (int id, IPostRepository repository) =>
     return taxon is null ? Results.NotFound() : Results.Ok(taxon);
 });
 
-app.MapGet("/observationEntitiy", async (IPostRepository repository) =>
+app.MapGet("/allobs", async (IPostRepository repository) =>
 {
-    var obsEntities = await repository.GetObservations();
-    return Results.Ok(obsEntities);
+    var allObs = await repository.GetObservations();
+    return Results.Ok(allObs);
 });
 
 app.MapGet("/observations", async (int? id, IPostRepository repository) =>   // CHANGED
