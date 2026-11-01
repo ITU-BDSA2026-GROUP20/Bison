@@ -4,7 +4,6 @@ using Bison.Core.models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Hosting;
 
 namespace Bison.Razor.Tests;
 public class DBServiceFactory : WebApplicationFactory<Program>
@@ -12,14 +11,16 @@ public class DBServiceFactory : WebApplicationFactory<Program>
     private readonly string dbPath =
         Path.Combine(Path.GetTempPath(), $"bison_test_{Guid.NewGuid()}.db");
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-        => builder.UseSetting("BISONDBPATH", dbPath);
-
+    public DBServiceFactory()
+    {
+        Environment.SetEnvironmentVariable("BISONDBPATH", dbPath);
+    }
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
+        Environment.SetEnvironmentVariable("BISONDBPATH", null);
         SqliteConnection.ClearAllPools();
-        if (File.Exists(dbPath)) File.Delete(dbPath);
+        File.Delete(dbPath);
     }
 }
 public class DBServiceApiTests : IClassFixture<DBServiceFactory>
