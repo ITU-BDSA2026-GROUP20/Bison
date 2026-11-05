@@ -1,0 +1,32 @@
+﻿@page "/obs/{userId:int?}"
+@model Bison.Razor.Pages.AuthorTimelineModel
+@{
+    ViewData["Title"] = "Bison";
+    Layout = "Shared/_Layout";
+}
+
+<div>
+    <h2> @Model.AuthorName's Observations </h2>
+
+    @if (Model.Observations.Any())
+    {
+        <ul id="messagelist" class="observations">
+            @foreach (var ob in Model.Observations)
+            {
+                <li>
+                    <p>
+                        <strong>
+                            <a href="/obs/@ob.AuthorId">@ob.AuthorName</a>
+                        </strong>
+                        @ob.Text
+                        <small>&mdash; @ob.TimeStamp</small>
+                    </p>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <em>There are no Observations so far.</em>
+    }
+</div>

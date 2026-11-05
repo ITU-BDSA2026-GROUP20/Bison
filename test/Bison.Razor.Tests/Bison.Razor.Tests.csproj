@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bison.Core\Bison.Core.csproj" />
-    <ProjectReference Include="..\..\src\Bison.DBService\Bison.DBService.csproj" />
+    <ProjectReference Include="..\..\src\Bison.Server\Bison.Server.csproj" />
   </ItemGroup>
 
   <ItemGroup>
