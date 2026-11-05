@@ -6,7 +6,7 @@ namespace Bison.Razor;
 
 public static class Client
 {
-    private const string BaseUrl = "http://localhost:5000/";
+    private const string BaseUrl = "https://bdsagroup20bison.azurewebsites.net/";
 
     public static HttpClient Instance { get; } = BuildClient();
 
