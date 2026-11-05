@@ -4,6 +4,7 @@ using Bison.Core.models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using Bison.Infrastructure;
 
 namespace Bison.Razor.Tests;
 public class DBServiceFactory : WebApplicationFactory<Program>
