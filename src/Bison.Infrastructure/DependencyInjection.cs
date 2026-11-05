@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Bison.Core.Repositories;
+using Bison.Infrastructure.Repositories;
 
 namespace Bison.Infrastructure;
 
@@ -10,7 +12,11 @@ public static class DependencyInjection
         services.AddDbContext<Database>(options =>
             options.UseSqlite(connectionString));
 
-        services.AddScoped<IPostRepository, PostRepository>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<IObservationRepository, ObservationRepository>();
+        services.AddScoped<IProposalRepository, ProposalRepository>();
+        services.AddScoped<ITaxonRepository, TaxonRepository>();
+        
         services.AddScoped<DatabaseInitializer>();
 
         return services;
