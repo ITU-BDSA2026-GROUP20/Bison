@@ -1,8 +1,12 @@
 using Bison.Razor;
+using Microsoft.AspNetCore.Identity;
+using Bison.Infrastructure;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>  
+options.SignIn.RequireConfirmedAccount =true).AddEntityFrameworkStores<Database>();
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IObservationService, ObservationService>();
     
