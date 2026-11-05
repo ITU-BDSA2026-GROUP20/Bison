@@ -1,5 +1,6 @@
 ﻿using Bison.Core.models;
 using Bison.Infrastructure;
+using Bison.Core.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +31,7 @@ using (var scope = app.Services.CreateScope())
 
 // endpoints
 //GET
-app.MapGet("/comments", async (int? id, IPostRepository repository) => 
+app.MapGet("/comments", async (int? id, ICommentRepository repository) => 
 {
     var comments = await repository.GetComments(id);
     return Results.Ok(comments);
