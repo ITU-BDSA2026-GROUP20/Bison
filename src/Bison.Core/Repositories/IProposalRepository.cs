@@ -6,4 +6,5 @@ public interface IProposalRepository
 {
     Task<IReadOnlyList<Proposal>> GetProposals(int? id);
     Task AddProposal(Proposal proposal);
+    Task AddProposals(IEnumerable<Proposal> proposals);
 }

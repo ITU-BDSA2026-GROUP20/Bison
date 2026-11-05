@@ -6,8 +6,9 @@ namespace Bison.Core.Repositories;
 
 public interface IObservationRepository
 {
-    Task<IReadOnlyList<ObservationDTO>> GetAll();
-    Task<ObservationDTO?> GetById(int id);
-    Task<Observation> CreateObservation(Observation observation);
-    Task<IReadOnlyList<ObservationDTO>> GetByPage(int? userId, int page = 1);
+    Task<IReadOnlyList<Observation>> GetObservations();
+    Task<Observation?> GetObservation(int id);
+    Task<Observation> AddObservation(Observation observation);
+    Task<IReadOnlyList<Observation>> AddObservations(IEnumerable<Observation> observations);
+    Task<IReadOnlyList<Observation>> GetTimelineObservations(int? userId, int page = 1);
 }
