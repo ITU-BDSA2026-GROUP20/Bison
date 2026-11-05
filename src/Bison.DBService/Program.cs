@@ -1,9 +1,5 @@
 ﻿using Bison.Core.models;
-using System.Data;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
-
+using Bison.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,10 +14,7 @@ if (!string.IsNullOrEmpty(dir))
     Console.Error.WriteLine("Invalid path given");
 }
 
-builder.Services.AddDbContext<Database>(options =>
-    options.UseSqlite($"Data Source={dbPath}"));
-
-builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddBisonInfrastructure($"Data Source={dbPath}");
 
 builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.ReferenceHandler = 
@@ -29,11 +22,10 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 
 var app = builder.Build();
 
-//Update on startup
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<Database>();
-    db.Database.Migrate();
+    var initializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
+    await initializer.InitializeAsync();
 }
 
 // endpoints
@@ -80,7 +72,7 @@ app.MapGet("/obs", async (IPostRepository repository, int? userId, int page = 1)
 {
     var observations = await repository.GetTimelineObservations(userId, page);
     return observations.Select(o => new ObservationDTO(
-    o.Id, o.Text, o.AuthorId, o.Author.Name, o.TimeStamp.ToString("yyyy-MM-dd"), o.TaxonId, o.Taxon?.VernacularName)).ToList();
+    o.Id, o.Text, o.AuthorId, o.Author.Name, o.TimeStamp.ToString("yyyy-MM-dd"), o.TaxonId, o.Taxon?.VernacularName ?? string.Empty)).ToList();
 });
 
 //POST
@@ -111,14 +103,11 @@ app.MapPost("/taxon", async (Taxon taxon, Database db) =>
     return Results.Ok(taxon);
 });
 
-app.MapGet("/seed", (Database db) =>
+app.MapGet("/seed", async (DatabaseInitializer initializer) =>
 {
-    DbInitializer.SeedDatabase(db);
+    await initializer.InitializeAsync();
     return Results.Ok();
 });
-
-
-
 
 app.Run();
  public partial class Program { }

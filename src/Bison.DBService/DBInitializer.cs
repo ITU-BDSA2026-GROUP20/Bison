@@ -1,10 +1,9 @@
 using System;
 using Bison.Core.models;
 
-
 public static class DbInitializer
 {
-    public static void SeedDatabase(Database bisonContext)
+    public static void SeedDatabase(Bison.Infrastructure.Database bisonContext)
     {
         if (!(bisonContext.users.Any() && bisonContext.readings.Any()))
         {
