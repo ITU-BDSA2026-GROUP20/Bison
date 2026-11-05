@@ -37,30 +37,30 @@ app.MapGet("/comments", async (int? id, ICommentRepository repository) =>
     return Results.Ok(comments);
 });
 
-app.MapGet("/proposals", async (int? id, IPostRepository repository) =>
+app.MapGet("/proposals", async (int? id, IProposalRepository repository) =>
 {
     var proposals = await repository.GetProposals(id);
     return Results.Ok(proposals);
 });
 
-app.MapGet("/taxons", async (IPostRepository repository) => 
+app.MapGet("/taxons", async (ITaxonRepository repository) => 
 {
     var taxons = await repository.GetTaxons();
     return Results.Ok(taxons);
 });
-app.MapGet("/taxon", async (int id, IPostRepository repository) => 
+app.MapGet("/taxon", async (int id, ITaxonRepository repository) => 
 {
     var taxon = await repository.GetTaxon(id);
     return taxon is null ? Results.NotFound() : Results.Ok(taxon);
 });
 
-app.MapGet("/allobs", async (IPostRepository repository) =>
+app.MapGet("/allobs", async (IObservationRepository repository) =>
 {
     var allObs = await repository.GetObservations();
     return Results.Ok(allObs);
 });
 
-app.MapGet("/observations", async (int? id, IPostRepository repository) =>   // CHANGED
+app.MapGet("/observations", async (int? id, IObservationRepository repository) =>   // CHANGED
 {
     if (id is null)
         return Results.Ok(await repository.GetObservations());
@@ -69,7 +69,7 @@ app.MapGet("/observations", async (int? id, IPostRepository repository) =>   // 
     return observation is null ? Results.NotFound() : Results.Ok(observation);
 });
 
-app.MapGet("/obs", async (IPostRepository repository, int? userId, int page = 1) =>
+app.MapGet("/obs", async (IObservationRepository repository, int? userId, int page = 1) =>
 {
     var observations = await repository.GetTimelineObservations(userId, page);
     return observations.Select(o => new ObservationDTO(
@@ -77,21 +77,21 @@ app.MapGet("/obs", async (IPostRepository repository, int? userId, int page = 1)
 });
 
 //POST
-app.MapPost("/proposal", async (Proposal proposal, IPostRepository repository) =>
+app.MapPost("/proposal", async (Proposal proposal, IProposalRepository repository) =>
 {
     await repository.AddProposal(proposal);
     return Results.Ok(proposal); 
 });
 
 
-app.MapPost("/comment", async (Comment comment, IPostRepository repository) =>
+app.MapPost("/comment", async (Comment comment, ICommentRepository repository) =>
 {
     await repository.AddComment(comment);
     return Results.Ok(comment);
 });
 
 
-app.MapPost("/observation", async (Observation observation, IPostRepository repository) =>
+app.MapPost("/observation", async (Observation observation, IObservationRepository repository) =>
 {
     await repository.AddObservation(observation);
     return Results.Ok(observation);
