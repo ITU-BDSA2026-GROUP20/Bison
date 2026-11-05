@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using Bison.Core.models;
 
-namespace MyChat.Razor;
+namespace Bison.Razor;
 
 public static class Client
 {

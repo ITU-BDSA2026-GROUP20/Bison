@@ -2,7 +2,7 @@ using Bison.Core.models;
 
 namespace Bison.Razor.Tests;
 /*
-When the filter service has been implemented in MyChat.Razor service, we need to refactor the test.
+When the filter service has been implemented in Bison.Razor service, we need to refactor the test.
 This is bare minimum test to ensure that the IsSubTaxonOf method works as expected.
     */
 public class FilterTest

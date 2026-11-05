@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Bison.Core.models;
 using System.Runtime.CompilerServices;
 
-namespace MyChat.Razor.Pages;
+namespace Bison.Razor.Pages;
 
 public class ObservationDetailsModel : PageModel
 {
     private readonly IObservationService service;
-    required public ObservationDTO Observation { get; set; }
+    required public ObservationDTO? Observation { get; set; }
     required public List<ProposalDTO> Proposals { get; set; }
     required public List<CommentDTO> Comments { get; set; }
     public int? Id {get; private set;} = null;

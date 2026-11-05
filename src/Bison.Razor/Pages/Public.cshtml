@@ -1,5 +1,5 @@
 ﻿@page "/"
-@model MyChat.Razor.Pages.PublicModel
+@model Bison.Razor.Pages.PublicModel
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
@@ -10,9 +10,12 @@
     <form method="get">
         <select name="taxon", style="max-width: 200px; width: 100%;", onchange="this.form.submit()">
             <option value=""selected="@(Model.TaxonFilter == null)">No taxon filter</option>
-            @foreach (var taxs in Model.UniTaxons)
+            @if (Model.UniTaxons != null)
             {
-                <option value="@taxs.Id" selected="@(taxs.Id == Model.TaxonFilter)">@taxs.VernacularName</option>
+                @foreach (var taxs in Model.UniTaxons)
+                {
+                    <option value="@taxs.Id" selected="@(taxs.Id == Model.TaxonFilter)">@taxs.VernacularName</option>
+                }
             }
         </select>
     </form>

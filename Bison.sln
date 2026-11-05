@@ -5,9 +5,9 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{44046B11-6237-4AF5-905D-2174E695FDE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChat.Razor", "src\MyChat.Razor\MyChat.Razor.csproj", "{6FFBE665-07CA-466F-97EF-68BC5584AC14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bison.Razor", "src\Bison.Razor\Bison.Razor.csproj", "{6FFBE665-07CA-466F-97EF-68BC5584AC14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bison.DBService", "src\Bison.DBService\Bison.DBService.csproj", "{E589DFE9-24B6-44B9-950D-1AAD18FA10F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bison.Server", "src\Bison.Server\Bison.Server.csproj", "{E589DFE9-24B6-44B9-950D-1AAD18FA10F0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bison.Core", "src\Bison.Core\Bison.Core.csproj", "{23DFF719-1CDA-41D3-BE08-4047A5F651C9}"
 EndProject
@@ -21,9 +21,6 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6FFBE665-07CA-466F-97EF-68BC5584AC14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -46,6 +43,9 @@ Global
 		{98C006D3-F369-408B-9F1A-5E3A57396776}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98C006D3-F369-408B-9F1A-5E3A57396776}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98C006D3-F369-408B-9F1A-5E3A57396776}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6FFBE665-07CA-466F-97EF-68BC5584AC14} = {44046B11-6237-4AF5-905D-2174E695FDE3}

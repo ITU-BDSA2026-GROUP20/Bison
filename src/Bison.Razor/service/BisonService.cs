@@ -1,5 +1,5 @@
 using Bison.Core.models;
-using MyChat.Razor;
+using Bison.Razor;
 
 public class ObservationService : IObservationService
 {
@@ -65,8 +65,9 @@ public class ObservationService : IObservationService
         .ToList()
         ?? new();
     }
+    
     public Taxon GetTaxon(int id)
     {
-        return Client.GetAsync<Taxon>("/taxon", ("id", id)).GetAwaiter().GetResult();
+        return Client.GetAsync<Taxon>("/taxon", ("id", id)).GetAwaiter().GetResult() ?? new Taxon();
     }
 }

@@ -1,5 +1,5 @@
 @page "/ob/{id?}"
-@model MyChat.Razor.Pages.ObservationDetailsModel
+@model Bison.Razor.Pages.ObservationDetailsModel
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
@@ -8,15 +8,18 @@
     <h2> Observation details </h2>
     <ul id="messagelist" class="observations">
         <li>
-            <p>
-                @* Display the observation *@
-                <strong>
-                    <a href="/ob/@Model.Observation.Id">@Model.Observation.Id</a>
-                </strong>
-                @Model.Observation.AuthorName
-                @Model.Observation.Text
-                <small>&mdash; @Model.Observation.TimeStamp</small>
-            </p>
+            @if (Model.Observation != null)
+            {
+                <p>
+                    @* Display the observation *@
+                    <strong>
+                        <a href="/ob/@Model.Observation.Id">@Model.Observation.Id</a>
+                    </strong>
+                    @Model.Observation.AuthorName
+                    @Model.Observation.Text
+                    <small>&mdash; @Model.Observation.TimeStamp</small>
+                </p>
+            }
 
             @* Display the proposals and comments *@
             <p>Proposals:</p>

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Bison.Core.models;
 
-namespace MyChat.Razor.Pages;
+namespace Bison.Razor.Pages;
 
 public class AuthorTimelineModel : PageModel
 {

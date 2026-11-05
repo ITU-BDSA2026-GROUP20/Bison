@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Bison.Core.models;
 
-namespace MyChat.Razor.Pages;
+namespace Bison.Razor.Pages;
 
 public class PublicModel : PageModel
 {
     private readonly IObservationService service;
     required public List<ObservationDTO> Observations { get; set; }
-    public List<TaxonDTO> UniTaxons { get; set; }
+    public List<TaxonDTO>? UniTaxons { get; set; }
     
     [BindProperty(SupportsGet = true, Name = "taxon")]
     public int? TaxonFilter { get; set; }
@@ -34,7 +34,7 @@ public class PublicModel : PageModel
             var entities = service.GetObservationEntities().Where(e => e.Taxon is not null).ToArray();
 
             var seq = Dafny.Sequence<Observation>.FromArray(entities);
-            var kept = Bison.Core.dafny.Taxonomy.__default.FilterByTaxon(root, seq).Elements.Select(o => o.Id).ToHashSet();
+            var kept = Bison.Core.dafny.Taxonomy.__default.FilterByTaxon(root, seq).CloneAsArray().Select(o => o.Id).ToHashSet();
 
             Observations = all.Where(d => kept.Contains(d.Id)).ToList();
         }

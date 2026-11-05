@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [ MyChat.Razor, Bison.Core, Bison.DBService ]
+        project: [ Bison.Razor, Bison.Core, Bison.Server ]
     steps:
       - uses: actions/checkout@v3
 

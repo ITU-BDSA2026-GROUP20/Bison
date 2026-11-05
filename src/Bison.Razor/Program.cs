@@ -1,4 +1,4 @@
-using MyChat.Razor;
+using Bison.Razor;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
