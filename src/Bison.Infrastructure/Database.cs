@@ -1,9 +1,10 @@
 using Bison.Core.models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Bison.Infrastructure
 {
-    public sealed class Database : DbContext
+    public sealed class Database : IdentityDbContext<ApplicationUser>
     {
         public Database(DbContextOptions<Database> options) : base(options) {}
 
