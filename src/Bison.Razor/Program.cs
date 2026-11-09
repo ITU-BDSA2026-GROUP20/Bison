@@ -33,19 +33,15 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapRazorPages();
 
 try
 {
     bool response = await Client.InitializeDatabase();
-
 }
-catch (HttpRequestException ex)
+catch (Exception ex)
 {
     app.Logger.LogWarning(ex, "Startup API call failed");
 }
