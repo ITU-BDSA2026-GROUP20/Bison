@@ -21,7 +21,14 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IObservationService, ObservationService>();
 
-ConfigureServices(builder.Services);
+builder.Services.AddAuthentication()
+    .AddGitHub(o =>
+    {
+        o.ClientId     = builder.Configuration["authentication:github:clientId"]!;
+        o.ClientSecret = builder.Configuration["authentication:github:clientSecret"]!;
+        o.CallbackPath = "/signin-github";
+        o.Scope.Add("user:email");
+    });
     
 var app = builder.Build();
 
@@ -33,13 +40,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-Configure(app);
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseAuthorization();
 app.MapRazorPages();
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseSession();
 
 try
 {
@@ -50,23 +58,4 @@ catch (Exception ex)
     app.Logger.LogWarning(ex, "Startup API call failed");
 }
 
-
 app.Run();
-
-
-void ConfigureServices(IServiceCollection services)
-{
-    services.AddAuthentication(options => { /* Authentication options */ })
-            .AddGitHub(options =>
-            {
-                options.ClientId = "49e302895d8b09ea5656";
-                options.ClientSecret = "98f1bf028608901e9df91d64ee61536fe562064b";
-            });
-}
-
-
-void Configure(IApplicationBuilder app)
-{
-    app.UseAuthentication();
-    app.UseAuthorization();
-}
