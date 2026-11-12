@@ -20,6 +20,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 .AddEntityFrameworkStores<Database>();
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IObservationService, ObservationService>();
+
+ConfigureServices(builder.Services);
     
 var app = builder.Build();
 
@@ -30,6 +32,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+Configure(app);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -46,4 +50,23 @@ catch (Exception ex)
     app.Logger.LogWarning(ex, "Startup API call failed");
 }
 
+
 app.Run();
+
+
+void ConfigureServices(IServiceCollection services)
+{
+    services.AddAuthentication(options => { /* Authentication options */ })
+            .AddGitHub(options =>
+            {
+                options.ClientId = "49e302895d8b09ea5656";
+                options.ClientSecret = "98f1bf028608901e9df91d64ee61536fe562064b";
+            });
+}
+
+
+void Configure(IApplicationBuilder app)
+{
+    app.UseAuthentication();
+    app.UseAuthorization();
+}
