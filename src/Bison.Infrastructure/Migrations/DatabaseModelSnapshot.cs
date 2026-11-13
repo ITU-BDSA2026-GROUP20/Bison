@@ -98,6 +98,9 @@ namespace Bison.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("AuthorId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
@@ -143,6 +146,8 @@ namespace Bison.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -350,6 +355,15 @@ namespace Bison.Infrastructure.Migrations
                         .HasForeignKey("ParentTaxonId");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("Bison.Infrastructure.ApplicationUser", b =>
+                {
+                    b.HasOne("Bison.Core.models.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

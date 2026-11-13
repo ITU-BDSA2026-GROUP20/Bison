@@ -5,6 +5,6 @@ namespace Bison.Infrastructure;
 
 public class ApplicationUser : IdentityUser
 {
-    public int? AutherId {get; set;}
-    public Author author {get; set;}
+    public int? AuthorId { get; set; }
+    public Author? Author { get; set; }
 }
