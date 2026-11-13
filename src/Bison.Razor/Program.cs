@@ -11,7 +11,7 @@ builder.Services.AddBisonInfrastructure($"Data Source={dbPath}");
 // Add services to the container.
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>  
 {
-    options.SignIn.RequireConfirmedAccount =true;
+    options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
