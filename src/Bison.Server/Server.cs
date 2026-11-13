@@ -113,7 +113,6 @@ app.MapPost("/observations", async (CreateObservationDTO dto, Database db, IObse
             return Results.BadRequest("Unknown taxon.");
     }
 
-    // Find the author: by the id the user is already linked to, otherwise by email, otherwise create one.
     Author? author = dto.AuthorId is int authorId ? await db.users.FindAsync(authorId) : null;
     author ??= await db.users.FirstOrDefaultAsync(a => a.Email == dto.AuthorEmail);
     if (author is null)
