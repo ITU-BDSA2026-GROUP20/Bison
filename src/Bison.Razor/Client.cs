@@ -38,6 +38,13 @@ public static class Client
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
+    public static async Task<TResponse?> PostAsync<TRequest, TResponse>(string endpoint, TRequest body)
+    {
+        var response = await Instance.PostAsJsonAsync(endpoint, body);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<TResponse>();
+    }
+
     public static async Task<List<Observation>?> GetPostsByAuthor(string endpoint, string author)
     {
         var response = await Instance.GetAsync($"{endpoint}?author={author}");

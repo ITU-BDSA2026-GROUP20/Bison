@@ -1,0 +1,27 @@
+@page "/new"
+@model Bison.Razor.Pages.CreateObservationModel
+@{
+    ViewData["Title"] = "New observation";
+    Layout = "Shared/_Layout";
+}
+
+<div>
+    <h2> New observation </h2>
+    <form method="post">
+        <div asp-validation-summary="ModelOnly"></div>
+        <p>
+            <textarea asp-for="Text" rows="4" maxlength="500" style="width: 100%; max-width: 500px;"></textarea>
+            <span asp-validation-for="Text"></span>
+        </p>
+        <p>
+            <select asp-for="TaxonId" style="max-width: 200px; width: 100%;">
+                <option value="">Unknown taxon</option>
+                @foreach (var taxon in Model.Taxons)
+                {
+                    <option value="@taxon.Id">@taxon.VernacularName</option>
+                }
+            </select>
+        </p>
+        <button type="submit">Post observation</button>
+    </form>
+</div>
