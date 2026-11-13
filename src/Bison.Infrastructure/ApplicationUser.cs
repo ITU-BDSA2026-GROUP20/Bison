@@ -3,4 +3,8 @@ using Bison.Core.models;
 
 namespace Bison.Infrastructure;
 
-public class ApplicationUser : IdentityUser { }
+public class ApplicationUser : IdentityUser
+{
+    public int? AutherId {get; set;}
+    public Author author {get; set;}
+}
