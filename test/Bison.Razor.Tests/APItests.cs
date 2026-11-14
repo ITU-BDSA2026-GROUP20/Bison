@@ -179,4 +179,21 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
 
         Assert.Equal(first!.AuthorId, second!.AuthorId);
     }
+
+    [Fact]
+    public async Task PostObservationsUsesExistingAuthorWhenAuthorIdGiven()
+    {
+        int authorId = await CreateAuthor();
+
+        var dto = new CreateObservationDTO(
+            Text: "A swan",
+            AuthorName: "Ignored Name",
+            AuthorEmail: "ignored@test.dk",
+            AuthorId: authorId);
+        var response = await client.PostAsJsonAsync("/observations", dto);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var created = await response.Content.ReadFromJsonAsync<ObservationDTO>();
+        Assert.Equal(authorId, created!.AuthorId);
+    }
 }
