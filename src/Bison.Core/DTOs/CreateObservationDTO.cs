@@ -5,8 +5,8 @@ namespace Bison.Core.models;
 // the server falls back to finding/creating an Author from AuthorEmail.
 public record CreateObservationDTO(
     string Text,
-    int? TaxonId,
-    int? AuthorId,
     string AuthorName,
-    string AuthorEmail
+    string AuthorEmail,
+    int? TaxonId = null,
+    int? AuthorId = null
 );
