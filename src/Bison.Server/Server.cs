@@ -1,6 +1,7 @@
 ﻿using Bison.Core.models;
 using Bison.Infrastructure;
 using Bison.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,6 +96,43 @@ app.MapPost("/observation", async (Observation observation, IObservationReposito
 {
     await repository.AddObservation(observation);
     return Results.Ok(observation);
+});
+
+app.MapPost("/observations", async (CreateObservationDTO dto, Database db, IObservationRepository repository) =>
+{
+    if (string.IsNullOrWhiteSpace(dto.Text) || dto.Text.Length > 500)
+        return Results.BadRequest("Text is required and must be at most 500 characters.");
+    if (string.IsNullOrWhiteSpace(dto.AuthorEmail) || string.IsNullOrWhiteSpace(dto.AuthorName))
+        return Results.BadRequest("Author name and email are required.");
+
+    Taxon? taxon = null;
+    if (dto.TaxonId is int taxonId)
+    {
+        taxon = await db.taxons.FindAsync(taxonId);
+        if (taxon is null)
+            return Results.BadRequest("Unknown taxon.");
+    }
+
+    Author? author = dto.AuthorId is int authorId ? await db.users.FindAsync(authorId) : null;
+    author ??= await db.users.FirstOrDefaultAsync(a => a.Email == dto.AuthorEmail);
+    if (author is null)
+    {
+        author = new Author { Name = dto.AuthorName, Email = dto.AuthorEmail };
+        db.users.Add(author);
+        await db.SaveChangesAsync();
+    }
+
+    var observation = await repository.AddObservation(new Observation
+    {
+        Text = dto.Text.Trim(),
+        TimeStamp = DateTime.UtcNow,
+        AuthorId = author.Id,
+        TaxonId = taxon?.TaxonId
+    });
+
+    return Results.Ok(new ObservationDTO(
+        observation.Id, observation.Text, author.Id, author.Name,
+        observation.TimeStamp.ToString("yyyy-MM-dd"), taxon?.TaxonId, taxon?.VernacularName));
 });
 
 app.MapPost("/taxon", async (Taxon taxon, Database db) =>

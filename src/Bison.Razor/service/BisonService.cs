@@ -66,6 +66,11 @@ public class ObservationService : IObservationService
         ?? new();
     }
     
+    public Task<ObservationDTO?> AddObservation(CreateObservationDTO dto)
+    {
+        return Client.PostAsync<CreateObservationDTO, ObservationDTO>("/observations", dto);
+    }
+
     public Taxon GetTaxon(int id)
     {
         return Client.GetAsync<Taxon>("/taxon", ("id", id)).GetAwaiter().GetResult() ?? new Taxon();
