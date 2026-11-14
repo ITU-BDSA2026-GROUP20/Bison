@@ -164,4 +164,19 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
         Assert.Single(observations);
         Assert.Equal("example text", observations[0].Text);
     }
+
+    [Fact]
+    public async Task PostObservationsReusesAuthorWithSameEmail()
+    {
+        string email = $"{Guid.NewGuid():N}@test.dk";
+
+        var first = await (await client.PostAsJsonAsync("/observations",
+            new CreateObservationDTO("First sighting", "Same Person", email)))
+            .Content.ReadFromJsonAsync<ObservationDTO>();
+        var second = await (await client.PostAsJsonAsync("/observations",
+            new CreateObservationDTO("Second sighting", "Same Person", email)))
+            .Content.ReadFromJsonAsync<ObservationDTO>();
+
+        Assert.Equal(first!.AuthorId, second!.AuthorId);
+    }
 }
