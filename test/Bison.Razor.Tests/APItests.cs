@@ -45,6 +45,7 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
         return author.Id;
     }
 
+
     private async Task PostObservation(int authorId, string text, string timestamp = "1700000000")
     {
         var observation = new Observation
@@ -128,5 +129,71 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
         Assert.Equal(
             withPage.Select(o => o.Text),
             withoutPage.Select(o => o.Text));
+    }
+
+    [Fact]
+    public async Task PostObservationsWithValidDtoReturnsObservation()
+    {
+        var dto = new CreateObservationDTO(
+            Text: "Example",
+            AuthorName: "exampleAuthor",
+            AuthorEmail: $"{Guid.NewGuid():N}@test.dk");
+
+        var response = await client.PostAsJsonAsync("/observations", dto);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var created = await response.Content.ReadFromJsonAsync<ObservationDTO>();
+        Assert.NotNull(created);
+        Assert.Equal("Example", created.Text);
+        Assert.Equal("exampleAuthor", created.AuthorName);
+        Assert.Null(created.TaxonId);
+    }
+
+    [Fact]
+    public async Task PostObservationsCreatesAuthorAndShowsUpInTimeline()
+    {
+        var dto = new CreateObservationDTO(
+            Text: "example text",
+            AuthorName: "Woody",
+            AuthorEmail: $"{Guid.NewGuid():N}@test.dk");
+
+        var response = await client.PostAsJsonAsync("/observations", dto);
+        var created = await response.Content.ReadFromJsonAsync<ObservationDTO>();
+
+        var observations = await GetObs($"/obs?userId={created!.AuthorId}");
+        Assert.Single(observations);
+        Assert.Equal("example text", observations[0].Text);
+    }
+
+    [Fact]
+    public async Task PostObservationsReusesAuthorWithSameEmail()
+    {
+        string email = $"{Guid.NewGuid():N}@test.dk";
+
+        var first = await (await client.PostAsJsonAsync("/observations",
+            new CreateObservationDTO("First sighting", "Same Person", email)))
+            .Content.ReadFromJsonAsync<ObservationDTO>();
+        var second = await (await client.PostAsJsonAsync("/observations",
+            new CreateObservationDTO("Second sighting", "Same Person", email)))
+            .Content.ReadFromJsonAsync<ObservationDTO>();
+
+        Assert.Equal(first!.AuthorId, second!.AuthorId);
+    }
+
+    [Fact]
+    public async Task PostObservationsUsesExistingAuthorWhenAuthorIdGiven()
+    {
+        int authorId = await CreateAuthor();
+
+        var dto = new CreateObservationDTO(
+            Text: "A swan",
+            AuthorName: "Ignored Name",
+            AuthorEmail: "ignored@test.dk",
+            AuthorId: authorId);
+        var response = await client.PostAsJsonAsync("/observations", dto);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var created = await response.Content.ReadFromJsonAsync<ObservationDTO>();
+        Assert.Equal(authorId, created!.AuthorId);
     }
 }

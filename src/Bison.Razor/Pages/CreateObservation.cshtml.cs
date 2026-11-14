@@ -44,10 +44,10 @@ public class CreateObservationModel : PageModel
         // Author by email, and we remember its id on the user for next time.
         var dto = new CreateObservationDTO(
             Text,
-            TaxonId,
-            user.AuthorId,
             user.UserName ?? user.Email ?? user.Id,
-            user.Email ?? user.UserName ?? user.Id);
+            user.Email ?? user.UserName ?? user.Id,
+            TaxonId,
+            user.AuthorId);
 
         ObservationDTO? created;
         try
