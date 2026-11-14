@@ -21,6 +21,13 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IObservationService, ObservationService>();
 
+Console.WriteLine(
+    $"ClientId = '{builder.Configuration["authentication:github:clientId"]}'");
+
+Console.WriteLine(
+    $"ClientSecret exists = {!string.IsNullOrEmpty(
+        builder.Configuration["authentication:github:clientSecret"])}");
+
 builder.Services.AddAuthentication()
     .AddGitHub(o =>
     {
