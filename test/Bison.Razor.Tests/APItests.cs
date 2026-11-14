@@ -148,4 +148,20 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
         Assert.Equal("exampleAuthor", created.AuthorName);
         Assert.Null(created.TaxonId);
     }
+
+    [Fact]
+    public async Task PostObservationsCreatesAuthorAndShowsUpInTimeline()
+    {
+        var dto = new CreateObservationDTO(
+            Text: "example text",
+            AuthorName: "Woody",
+            AuthorEmail: $"{Guid.NewGuid():N}@test.dk");
+
+        var response = await client.PostAsJsonAsync("/observations", dto);
+        var created = await response.Content.ReadFromJsonAsync<ObservationDTO>();
+
+        var observations = await GetObs($"/obs?userId={created!.AuthorId}");
+        Assert.Single(observations);
+        Assert.Equal("example text", observations[0].Text);
+    }
 }
