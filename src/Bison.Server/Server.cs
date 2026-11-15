@@ -159,5 +159,10 @@ app.MapGet("/seed", async (DatabaseInitializer initializer) =>
     return Results.Ok();
 });
 Console.WriteLine("[Debug] Starting the application...");
-app.Run();
+try {
+    app.Run();
+} catch (Exception ex) {
+    Console.WriteLine("[Error] Exception occurred while running the application: " + ex.Message);
+    throw;
+}
  public partial class Program { }
