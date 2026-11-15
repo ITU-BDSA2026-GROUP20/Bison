@@ -103,14 +103,14 @@ app.MapPost("/observation", async (Observation observation, IObservationReposito
     await repository.AddObservation(observation);
     return Results.Ok(observation);
 });
-
+Console.WriteLine("[Debug] Preparing to mapPost /observations endpoint...");
 app.MapPost("/observations", async (CreateObservationDTO dto, Database db, IObservationRepository repository) =>
 {
     if (string.IsNullOrWhiteSpace(dto.Text) || dto.Text.Length > 500)
         return Results.BadRequest("Text is required and must be at most 500 characters.");
     if (string.IsNullOrWhiteSpace(dto.AuthorEmail) || string.IsNullOrWhiteSpace(dto.AuthorName))
         return Results.BadRequest("Author name and email are required.");
-
+    Console.WriteLine("[Debug] CreateObservationDTO received.");
     Taxon? taxon = null;
     if (dto.TaxonId is int taxonId)
     {
@@ -118,15 +118,18 @@ app.MapPost("/observations", async (CreateObservationDTO dto, Database db, IObse
         if (taxon is null)
             return Results.BadRequest("Unknown taxon.");
     }
+    Console.WriteLine("[Debug] Taxon found.");
 
     Author? author = dto.AuthorId is int authorId ? await db.users.FindAsync(authorId) : null;
     author ??= await db.users.FirstOrDefaultAsync(a => a.Email == dto.AuthorEmail);
+    Console.WriteLine("[Debug] Author found or not: " + (author is null ? "null" : author.Name));
     if (author is null)
     {
         author = new Author { Name = dto.AuthorName, Email = dto.AuthorEmail };
         db.users.Add(author);
         await db.SaveChangesAsync();
     }
+    Console.WriteLine("[Debug] Author ensured in database: " + author.Name);
 
     var observation = await repository.AddObservation(new Observation
     {
@@ -135,11 +138,13 @@ app.MapPost("/observations", async (CreateObservationDTO dto, Database db, IObse
         AuthorId = author.Id,
         TaxonId = taxon?.TaxonId
     });
+    Console.WriteLine("[Debug] Observation added with ID: " + observation.Id);
 
     return Results.Ok(new ObservationDTO(
         observation.Id, observation.Text, author.Id, author.Name,
         observation.TimeStamp.ToString("yyyy-MM-dd"), taxon?.TaxonId, taxon?.VernacularName));
 });
+Console.WriteLine("[Debug] Mapped /observations endpoint successfully.");
 
 app.MapPost("/taxon", async (Taxon taxon, Database db) =>
 {
@@ -153,6 +158,6 @@ app.MapGet("/seed", async (DatabaseInitializer initializer) =>
     await initializer.InitializeAsync();
     return Results.Ok();
 });
-
+Console.WriteLine("[Debug] Starting the application...");
 app.Run();
  public partial class Program { }
