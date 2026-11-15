@@ -6,29 +6,35 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 string dbPath = Environment.GetEnvironmentVariable("BISONDBPATH") ?? Path.Combine(Path.GetTempPath(), "bison.db");
-
+Console.WriteLine("DB Path: " + dbPath);
 var dir = Path.GetDirectoryName(dbPath);
+Console.WriteLine("Directory name: " + dir);
 if (!string.IsNullOrEmpty(dir))
 {
     Directory.CreateDirectory(dir);
+    Console.WriteLine("Directory Created");
 } else
 {
     Console.Error.WriteLine("Invalid path given");
 }
 
 builder.Services.AddBisonInfrastructure($"Data Source={dbPath}");
-
+Console.WriteLine("Bison Infrastructure given");
 builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.ReferenceHandler = 
         System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
-
+Console.WriteLine("Pre build check");
 var app = builder.Build();
+Console.WriteLine("Post build check");
 
 using (var scope = app.Services.CreateScope())
 {
+    Console.WriteLine("Scope loops");
     var initializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
+    Console.WriteLine("Pre initialize");
     await initializer.InitializeAsync();
 }
+Console.WriteLine("Post Scope");
 
 // endpoints
 //GET
