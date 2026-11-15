@@ -1,6 +1,7 @@
 using Bison.Razor;
 using Microsoft.AspNetCore.Identity;
 using Bison.Infrastructure;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string dbPath = Environment.GetEnvironmentVariable("BISONDBPATH")
@@ -21,21 +22,29 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IObservationService, ObservationService>();
 
-Console.WriteLine(
-    $"ClientId = '{builder.Configuration["authentication:github:clientId"]}'");
+var githubClientId     = builder.Configuration["github:clientid"];
+var githubClientSecret = builder.Configuration["github:clientsecret"];
+var githubConfigured = !string.IsNullOrWhiteSpace(githubClientId)
+    && !string.IsNullOrWhiteSpace(githubClientSecret);
 
-Console.WriteLine(
-    $"ClientSecret exists = {!string.IsNullOrEmpty(
-        builder.Configuration["authentication:github:clientSecret"])}");
+Console.WriteLine($"ClientId = {githubClientId}");
+Console.WriteLine($"ClientSecret = {githubClientSecret}");
 
-builder.Services.AddAuthentication()
-    .AddGitHub(o =>
-    {
-        o.ClientId     = builder.Configuration["authentication:github:clientId"]!;
-        o.ClientSecret = builder.Configuration["authentication:github:clientSecret"]!;
-        o.CallbackPath = "/signin-github";
-        o.Scope.Add("user:email");
-    });
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    if (githubConfigured)
+        options.DefaultChallengeScheme = "GitHub";
+})
+.AddCookie()
+.AddGitHub(o =>
+{
+    o.ClientId     = githubClientId!;
+    o.ClientSecret = githubClientSecret!;
+    o.CallbackPath = "/signin-github";
+    o.Scope.Add("user:email");
+});
     
 var app = builder.Build();
 
