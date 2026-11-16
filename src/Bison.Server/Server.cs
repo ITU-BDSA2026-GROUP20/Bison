@@ -80,7 +80,7 @@ app.MapGet("/obs", async (IObservationRepository repository, int? userId, int pa
 {
     var observations = await repository.GetTimelineObservations(userId, page);
     return observations.Select(o => new ObservationDTO(
-    o.Id, o.Text, o.AuthorId, o.Author.Name, o.TimeStamp.ToString("yyyy-MM-dd"), o.TaxonId, o.Taxon?.VernacularName ?? string.Empty)).ToList();
+    o.Id, o.Text, o.AuthorId, o.Author.Name, o.TimeStamp.ToString("yyyy-MM-dd"), o.TaxonId, o.Taxon?.VernacularName ?? string.Empty, o.Photo)).ToList();
 });
 
 //POST
@@ -136,13 +136,14 @@ app.MapPost("/observations", async (CreateObservationDTO dto, Database db, IObse
         Text = dto.Text.Trim(),
         TimeStamp = DateTime.UtcNow,
         AuthorId = author.Id,
-        TaxonId = taxon?.TaxonId
+        TaxonId = taxon?.TaxonId,
+        Photo = dto.Photo
     });
     Console.WriteLine("[Debug] Observation added with ID: " + observation.Id);
 
     return Results.Ok(new ObservationDTO(
         observation.Id, observation.Text, author.Id, author.Name,
-        observation.TimeStamp.ToString("yyyy-MM-dd"), taxon?.TaxonId, taxon?.VernacularName));
+        observation.TimeStamp.ToString("yyyy-MM-dd"), taxon?.TaxonId, taxon?.VernacularName, observation.Photo));
 });
 Console.WriteLine("[Debug] Mapped /observations endpoint successfully.");
 

@@ -17,7 +17,8 @@ public class ObservationService : IObservationService
             o.Author.Name, 
             o.TimeStamp.ToString("yyyy-MM-dd"), 
             o.TaxonId, 
-            o.Taxon?.VernacularName))
+            o.Taxon?.VernacularName,
+            o.Photo))
         .ToList() 
         ?? new();
     }
