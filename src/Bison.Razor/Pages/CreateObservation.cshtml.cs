@@ -27,6 +27,9 @@ public class CreateObservationModel : PageModel
     public int? TaxonId { get; set; }
 
     public List<TaxonDTO> Taxons { get; private set; } = new();
+    
+    [BindProperty]
+    public IFormFile? Photo { get; set; }
 
     public void OnGet() => LoadTaxons();
 
@@ -40,6 +43,7 @@ public class CreateObservationModel : PageModel
         if (user is null)
             return Challenge();
 
+        Console.WriteLine($"[Debug] Check photo: {Photo?.FileName}, {Photo?.Length} bytes");
         // Lazy author creation: the first time a user posts, the server creates (or finds) their
         // Author by email, and we remember its id on the user for next time.
         var dto = new CreateObservationDTO(
@@ -47,7 +51,8 @@ public class CreateObservationModel : PageModel
             user.UserName ?? user.Email ?? user.Id,
             user.Email ?? user.UserName ?? user.Id,
             TaxonId,
-            user.AuthorId);
+            user.AuthorId,
+            Photo?.ToString());
 
         ObservationDTO? created;
         try

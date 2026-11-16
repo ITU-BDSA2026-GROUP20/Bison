@@ -137,7 +137,7 @@ app.MapPost("/observations", async (CreateObservationDTO dto, Database db, IObse
         TimeStamp = DateTime.UtcNow,
         AuthorId = author.Id,
         TaxonId = taxon?.TaxonId,
-        Photo = dto.Photo
+        Photo = dto.PhotoUrl
     });
     Console.WriteLine("[Debug] Observation added with ID: " + observation.Id);
 

@@ -22,6 +22,10 @@
                 }
             </select>
         </p>
+        <p>
+            <label asp-for="Photo"></label>
+            <input type="file" asp-for="Photo" accept="image/png, image/jpeg" enctype="multipart/formdata" />
+        </p>
         <button type="submit">Post observation</button>
     </form>
 </div>
