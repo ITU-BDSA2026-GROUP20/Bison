@@ -6,5 +6,6 @@ public record ObservationDTO(
     string AuthorName,
     string TimeStamp,
     int? TaxonId,
-    string? TaxonName
+    string? TaxonName,
+    string? Photo
 );
