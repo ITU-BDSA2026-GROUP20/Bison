@@ -1,15 +1,37 @@
+using Microsoft.Playwright.NUnit;
+using NUnit.Framework;
+using System.Diagnostics;
 namespace Bison.PlaywrightTests;
 
-public class Tests
+[TestFixture]
+public class Tests : PageTest
 {
-    [SetUp]
-    public void Setup()
+    private Process? bisonProcess;
+    [OneTimeSetUp]
+    public async Task StartBison()
     {
+        string projectPath = Path.GetFullPath(
+        Path.Combine(AppContext.BaseDirectory, "../../../../../src/Bison.Razor/Bison.Razor.csproj"));
+        bisonProcess = Process.Start("dotnet",
+            $"run --project \"{projectPath}\" --launch-profile http"
+        );
+        await Task.Delay(5000); 
+    }
+
+    [OneTimeTearDown]
+    public void StopBison()
+    {
+        if (bisonProcess is {HasExited: false })
+        {
+            bisonProcess.Kill(entireProcessTree: true);
+        }
+        bisonProcess?.Dispose();
     }
 
     [Test]
-    public void Test1()
+    public async Task Test1()
     {
-        Assert.Pass();
+        await Page.GotoAsync("http://localhost:5273");
+        //Assert.Pass();
     }
 }
