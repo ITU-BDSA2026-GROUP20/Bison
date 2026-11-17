@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bison.Razor.Tests", "test\B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bison.Infrastructure", "src\Bison.Infrastructure\Bison.Infrastructure.csproj", "{98C006D3-F369-408B-9F1A-5E3A57396776}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bison.PlaywrightTests", "test\Bison.PlaywrightTests\Bison.PlaywrightTests.csproj", "{313B999D-B143-47CB-95CB-ACCECA73099F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{98C006D3-F369-408B-9F1A-5E3A57396776}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98C006D3-F369-408B-9F1A-5E3A57396776}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98C006D3-F369-408B-9F1A-5E3A57396776}.Release|Any CPU.Build.0 = Release|Any CPU
+		{313B999D-B143-47CB-95CB-ACCECA73099F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{313B999D-B143-47CB-95CB-ACCECA73099F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{313B999D-B143-47CB-95CB-ACCECA73099F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{313B999D-B143-47CB-95CB-ACCECA73099F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,5 +59,6 @@ Global
 		{23DFF719-1CDA-41D3-BE08-4047A5F651C9} = {44046B11-6237-4AF5-905D-2174E695FDE3}
 		{5C68B1B7-FBD9-4036-99A0-7A6FA12F873E} = {A0A98CAB-885D-4E3A-A933-2C18B8809318}
 		{98C006D3-F369-408B-9F1A-5E3A57396776} = {44046B11-6237-4AF5-905D-2174E695FDE3}
+		{313B999D-B143-47CB-95CB-ACCECA73099F} = {A0A98CAB-885D-4E3A-A933-2C18B8809318}
 	EndGlobalSection
 EndGlobal
