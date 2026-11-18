@@ -29,23 +29,17 @@ var githubConfigured = !string.IsNullOrWhiteSpace(githubClientId)
 
 Console.WriteLine($"ClientId = {githubClientId}");
 //Console.WriteLine($"ClientSecret = {githubClientSecret}");
-
-builder.Services.AddAuthentication(options =>
+if (githubConfigured)
 {
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    if (githubConfigured)
-        options.DefaultChallengeScheme = "GitHub";
-})
-.AddCookie()
-.AddGitHub(o =>
-{
-    o.ClientId     = githubClientId!;
-    o.ClientSecret = githubClientSecret!;
-    o.CallbackPath = "/signin-github";
-    o.Scope.Add("user:email");
-});
-    
+    builder.Services.AddAuthentication()
+    .AddGitHub(o =>
+    {
+        o.ClientId     = githubClientId!;
+        o.ClientSecret = githubClientSecret!;
+        o.CallbackPath = "/signin-github";
+        o.Scope.Add("user:email");
+    });
+}
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
