@@ -169,5 +169,17 @@ public class Tests : PageTest
          var observationText = Page.Locator("textarea");
          await Expect(observationText).ToBeVisibleAsync();
     }
-    
+
+    [Test]
+    public async Task ObservationTextMaxLength()
+    {
+        await Login();
+        var newObservationLink = Page.GetByRole(AriaRole.Link,
+        new() { Name = "New Observation" });
+        await newObservationLink.ClickAsync();
+        var observationText = Page.Locator("textarea");
+        string longText = new string('a', 501);
+        await observationText.FillAsync(longText);
+        await Expect(observationText).ToHaveValueAsync(longText.Substring(0, 500));
+    }
 }
