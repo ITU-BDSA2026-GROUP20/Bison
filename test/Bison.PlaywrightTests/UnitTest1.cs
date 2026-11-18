@@ -55,4 +55,13 @@ public class Tests : PageTest
        new() { Name = "Register" });
        await Expect(Register).ToBeVisibleAsync(); 
     }
+
+     [Test]
+    public async Task LoginVisibleWhenLoggedOut()
+    {
+       await Page.GotoAsync("http://localhost:5273");
+       var Login = Page.GetByRole(AriaRole.Link,
+       new() { Name = "Login" });
+       await Expect(Login).ToBeVisibleAsync(); 
+    }
 }
