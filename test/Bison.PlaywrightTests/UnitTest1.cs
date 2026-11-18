@@ -1,6 +1,7 @@
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
 using System.Diagnostics;
+using Microsoft.Playwright;
 namespace Bison.PlaywrightTests;
 
 [TestFixture]
@@ -29,9 +30,11 @@ public class Tests : PageTest
     }
 
     [Test]
-    public async Task Test1()
+    public async Task MyObservationsHiddenWhenLoggedOut()
     {
         await Page.GotoAsync("http://localhost:5273");
-        //Assert.Pass();
+        var myObservations = Page.GetByRole(AriaRole.Link, 
+        new() { Name = "My Observations" });
+        await Expect(myObservations).ToBeHiddenAsync();
     }
 }

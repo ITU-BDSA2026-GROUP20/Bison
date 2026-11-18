@@ -28,7 +28,7 @@ var githubConfigured = !string.IsNullOrWhiteSpace(githubClientId)
     && !string.IsNullOrWhiteSpace(githubClientSecret);
 
 Console.WriteLine($"ClientId = {githubClientId}");
-Console.WriteLine($"ClientSecret = {githubClientSecret}");
+//Console.WriteLine($"ClientSecret = {githubClientSecret}");
 
 builder.Services.AddAuthentication(options =>
 {
