@@ -122,7 +122,7 @@ public class Tests : PageTest
         await Page.GotoAsync("http://localhost:5273/new");
         Assert.That(Page.Url, Does.Contain("/Identity/Account/Login"));
     }
-
+    //test efter login 
     [Test]
     public async Task MyObservationsVisibleWhenLoggedIn()
     {
@@ -131,4 +131,14 @@ public class Tests : PageTest
          new() { Name = "My Observations" });
          await Expect(myObservations).ToBeVisibleAsync();
     }
+
+    [Test]
+    public async Task PublicObservationsVisibleWhenLoggedin()
+    {
+       await Login();
+       var PublicObservations = Page.GetByRole(AriaRole.Link,
+       new() { Name = "Public Observations" });
+       await Expect(PublicObservations).ToBeVisibleAsync(); 
+    }
+
 }
