@@ -105,4 +105,11 @@ public class Tests : PageTest
         await registerLink.ClickAsync();
         await Expect(Page).ToHaveURLAsync("http://localhost:5273/Identity/Account/Register");
     }
+
+    [Test]
+    public async Task NewObservationRequiresLogin()
+    {
+        await Page.GotoAsync("http://localhost:5273/new");
+        Assert.That(Page.Url, Does.Contain("/Identity/Account/Login"));
+    }
 }
