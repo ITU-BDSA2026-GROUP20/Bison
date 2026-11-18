@@ -20,7 +20,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 })
 .AddEntityFrameworkStores<Database>();
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<IObservationService, ObservationService>();
+builder.Services.AddScoped<IObservationService, ObservationService>();
 
 var githubClientId     = builder.Configuration["github:clientid"];
 var githubClientSecret = builder.Configuration["github:clientsecret"];
