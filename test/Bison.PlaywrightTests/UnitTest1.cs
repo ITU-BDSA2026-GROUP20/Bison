@@ -72,4 +72,19 @@ public class Tests : PageTest
        var taxonFilter = Page.GetByRole(AriaRole.Combobox); 
        await Expect(taxonFilter).ToBeVisibleAsync(); 
     }
+
+    [Test]
+    public async Task TaxonFilterSelectOption()
+    {
+       await Page.GotoAsync("http://localhost:5273");
+       var taxonFilter = Page.GetByRole(AriaRole.Combobox); 
+       await taxonFilter.SelectOptionAsync(new SelectOptionValue { Label = "Amerikansk rørdrum" });
+       await Expect(taxonFilter.Locator("option:checked")).ToHaveTextAsync("Amerikansk rørdrum");
+       await Expect(Page.GetByText(
+        "One American bittern passing a wet meadow heading south.",
+         new() { Exact = false })).ToBeVisibleAsync();
+        await Expect(Page.GetByText(
+            "Grey heron standing still in the reeds at the lake.", 
+            new() { Exact = false })).ToBeHiddenAsync();
+    }
 }
