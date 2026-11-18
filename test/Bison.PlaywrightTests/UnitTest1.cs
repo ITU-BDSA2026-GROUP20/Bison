@@ -37,4 +37,13 @@ public class Tests : PageTest
         new() { Name = "My Observations" });
         await Expect(myObservations).ToBeHiddenAsync();
     }
+
+    [Test]
+    public async Task PublicObservationsVisibleWhenLoggedOut()
+    {
+       await Page.GotoAsync("http://localhost:5273");
+       var PublicObservations = Page.GetByRole(AriaRole.Link,
+       new() { Name = "Public Observations" });
+       await Expect(PublicObservations).ToBeVisibleAsync(); 
+    }
 }
