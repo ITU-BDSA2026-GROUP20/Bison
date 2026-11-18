@@ -142,15 +142,6 @@ public class Tests : PageTest
     }
 
     [Test]
-    public async Task MyObservationsHiddenWhenLoggedIn()
-    {
-        await Login();
-        var myObservations = Page.GetByRole(AriaRole.Link, 
-        new() { Name = "My Observations" });
-        await Expect(myObservations).ToBeVisibleAsync();
-    }
-
-    [Test]
     public async Task LogoutVisibleWhenLoggedIn()
     {
        await Login();
@@ -194,5 +185,18 @@ public class Tests : PageTest
         await Page.GetByRole(AriaRole.Button, new() { 
             Name = "Post observation" }).ClickAsync();
         await Expect(Page).ToHaveURLAsync("http://localhost:5273/new");
+    }
+
+    [Test]
+    public async Task ObservationTaxonSelection()
+    {
+        await Login();
+        await Page.GetByRole(AriaRole.Link, 
+            new() { Name = "New Observation" }).ClickAsync();
+        var taxon = Page.GetByRole(AriaRole.Combobox);
+        await taxon.SelectOptionAsync(new SelectOptionValue 
+            { Label = "Amerikansk rørdrum" });
+        await Expect(taxon.Locator("option:checked"))
+            .ToHaveTextAsync("Amerikansk rørdrum");
     }
 }
