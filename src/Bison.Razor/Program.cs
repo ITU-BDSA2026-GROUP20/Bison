@@ -65,14 +65,12 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+using (var scope = app.Services.CreateScope())
+{
+    var initializer = scope.ServiceProvider
+        .GetRequiredService<DatabaseInitializer>();
 
-try
-{
-    bool response = await Client.InitializeDatabase();
-}
-catch (Exception ex)
-{
-    app.Logger.LogWarning(ex, "Startup API call failed");
+    await initializer.InitializeAsync();
 }
 
 app.Run();
