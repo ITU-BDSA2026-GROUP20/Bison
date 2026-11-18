@@ -141,4 +141,12 @@ public class Tests : PageTest
        await Expect(PublicObservations).ToBeVisibleAsync(); 
     }
 
+    [Test]
+    public async Task MyObservationsHiddenWhenLoggedIn()
+    {
+        await Login();
+        var myObservations = Page.GetByRole(AriaRole.Link, 
+        new() { Name = "My Observations" });
+        await Expect(myObservations).ToBeVisibleAsync();
+    }
 }
