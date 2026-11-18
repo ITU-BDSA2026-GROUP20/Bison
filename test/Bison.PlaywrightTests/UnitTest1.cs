@@ -171,7 +171,7 @@ public class Tests : PageTest
     }
 
     [Test]
-    public async Task ObservationTextMaxLength()
+    public async Task ObservationTextMaxLenght()
     {
         await Login();
         var newObservationLink = Page.GetByRole(AriaRole.Link,
@@ -181,5 +181,18 @@ public class Tests : PageTest
         string longText = new string('a', 501);
         await observationText.FillAsync(longText);
         await Expect(observationText).ToHaveValueAsync(longText.Substring(0, 500));
+    }
+
+    [Test]
+    public async Task ObservationNoText()
+    {
+        await Login();
+        var newObservationLink = Page.GetByRole(AriaRole.Link,
+        new() { Name = "New Observation" });
+        await newObservationLink.ClickAsync();
+        var observationText = Page.Locator("textarea");
+        await Page.GetByRole(AriaRole.Button, new() { 
+            Name = "Post observation" }).ClickAsync();
+        await Expect(Page).ToHaveURLAsync("http://localhost:5273/new");
     }
 }
