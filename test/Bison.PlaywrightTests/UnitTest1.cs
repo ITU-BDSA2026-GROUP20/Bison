@@ -29,6 +29,16 @@ public class Tests : PageTest
         bisonProcess?.Dispose();
     }
 
+    private async Task Login()
+    {
+        await Page.GotoAsync("http://localhost:5273/Identity/Account/Login");
+        await Page.GetByRole(AriaRole.Textbox, new() {Name = "Email"})
+        .FillAsync("bisontest@example.com"); 
+        await Page.GetByLabel("Password").FillAsync("123456");
+        await Page.GetByRole(AriaRole.Button, new() {Name = "Log in"})
+        .ClickAsync();
+    }
+
     [Test]
     public async Task MyObservationsHiddenWhenLoggedOut()
     {
@@ -111,5 +121,14 @@ public class Tests : PageTest
     {
         await Page.GotoAsync("http://localhost:5273/new");
         Assert.That(Page.Url, Does.Contain("/Identity/Account/Login"));
+    }
+
+    [Test]
+    public async Task MyObservationsVisibleWhenLoggedIn()
+    {
+        await Login();
+        var myObservations = Page.GetByRole(AriaRole.Link,
+         new() { Name = "My Observations" });
+         await Expect(myObservations).ToBeVisibleAsync();
     }
 }
