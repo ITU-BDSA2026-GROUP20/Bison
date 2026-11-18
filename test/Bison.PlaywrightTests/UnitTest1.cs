@@ -149,4 +149,13 @@ public class Tests : PageTest
         new() { Name = "My Observations" });
         await Expect(myObservations).ToBeVisibleAsync();
     }
+
+    [Test]
+    public async Task LogoutVisibleWhenLoggedIn()
+    {
+       await Login();
+       var Logout = Page.GetByRole(AriaRole.Button,
+       new() { Name = "Logout" });
+       await Expect(Logout).ToBeVisibleAsync(); 
+    }
 }
