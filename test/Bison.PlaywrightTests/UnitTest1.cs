@@ -46,4 +46,13 @@ public class Tests : PageTest
        new() { Name = "Public Observations" });
        await Expect(PublicObservations).ToBeVisibleAsync(); 
     }
+
+    [Test]
+    public async Task RegisterVisibleWhenLoggedOut()
+    {
+       await Page.GotoAsync("http://localhost:5273");
+       var Register = Page.GetByRole(AriaRole.Link,
+       new() { Name = "Register" });
+       await Expect(Register).ToBeVisibleAsync(); 
+    }
 }
