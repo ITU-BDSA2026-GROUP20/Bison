@@ -199,4 +199,16 @@ public class Tests : PageTest
         await Expect(taxon.Locator("option:checked"))
             .ToHaveTextAsync("Amerikansk rørdrum");
     }
+
+    [Test]
+    public async Task EmptyObservationShowsError()
+    {
+        await Login();
+        await Page.GetByRole(AriaRole.Link, 
+            new() { Name = "New Observation" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, 
+            new() { Name = "Post observation" }).ClickAsync();
+        await Expect(Page.GetByText("The Text field is required."))
+            .ToBeVisibleAsync();
+    }
 }
