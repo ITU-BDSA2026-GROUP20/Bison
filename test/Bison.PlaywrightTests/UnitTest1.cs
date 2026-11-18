@@ -211,4 +211,16 @@ public class Tests : PageTest
         await Expect(Page.GetByText("The Text field is required."))
             .ToBeVisibleAsync();
     }
+
+    [Test]
+    public async Task LogoutWorks()
+    {
+        await Login();
+        await Page.GetByRole(AriaRole.Button, 
+            new() { Name = "Logout" }).ClickAsync();
+        await Expect(Page.GetByRole(AriaRole.Link, 
+            new() { Name = "Login" })).ToBeVisibleAsync();
+        await Expect(Page.GetByRole(AriaRole.Link, 
+            new() { Name = "My Observations" })).ToBeHiddenAsync();
+    }
 }
