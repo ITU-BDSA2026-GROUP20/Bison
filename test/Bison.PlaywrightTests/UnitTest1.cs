@@ -96,5 +96,13 @@ public class Tests : PageTest
         await loginLink.ClickAsync();
         await Expect(Page).ToHaveURLAsync("http://localhost:5273/Identity/Account/Login");
     }
-    
+
+    [Test]
+    public async Task RegisterlinkNavigatesToRegisterPage()
+    {
+        await Page.GotoAsync("http://localhost:5273");
+        var registerLink = Page.GetByRole(AriaRole.Link, new() { Name = "Register" });
+        await registerLink.ClickAsync();
+        await Expect(Page).ToHaveURLAsync("http://localhost:5273/Identity/Account/Register");
+    }
 }
