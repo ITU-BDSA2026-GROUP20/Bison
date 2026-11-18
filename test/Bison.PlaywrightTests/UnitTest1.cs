@@ -87,4 +87,14 @@ public class Tests : PageTest
             "Grey heron standing still in the reeds at the lake.", 
             new() { Exact = false })).ToBeHiddenAsync();
     }
+
+    [Test]
+    public async Task LoginLinkNavigatesToLoginPage()
+    {
+        await Page.GotoAsync("http://localhost:5273");
+        var loginLink = Page.GetByRole(AriaRole.Link, new() { Name = "Login" });
+        await loginLink.ClickAsync();
+        await Expect(Page).ToHaveURLAsync("http://localhost:5273/Identity/Account/Login");
+    }
+    
 }
