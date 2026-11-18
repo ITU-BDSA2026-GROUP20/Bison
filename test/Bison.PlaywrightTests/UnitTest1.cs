@@ -64,4 +64,12 @@ public class Tests : PageTest
        new() { Name = "Login" });
        await Expect(Login).ToBeVisibleAsync(); 
     }
+
+    [Test]
+    public async Task TaxonFilterVisibleWhenLoggedOut()
+    {
+       await Page.GotoAsync("http://localhost:5273");
+       var taxonFilter = Page.GetByRole(AriaRole.Combobox); 
+       await Expect(taxonFilter).ToBeVisibleAsync(); 
+    }
 }
