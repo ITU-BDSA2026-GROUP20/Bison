@@ -158,4 +158,16 @@ public class Tests : PageTest
        new() { Name = "Logout" });
        await Expect(Logout).ToBeVisibleAsync(); 
     }
+
+    [Test]
+    public async Task NewObservationPageOpensWhenLoggedIn()
+    {
+       await Login();
+       var newObservationLink = Page.GetByRole(AriaRole.Link,
+       new() { Name = "New Observation" });
+         await newObservationLink.ClickAsync();
+         var observationText = Page.Locator("textarea");
+         await Expect(observationText).ToBeVisibleAsync();
+    }
+    
 }
