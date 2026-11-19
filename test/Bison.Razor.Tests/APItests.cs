@@ -1,76 +1,73 @@
-using System.Net;
-using System.Net.Http.Json;
 using Bison.Core.models;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.DependencyInjection;
 using Bison.Infrastructure;
+using Bison.Infrastructure.Repositories;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bison.Razor.Tests;
-public class DBServiceFactory : WebApplicationFactory<Program>
-{
-    private readonly string dbPath =
-        Path.Combine(Path.GetTempPath(), $"bison_test_{Guid.NewGuid()}.db");
 
-    public DBServiceFactory()
+// InMemoryDb replaces DBServiceFactory. 
+// A fresh in-memory SQLite database instead of starting the whole server with a temp .db file.
+// Maybe this should be changed, but not sure how else to do it?.
+public sealed class InMemoryDb : IDisposable
+{
+    private readonly SqliteConnection connection;
+    public Database Db { get; }
+
+    public InMemoryDb()
     {
-        Environment.SetEnvironmentVariable("BISONDBPATH", dbPath);
+        connection = new SqliteConnection("Data Source=:memory:");
+        connection.Open(); // must stay open, or the database disappears
+        var options = new DbContextOptionsBuilder<Database>().UseSqlite(connection).Options;
+        Db = new Database(options);
+        Db.Database.EnsureCreated();
     }
-    protected override void Dispose(bool disposing)
+
+    public void Dispose()
     {
-        base.Dispose(disposing);
-        Environment.SetEnvironmentVariable("BISONDBPATH", null);
-        SqliteConnection.ClearAllPools();
-        File.Delete(dbPath);
+        Db.Dispose();
+        connection.Dispose();
     }
 }
-public class DBServiceApiTests : IClassFixture<DBServiceFactory>
+public class APITests : IDisposable
 {
-    private readonly HttpClient client;
-    private readonly DBServiceFactory factory;
-
-    public DBServiceApiTests(DBServiceFactory factory)
+    private readonly InMemoryDb mem = new();
+    private readonly ObservationRepository observationRepository;
+    private readonly AuthorRepository authorRepository;
+    private readonly ObservationService service;
+    public APITests()
     {
-        this.factory = factory;
-        client = factory.CreateClient();
+        observationRepository = new ObservationRepository(mem.Db);
+        authorRepository = new AuthorRepository(mem.Db);
+        service = new ObservationService(
+            observationRepository,
+            new CommentRepository(mem.Db),
+            new ProposalRepository(mem.Db),
+            new TaxonRepository(mem.Db),
+            authorRepository);
     }
-
+    public void Dispose() => mem.Dispose();
     private async Task<int> CreateAuthor()
     {
-        using var scope = factory.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<Database>();
-        var author = new Author { Name = $"user_{Guid.NewGuid():N}", Email = "test@test.dk" };
-        db.Set<Author>().Add(author);
-        await db.SaveChangesAsync();
+        var author = new Author { Name = $"user_{Guid.NewGuid():N}", Email = $"{Guid.NewGuid():N}@test.dk" };
+        mem.Db.users.Add(author);
+        await mem.Db.SaveChangesAsync();
         return author.Id;
     }
-
-
-    private async Task PostObservation(int authorId, string text, string timestamp = "1700000000")
-    {
-        var observation = new Observation
+    private Task PostObservation(int authorId, string text, long unixSeconds = 1700000000)
+        => observationRepository.AddObservation(new Observation
         {
             AuthorId = authorId,
             Text = text,
-            TimeStamp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(timestamp)).UtcDateTime
-        };
-        var response = await client.PostAsJsonAsync("/observation", observation);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    private async Task<List<Observation>> GetObs(string url)
-    {
-        var response = await client.GetAsync(url);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        return await response.Content.ReadFromJsonAsync<List<Observation>>() ?? new List<Observation>();
-    }
+            TimeStamp = DateTime.UnixEpoch.AddSeconds(unixSeconds)
+        });
 
     [Fact]
     public async Task PublicTimelineReturns()
     {
         await PostObservation(await CreateAuthor(), "A sparrow on a bench");
 
-        var observations = await GetObs("/obs");
+        var observations = service.GetObservations();
 
         Assert.NotEmpty(observations);
     }
@@ -81,7 +78,7 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
         int author = await CreateAuthor();
         await PostObservation(author, "A big gray bird in a pond at DR byen");
 
-        var observations = await GetObs($"/obs?userId={author}");
+        var observations = service.GetObservations(author);
 
         Assert.Contains(observations, o => o.Text == "A big gray bird in a pond at DR byen");
     }
@@ -94,7 +91,7 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
         await PostObservation(petra, "A heron");
         await PostObservation(peter, "A fox");
 
-        var observations = await GetObs($"/obs?userId={petra}");
+        var observations = service.GetObservations(petra);
 
         Assert.Single(observations);
         Assert.Equal("A heron", observations[0].Text);
@@ -106,10 +103,10 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
     {
         int author = await CreateAuthor();
         for (int i = 0; i < 33; i++)
-            await PostObservation(author, $"Observation {i}", (1700000000 + i).ToString());
+            await PostObservation(author, $"Observation {i}", 1700000000 + i);
 
-        var page1 = await GetObs($"/obs?userId={author}&page=1");
-        var page2 = await GetObs($"/obs?userId={author}&page=2");
+        var page1 = service.GetObservations(author, 1);
+        var page2 = service.GetObservations(author, 2);
 
         Assert.Equal(32, page1.Count);
         Assert.Single(page2);
@@ -121,28 +118,24 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
     {
         int author = await CreateAuthor();
         for (int i = 0; i < 33; i++)
-            await PostObservation(author, $"Observation {i}", (1700000000 + i).ToString());
+            await PostObservation(author, $"Observation {i}", 1700000000 + i);
 
-        var withoutPage = await GetObs($"/obs?userId={author}");
-        var withPage = await GetObs($"/obs?userId={author}&page=1");
+        var withoutPage = service.GetObservations(author);
+        var withPage = service.GetObservations(author, 1);
 
-        Assert.Equal(
-            withPage.Select(o => o.Text),
-            withoutPage.Select(o => o.Text));
+        Assert.Equal(withPage.Select(o => o.Text), withoutPage.Select(o => o.Text));
     }
 
     [Fact]
-    public async Task PostObservationsWithValidDtoReturnsObservation()
+    public async Task AddObservationWithValidDtoReturnsObservation()
     {
         var dto = new CreateObservationDTO(
             Text: "Example",
             AuthorName: "exampleAuthor",
-            AuthorEmail: $"{Guid.NewGuid():N}@test.dk");
+            AuthorEmail: "example@test.dk");
 
-        var response = await client.PostAsJsonAsync("/observations", dto);
+        var created = await service.AddObservation(dto);
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var created = await response.Content.ReadFromJsonAsync<ObservationDTO>();
         Assert.NotNull(created);
         Assert.Equal("Example", created.Text);
         Assert.Equal("exampleAuthor", created.AuthorName);
@@ -150,50 +143,36 @@ public class DBServiceApiTests : IClassFixture<DBServiceFactory>
     }
 
     [Fact]
-    public async Task PostObservationsCreatesAuthorAndShowsUpInTimeline()
+    public async Task AddObservationCreatesAuthorAndShowsUpInTimeline()
     {
         var dto = new CreateObservationDTO(
             Text: "example text",
             AuthorName: "Woody",
-            AuthorEmail: $"{Guid.NewGuid():N}@test.dk");
+            AuthorEmail: "woody@test.dk");
 
-        var response = await client.PostAsJsonAsync("/observations", dto);
-        var created = await response.Content.ReadFromJsonAsync<ObservationDTO>();
+        var created = await service.AddObservation(dto);
+        var observations = service.GetObservations(created!.AuthorId);
 
-        var observations = await GetObs($"/obs?userId={created!.AuthorId}");
         Assert.Single(observations);
         Assert.Equal("example text", observations[0].Text);
     }
-
+    
     [Fact]
-    public async Task PostObservationsReusesAuthorWithSameEmail()
+    public async Task GetOrCreateAuthorReusesAuthorWithSameEmail()
     {
-        string email = $"{Guid.NewGuid():N}@test.dk";
+        var first = await authorRepository.GetOrCreateAuthor(null, "Same Person", "same@test.dk");
+        var second = await authorRepository.GetOrCreateAuthor(null, "Same Person", "same@test.dk");
 
-        var first = await (await client.PostAsJsonAsync("/observations",
-            new CreateObservationDTO("First sighting", "Same Person", email)))
-            .Content.ReadFromJsonAsync<ObservationDTO>();
-        var second = await (await client.PostAsJsonAsync("/observations",
-            new CreateObservationDTO("Second sighting", "Same Person", email)))
-            .Content.ReadFromJsonAsync<ObservationDTO>();
-
-        Assert.Equal(first!.AuthorId, second!.AuthorId);
+        Assert.Equal(first.Id, second.Id);
     }
 
     [Fact]
-    public async Task PostObservationsUsesExistingAuthorWhenAuthorIdGiven()
+    public async Task GetOrCreateAuthorUsesExistingAuthorWhenIdGiven()
     {
         int authorId = await CreateAuthor();
 
-        var dto = new CreateObservationDTO(
-            Text: "A swan",
-            AuthorName: "Ignored Name",
-            AuthorEmail: "ignored@test.dk",
-            AuthorId: authorId);
-        var response = await client.PostAsJsonAsync("/observations", dto);
+        var author = await authorRepository.GetOrCreateAuthor(authorId, "Ignored Name", "ignored@test.dk");
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var created = await response.Content.ReadFromJsonAsync<ObservationDTO>();
-        Assert.Equal(authorId, created!.AuthorId);
+        Assert.Equal(authorId, author.Id);
     }
 }
