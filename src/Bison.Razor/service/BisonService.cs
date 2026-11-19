@@ -1,8 +1,6 @@
 using Bison.Core.Repositories;
 using Bison.Core.models;
 using Bison.Razor;
-using Bison.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 public class ObservationService : IObservationService
 {
@@ -11,19 +9,19 @@ public class ObservationService : IObservationService
     private readonly ICommentRepository commentRepository;
     private readonly IProposalRepository proposalRepository;
     private readonly ITaxonRepository taxonRepository;
-    private readonly Database database;
+    private readonly IAuthorRepository authorRepository;
     public ObservationService(
         IObservationRepository repository,
         ICommentRepository commentRepository,
         IProposalRepository proposalRepository,
         ITaxonRepository taxonRepository,
-        Database database)
+        IAuthorRepository authorRepository)
     {
         this.repository = repository;
         this.commentRepository = commentRepository;
         this.proposalRepository = proposalRepository;
         this.taxonRepository = taxonRepository;
-        this.database = database;
+        this.authorRepository = authorRepository;
     }
 
     public List<Observation> GetObservationEntities()
@@ -109,28 +107,11 @@ public class ObservationService : IObservationService
         Taxon? taxon = null;
         if (dto.TaxonId is int taxonId)
         {
-            taxon = await database.taxons.FindAsync(taxonId);
+            taxon = await taxonRepository.GetTaxon(taxonId);
             if (taxon is null)
                 return null;
         }
-
-        Author? author = dto.AuthorId is int authorId
-            ? await database.users.FindAsync(authorId)
-            : null;
-
-        author ??= await database.users.FirstOrDefaultAsync(
-            a => a.Email == dto.AuthorEmail);
-
-        if (author is null)
-        {
-            author = new Author
-            {
-                Name = dto.AuthorName,
-                Email = dto.AuthorEmail
-            };
-            database.users.Add(author);
-            await database.SaveChangesAsync();
-        }
+        var author = await authorRepository.GetOrCreateAuthor(dto.AuthorId, dto.AuthorName, dto.AuthorEmail);
 
         var observation = await repository.AddObservation(new Observation
         {
