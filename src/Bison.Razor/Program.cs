@@ -20,7 +20,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 })
 .AddEntityFrameworkStores<Database>();
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<IObservationService, ObservationService>();
+builder.Services.AddScoped<IObservationService, ObservationService>();
 
 var githubClientId     = builder.Configuration["github:clientid"];
 var githubClientSecret = builder.Configuration["github:clientsecret"];
@@ -65,14 +65,12 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+using (var scope = app.Services.CreateScope())
+{
+    var initializer = scope.ServiceProvider
+        .GetRequiredService<DatabaseInitializer>();
 
-try
-{
-    bool response = await Client.InitializeDatabase();
-}
-catch (Exception ex)
-{
-    app.Logger.LogWarning(ex, "Startup API call failed");
+    await initializer.InitializeAsync();
 }
 
 app.Run();
