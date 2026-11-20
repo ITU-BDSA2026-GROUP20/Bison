@@ -118,17 +118,12 @@ public class ObservationService : IObservationService
             Text = dto.Text.Trim(),
             TimeStamp = DateTime.UtcNow,
             AuthorId = author.Id,
-            TaxonId = taxon?.TaxonId
+            Author = author,
+            TaxonId = taxon?.TaxonId,
+            Taxon = taxon
         });
 
-        return new ObservationDTO(
-            observation.Id,
-            observation.Text,
-            author.Id,
-            author.Name,
-            observation.TimeStamp.ToString("yyyy-MM-dd"),
-            taxon?.TaxonId,
-            taxon?.VernacularName);
+        return ToObservationDTO(observation);
     }
 
     public Taxon GetTaxon(int id)
