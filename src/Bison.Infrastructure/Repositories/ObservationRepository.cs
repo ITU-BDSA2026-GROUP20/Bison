@@ -24,7 +24,7 @@ public class ObservationRepository : IObservationRepository
     }
     public async Task<Observation?> GetObservation(int id)
     {
-        return await database.readings.Include(o => o.Author).FirstOrDefaultAsync(o => o.Id == id);
+         return await database.readings.Include(o => o.Author).Include(o => o.Taxon).FirstOrDefaultAsync(o => o.Id == id);
     }
    
     public async Task<IReadOnlyList<Observation>> GetTimelineObservations(int? userId, int page)
