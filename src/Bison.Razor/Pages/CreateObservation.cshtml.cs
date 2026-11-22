@@ -50,15 +50,7 @@ public class CreateObservationModel : PageModel
             user.AuthorId);
 
         ObservationDTO? created;
-        try
-        {
-            created = await service.AddObservation(dto);
-        }
-        catch (HttpRequestException)
-        {
-            ModelState.AddModelError(string.Empty, "Could not save the observation. Please try again.");
-            return Page();
-        }
+        created = await service.AddObservation(dto);
 
         if (created is null)
         {
