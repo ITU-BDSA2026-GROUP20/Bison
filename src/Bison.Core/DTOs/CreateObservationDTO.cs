@@ -9,5 +9,5 @@ public record CreateObservationDTO(
     string AuthorEmail,
     int? TaxonId = null,
     int? AuthorId = null,
-    PhotoDTO? Photo = null
+    string? PhotoName = null
 );
