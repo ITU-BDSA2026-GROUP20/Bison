@@ -35,6 +35,12 @@
                     <p>
                         <small>&mdash; @obs.TaxonName</small>
                     </p>
+                    @if (obs.PhotoName is not null)
+                    {
+                        <p>
+                            <img src="/uploads/@obs.PhotoName" alt="Observation photo" />
+                        </p>
+                    }
                 </li>
             }
         </ul>
