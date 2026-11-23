@@ -25,7 +25,8 @@ public class CreateObservationModel : PageModel
 
     [BindProperty]
     public int? TaxonId { get; set; }
-
+    [BindProperty]
+    public IFormFile? Photo { get; set; }
     public List<TaxonDTO> Taxons { get; private set; } = new();
 
     public void OnGet() => LoadTaxons();
