@@ -15,16 +15,18 @@ public class ProposalRepository : IProposalRepository
     
     public async Task<IReadOnlyList<Proposal>> GetProposals(int? observationId)
     {
-        if(observationId is null)
-        return await database.proposals.ToListAsync();
+        IQueryable<Proposal> query = database.proposals.Include(p => p.Author).Include(p => p.Taxon);
+        if (observationId is not null)
+            query = query.Where(p => p.ObservationId == observationId);
 
-        return await database.proposals.Where(p=> p.ObservationId == observationId).ToListAsync();
+        return await query.OrderBy(p => p.TimeStamp).ToListAsync();
     }
-    
-    public async Task AddProposal(Proposal proposal)
+
+    public async Task<Proposal> AddProposal(Proposal proposal)
     {
         database.proposals.Add(proposal);
         await database.SaveChangesAsync();
+        return proposal;
     }
 
     public async Task AddProposals(IEnumerable<Proposal> proposals)

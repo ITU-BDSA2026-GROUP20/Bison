@@ -14,15 +14,17 @@ public class CommentRepository : ICommentRepository
     }
     public async Task<IReadOnlyList<Comment>> GetComments(int? observationId)
     {
-        if(observationId is null)
-        return await database.comments.ToListAsync();
+        IQueryable<Comment> query = database.comments.Include(c => c.Author);
+        if (observationId is not null)
+            query = query.Where(c => c.ObservationId == observationId);
 
-        return await database.comments.Where(c=> c.ObservationId == observationId).ToListAsync();
+        return await query.OrderBy(c => c.TimeStamp).ToListAsync();
     }
-    public async Task AddComment(Comment comment)
+    public async Task<Comment> AddComment(Comment comment)
     {
         database.comments.Add(comment);
         await database.SaveChangesAsync();
+        return comment;
     }
     public async Task AddComments(IEnumerable<Comment> comments)
     {

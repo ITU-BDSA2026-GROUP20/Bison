@@ -11,4 +11,6 @@ public interface IObservationService
     public List<TaxonDTO> GetUniqueTaxons();
     public Taxon GetTaxon(int id);
     public Task<ObservationDTO?> AddObservation(CreateObservationDTO dto);
+    public Task<CommentDTO?> AddComment(CreateCommentDTO dto);
+    public Task<ProposalDTO?> AddProposal(CreateProposalDTO dto);
 }

@@ -1,5 +1,8 @@
 @page "/ob/{id?}"
 @model Bison.Razor.Pages.ObservationDetailsModel
+@using Microsoft.AspNetCore.Identity
+@using Bison.Infrastructure
+@inject SignInManager<ApplicationUser> SignInManager
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
@@ -33,7 +36,9 @@
                     if (ob.TaxonName is null)
                         continue;
                     <p>
-                    @ob.TaxonName
+                    <strong><a href="/obs/@ob.AuthorId">@ob.AuthorName</a></strong>
+                    proposed <em>@ob.TaxonName</em>
+                    @ob.Text
                     <small>&mdash; @ob.TimeStamp</small>
                     </p>
                 }
@@ -47,11 +52,41 @@
                 @foreach (var ob in Model.Comments)
                 {
                 <p>
+                <strong><a href="/obs/@ob.AuthorId">@ob.AuthorName</a></strong>
                 @ob.Text
                 <small>&mdash; @ob.TimeStamp</small>
                 </p>
                 }
-            }  
+            }
         </li>
     </ul>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="observationbox">
+            <h3>Propose a taxon</h3>
+            <form method="post" asp-page-handler="Proposal" asp-route-id="@Model.Id">
+                <p>
+                    <select asp-for="ProposalTaxonId" required style="max-width: 200px; width: 100%;">
+                        <option value="">Choose a taxon</option>
+                        @foreach (var taxon in Model.Taxons)
+                        {
+                            <option value="@taxon.Id">@taxon.VernacularName</option>
+                        }
+                    </select>
+                </p>
+                <input style="float: left" type="text" asp-for="ProposalText" maxlength="500" placeholder="Why do you think so? (optional)">
+                <input type="submit" value="Propose">
+                <span asp-validation-for="ProposalText"></span>
+            </form>
+        </div>
+        <div class="observationbox">
+            <h3>Add a comment</h3>
+            <form method="post" asp-page-handler="Comment" asp-route-id="@Model.Id">
+                <input style="float: left" type="text" asp-for="CommentText" maxlength="500" required>
+                <input type="submit" value="Comment">
+                <span asp-validation-for="CommentText"></span>
+            </form>
+        </div>
+    }
 </div>
