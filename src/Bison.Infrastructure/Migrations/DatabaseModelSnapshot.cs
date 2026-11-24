@@ -15,7 +15,7 @@ namespace Bison.Infrastructure.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.34");
 
             modelBuilder.Entity("Bison.Core.models.Author", b =>
                 {
@@ -234,9 +234,11 @@ namespace Bison.Infrastructure.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderDisplayName")
@@ -274,9 +276,11 @@ namespace Bison.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
@@ -302,6 +306,9 @@ namespace Bison.Infrastructure.Migrations
             modelBuilder.Entity("Bison.Core.models.Observation", b =>
                 {
                     b.HasBaseType("Bison.Core.models.Post");
+
+                    b.Property<string>("PhotoName")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("TaxonId")
                         .HasColumnType("INTEGER");

@@ -22,6 +22,15 @@
                     @Model.Observation.Text
                     <small>&mdash; @Model.Observation.TimeStamp</small>
                 </p>
+                <p>
+                    <small>&mdash; @Model.Observation.TaxonName</small>
+                </p>
+                @if (Model.Observation.PhotoName is not null)
+                {
+                    <p>
+                        <img src="/uploads/@Model.Observation.PhotoName" alt="Observation photo" />
+                    </p>
+                }
             }
 
             @* Display the proposals and comments *@
