@@ -26,13 +26,16 @@ var githubClientSecret = builder.Configuration["github:clientsecret"];
 var githubConfigured = !string.IsNullOrWhiteSpace(githubClientId) && !string.IsNullOrWhiteSpace(githubClientSecret);
 
 if (githubConfigured)
-    builder.Services.AddAuthentication().AddGitHub(o => { 
-        o.ClientId = githubClientId!;
-        o.ClientSecret = githubClientSecret!; 
-        o.CallbackPath = "/signin-github"; 
-        o.Scope.Add("user:email"); 
+{
+    builder.Services.AddAuthentication()
+    .AddGitHub(o =>
+    {
+        o.ClientId     = githubClientId!;
+        o.ClientSecret = githubClientSecret!;
+        o.CallbackPath = "/signin-github";
+        o.Scope.Add("user:email");
     });
-
+}
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
