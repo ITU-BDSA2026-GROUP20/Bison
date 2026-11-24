@@ -136,6 +136,27 @@ div.page ul.observations li {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   min-height: 48px;
+  position: relative;
+}
+
+div.page ul.observations li strong a {
+  position: relative;
+  z-index: 1;
+}
+
+div.page ul.observations a.observationlink {
+  color: inherit;
+  text-decoration: none;
+}
+
+div.page ul.observations a.observationlink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+div.page ul.observations li:has(a.observationlink:hover) {
+  background: #E3EBEA;
 }
 
 div.page ul.observations p {
