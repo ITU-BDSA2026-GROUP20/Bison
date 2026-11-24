@@ -62,25 +62,9 @@ public class ObservationService : IObservationService
 
         return ToObservationDTO(observation);
     }
-    public List<CommentDTO> GetComments(int id)
-    {
-        return commentRepository.GetComments(id)
-            .GetAwaiter().GetResult()
-            .Select(c => new CommentDTO(
-                c.Text,
-                c.TimeStamp.ToString("yyyy-MM-dd")))
-            .ToList();
-    }
+    public List<CommentDTO> GetComments(int id) => commentRepository.GetComments(id).GetAwaiter().GetResult().Select(ToCommentDTO).ToList();
 
-    public List<ProposalDTO> GetProposals(int id)
-    {
-        return proposalRepository.GetProposals(id)
-            .GetAwaiter().GetResult()
-            .Select(p => new ProposalDTO(
-                p.Taxon?.VernacularName,
-                p.TimeStamp.ToString("yyyy-MM-dd")))
-            .ToList();
-    }
+    public List<ProposalDTO> GetProposals(int id) => proposalRepository.GetProposals(id).GetAwaiter().GetResult().Select(ToProposalDTO).ToList();
 
     public List<TaxonDTO> GetUniqueTaxons()
     {
@@ -127,6 +111,31 @@ public class ObservationService : IObservationService
         return ToObservationDTO(observation);
     }
 
+    public async Task<CommentDTO?> AddComment(CreateCommentDTO dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Text) || dto.Text.Length > 500) return null;
+        if (string.IsNullOrWhiteSpace(dto.AuthorEmail) || string.IsNullOrWhiteSpace(dto.AuthorName)) return null;
+        if (await repository.GetObservation(dto.ObservationId) is null) return null;
+
+        var author = await authorRepository.GetOrCreateAuthor(dto.AuthorId, dto.AuthorName, dto.AuthorEmail);
+        var comment = await commentRepository.AddComment(new Comment { Text = dto.Text.Trim(), TimeStamp = DateTime.UtcNow, AuthorId = author.Id, Author = author, ObservationId = dto.ObservationId });
+        return ToCommentDTO(comment);
+    }
+
+    public async Task<ProposalDTO?> AddProposal(CreateProposalDTO dto)
+    {
+        if (dto.Text.Length > 500) return null;
+        if (string.IsNullOrWhiteSpace(dto.AuthorEmail) || string.IsNullOrWhiteSpace(dto.AuthorName)) return null;
+        if (await repository.GetObservation(dto.ObservationId) is null) return null;
+
+        var taxon = dto.TaxonId is int taxonId ? await taxonRepository.GetTaxon(taxonId) : null;
+        if (taxon is null) return null;
+
+        var author = await authorRepository.GetOrCreateAuthor(dto.AuthorId, dto.AuthorName, dto.AuthorEmail);
+        var proposal = await proposalRepository.AddProposal(new Proposal { Text = dto.Text.Trim(), TimeStamp = DateTime.UtcNow, AuthorId = author.Id, Author = author, ObservationId = dto.ObservationId, TaxonId = taxon.TaxonId, Taxon = taxon });
+        return ToProposalDTO(proposal);
+    }
+
     public Taxon GetTaxon(int id)
     {
         return taxonRepository.GetTaxon(id)
@@ -145,4 +154,7 @@ public class ObservationService : IObservationService
             o.Taxon?.VernacularName,
             o.PhotoName);
     }
+
+    private static CommentDTO ToCommentDTO(Comment c) => new(c.AuthorId, c.Author.Name, c.Text, c.TimeStamp.ToString("yyyy-MM-dd"));
+    private static ProposalDTO ToProposalDTO(Proposal p) => new(p.AuthorId, p.Author.Name, p.Taxon.VernacularName, p.Text, p.TimeStamp.ToString("yyyy-MM-dd"));
 }
