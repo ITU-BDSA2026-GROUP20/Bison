@@ -7,7 +7,7 @@
 
 <div>
     <h2> New observation </h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly"></div>
         <p>
             <textarea asp-for="Text" rows="4" maxlength="500" style="width: 100%; max-width: 500px;"></textarea>
@@ -21,6 +21,11 @@
                     <option value="@taxon.Id">@taxon.VernacularName</option>
                 }
             </select>
+        </p>
+        <p>
+            <label asp-for="Photo"></label>
+            <input type="file" asp-for="Photo" accept="image/png, image/jpeg" />
+            <span asp-validation-for="Photo"></span>
         </p>
         <button type="submit">Post observation</button>
     </form>

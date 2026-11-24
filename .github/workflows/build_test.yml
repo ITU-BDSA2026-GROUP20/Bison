@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [ Bison.Razor, Bison.Core, Bison.Server ]
+        project: [ Bison.Razor, Bison.Core, Bison.Infrastructure ]
     steps:
       - uses: actions/checkout@v3
 

@@ -29,12 +29,18 @@
                         <strong>
                             <a href="/obs/@obs.AuthorId">@obs.AuthorName</a>
                         </strong>
-                        @obs.Text
+                        <a class="observationlink" href="/ob/@obs.Id">@obs.Text</a>
                         <small>&mdash; @obs.TimeStamp</small>
                     </p>
                     <p>
                         <small>&mdash; @obs.TaxonName</small>
                     </p>
+                    @if (obs.PhotoName is not null)
+                    {
+                        <p>
+                            <img src="/uploads/@obs.PhotoName" alt="Observation photo" />
+                        </p>
+                    }
                 </li>
             }
         </ul>

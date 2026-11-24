@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<IObservationRepository, ObservationRepository>();
         services.AddScoped<IProposalRepository, ProposalRepository>();
         services.AddScoped<ITaxonRepository, TaxonRepository>();
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
         
         services.AddScoped<DatabaseInitializer>();
 

@@ -25,7 +25,8 @@ public class CreateObservationModel : PageModel
 
     [BindProperty]
     public int? TaxonId { get; set; }
-
+    [BindProperty]
+    public IFormFile? Photo { get; set; }
     public List<TaxonDTO> Taxons { get; private set; } = new();
 
     public void OnGet() => LoadTaxons();
@@ -40,6 +41,26 @@ public class CreateObservationModel : PageModel
         if (user is null)
             return Challenge();
 
+        // Won't be used if Photo is null
+        string? photoName = null; 
+        if (Photo is not null)
+        {
+            // Validate the photo file type
+            var ext = Path.GetExtension(Photo.FileName).ToLowerInvariant();
+            if (ext is not (".jpg" or ".jpeg" or ".png"))
+            {
+                ModelState.AddModelError(string.Empty, "Invalid photo format. Only JPG and PNG are allowed.");
+                return Page();
+            }
+            // Generate unique filename for the photo if it exists
+            photoName = $"{Guid.NewGuid()}{ext}";
+
+            // Save the photo to storage
+            var path = Path.Combine("wwwroot", "uploads", photoName!);
+            await using var stream = new FileStream(path, FileMode.Create);
+            await Photo!.CopyToAsync(stream);
+        }
+
         // Lazy author creation: the first time a user posts, the server creates (or finds) their
         // Author by email, and we remember its id on the user for next time.
         var dto = new CreateObservationDTO(
@@ -47,18 +68,12 @@ public class CreateObservationModel : PageModel
             user.UserName ?? user.Email ?? user.Id,
             user.Email ?? user.UserName ?? user.Id,
             TaxonId,
-            user.AuthorId);
+            user.AuthorId,
+            photoName
+        );
 
         ObservationDTO? created;
-        try
-        {
-            created = await service.AddObservation(dto);
-        }
-        catch (HttpRequestException)
-        {
-            ModelState.AddModelError(string.Empty, "Could not save the observation. Please try again.");
-            return Page();
-        }
+        created = await service.AddObservation(dto);
 
         if (created is null)
         {

@@ -1,7 +1,6 @@
 using Bison.Razor;
 using Microsoft.AspNetCore.Identity;
 using Bison.Infrastructure;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string dbPath = Environment.GetEnvironmentVariable("BISONDBPATH")
@@ -20,12 +19,11 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 })
 .AddEntityFrameworkStores<Database>();
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<IObservationService, ObservationService>();
+builder.Services.AddScoped<IObservationService, ObservationService>();
 
-var githubClientId     = builder.Configuration["github:clientid"];
+var githubClientId = builder.Configuration["github:clientid"];
 var githubClientSecret = builder.Configuration["github:clientsecret"];
-var githubConfigured = !string.IsNullOrWhiteSpace(githubClientId)
-    && !string.IsNullOrWhiteSpace(githubClientSecret);
+var githubConfigured = !string.IsNullOrWhiteSpace(githubClientId) && !string.IsNullOrWhiteSpace(githubClientSecret);
 
 Console.WriteLine($"ClientId = {githubClientId}");
 //Console.WriteLine($"ClientSecret = {githubClientSecret}");
@@ -59,14 +57,12 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+using (var scope = app.Services.CreateScope())
+{
+    var initializer = scope.ServiceProvider
+        .GetRequiredService<DatabaseInitializer>();
 
-try
-{
-    bool response = await Client.InitializeDatabase();
-}
-catch (Exception ex)
-{
-    app.Logger.LogWarning(ex, "Startup API call failed");
+    await initializer.InitializeAsync();
 }
 
 app.Run();
