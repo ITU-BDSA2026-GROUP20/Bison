@@ -120,7 +120,8 @@ public class ObservationService : IObservationService
             AuthorId = author.Id,
             Author = author,
             TaxonId = taxon?.TaxonId,
-            Taxon = taxon
+            Taxon = taxon,
+            PhotoName = dto.PhotoName
         });
 
         return ToObservationDTO(observation);
@@ -141,7 +142,7 @@ public class ObservationService : IObservationService
             o.Author.Name,
             o.TimeStamp.ToString("yyyy-MM-dd"),
             o.TaxonId,
-            o.Taxon?.VernacularName);
+            o.Taxon?.VernacularName,
+            o.PhotoName);
     }
-
 }
