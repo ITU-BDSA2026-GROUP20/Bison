@@ -82,6 +82,7 @@ public class EndToEndTests : PageTest
         Assert.That(seanTexts, Is.EqualTo(new[] { "Sean saw a spoonbill" }));
         Assert.That(mikkelTexts, Is.EqualTo(new[] { "Mikkel saw a cormorant" }));
     }
+    
     [Test]
     public async Task PostedObservationIsShownOnItsPageAndInMyObservations()
     {
@@ -94,6 +95,7 @@ public class EndToEndTests : PageTest
         await Page.GetByRole(AriaRole.Link, new() { Name = "My Observations" }).ClickAsync();
         await Expect(Page.GetByText(text)).ToBeVisibleAsync();
     }
+
     [Test]
     public async Task EmptyObservationIsNotStored()
     {
@@ -109,6 +111,7 @@ public class EndToEndTests : PageTest
         Assert.That(await db.readings.CountAsync(o => o.Author.Email == email), Is.Zero);
         Assert.That(await db.users.AnyAsync(a => a.Email == email), Is.False);
     }
+
     [Test]
     public async Task CommentIsStoredOnTheObservationForTheAuthor()
     {
@@ -127,5 +130,28 @@ public class EndToEndTests : PageTest
 
         Assert.That(comment.ObservationId, Is.EqualTo(1));
         Assert.That(comment.Author.Email, Is.EqualTo(email));
+    }
+
+    [Test]
+    public async Task ProposalIsStoredOnTheObservationForTheAuthor()
+    {
+        string email = await RegisterNewUserAsync();
+        string reason = $"Looks too big for a grey heron {Guid.NewGuid():N}";
+
+        await Page.GotoAsync($"{server.BaseUrl}/ob/1");
+        await Page.Locator("#ProposalTaxonId").SelectOptionAsync(new SelectOptionValue { Label = "Sølvhejre" });
+        await Page.Locator("#ProposalText").FillAsync(reason);
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Propose", Exact = true }).ClickAsync();
+        await Expect(Page.GetByText(reason)).ToBeVisibleAsync();
+
+        using var db = server.OpenDatabase();
+        var proposal = await db.proposals.AsNoTracking()
+            .Include(p => p.Author)
+            .Include(p => p.Taxon)
+            .SingleAsync(p => p.Text == reason);
+
+        Assert.That(proposal.ObservationId, Is.EqualTo(1));
+        Assert.That(proposal.Author.Email, Is.EqualTo(email));
+        Assert.That(proposal.Taxon.VernacularName, Is.EqualTo("Sølvhejre"));
     }
 }
