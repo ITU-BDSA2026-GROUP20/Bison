@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using Bison.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 
 namespace Bison.PlaywrightTests;
 
@@ -78,6 +79,12 @@ public sealed class BisonServer : IAsyncDisposable
             await process.WaitForExitAsync();
         }
         process.Dispose();
+        
+        SqliteConnection.ClearAllPools();
+        foreach (var file in new[] { DbPath, DbPath + "-wal", DbPath + "-shm" })
+        {
+            try { File.Delete(file); } catch (IOException) { /* not important */ }
+        }
     }
     private static int GetFreePort()
     {
