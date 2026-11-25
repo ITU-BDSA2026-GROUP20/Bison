@@ -83,7 +83,7 @@ public sealed class BisonServer : IAsyncDisposable
         SqliteConnection.ClearAllPools();
         foreach (var file in new[] { DbPath, DbPath + "-wal", DbPath + "-shm" })
         {
-            try { File.Delete(file); } catch (IOException) { /* not important */ }
+            try { File.Delete(file); } catch (IOException) {}
         }
     }
     private static int GetFreePort()
