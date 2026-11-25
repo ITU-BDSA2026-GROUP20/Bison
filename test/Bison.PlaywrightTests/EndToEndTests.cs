@@ -1,6 +1,7 @@
 using Microsoft.Playwright.NUnit;
 using Microsoft.Playwright;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bison.PlaywrightTests;
 
@@ -36,5 +37,30 @@ public class EndToEndTests : PageTest
         await Page.GetByRole(AriaRole.Button, new() { Name = "Post observation" }).ClickAsync();
         await Expect(Page).ToHaveURLAsync(new Regex(@"/ob/\d+$"));
         return int.Parse(Page.Url.Split('/').Last());
+    }
+
+    [Test]
+    public async Task PostedObservationIsStoredInTheDatabaseForTheLoggedInAuthor()
+    {
+        // Arrange
+        string email = await RegisterNewUserAsync();
+        string text = $"Grey heron at Utterslev Mose {Guid.NewGuid():N}";
+
+        // Act
+        int id = await PostObservationAsync(text, taxon: "Fiskehejre");
+
+        // Assert
+        using var db = server.OpenDatabase();
+        var stored = await db.readings.AsNoTracking()
+            .Include(o => o.Author)
+            .Include(o => o.Taxon)
+            .SingleAsync(o => o.Id == id);
+
+        Assert.That(stored.Text, Is.EqualTo(text));
+        Assert.That(stored.Author.Email, Is.EqualTo(email));
+        Assert.That(stored.Taxon?.VernacularName, Is.EqualTo("Fiskehejre"));
+
+        var user = await db.Users.AsNoTracking().SingleAsync(u => u.Email == email);
+        Assert.That(user.AuthorId, Is.EqualTo(stored.AuthorId));
     }
 }
