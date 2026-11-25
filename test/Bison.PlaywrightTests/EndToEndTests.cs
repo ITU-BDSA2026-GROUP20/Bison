@@ -109,4 +109,23 @@ public class EndToEndTests : PageTest
         Assert.That(await db.readings.CountAsync(o => o.Author.Email == email), Is.Zero);
         Assert.That(await db.users.AnyAsync(a => a.Email == email), Is.False);
     }
+    [Test]
+    public async Task CommentIsStoredOnTheObservationForTheAuthor()
+    {
+        string email = await RegisterNewUserAsync();
+        string text = $"Nice find! {Guid.NewGuid():N}";
+
+        await Page.GotoAsync($"{server.BaseUrl}/ob/1");
+        await Page.Locator("#CommentText").FillAsync(text);
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Comment", Exact = true }).ClickAsync();
+        await Expect(Page.GetByText(text)).ToBeVisibleAsync();
+
+        using var db = server.OpenDatabase();
+        var comment = await db.comments.AsNoTracking()
+            .Include(c => c.Author)
+            .SingleAsync(c => c.Text == text);
+
+        Assert.That(comment.ObservationId, Is.EqualTo(1));
+        Assert.That(comment.Author.Email, Is.EqualTo(email));
+    }
 }
