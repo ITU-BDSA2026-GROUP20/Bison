@@ -63,4 +63,23 @@ public class EndToEndTests : PageTest
         var user = await db.Users.AsNoTracking().SingleAsync(u => u.Email == email);
         Assert.That(user.AuthorId, Is.EqualTo(stored.AuthorId));
     }
+
+    [Test]
+        public async Task ObservationsAreStoredForTheirOwnAuthor()
+    {
+        string sean = await RegisterNewUserAsync();
+        await PostObservationAsync("Sean saw a spoonbill");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Logout" }).ClickAsync();
+        await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Login" })).ToBeVisibleAsync();
+
+        string mikkel = await RegisterNewUserAsync();
+        await PostObservationAsync("Mikkel saw a cormorant");
+
+        using var db = server.OpenDatabase();
+        var seanTexts = await db.readings.Where(o => o.Author.Email == sean).Select(o => o.Text).ToListAsync();
+        var mikkelTexts = await db.readings.Where(o => o.Author.Email == mikkel).Select(o => o.Text).ToListAsync();
+
+        Assert.That(seanTexts, Is.EqualTo(new[] { "Sean saw a spoonbill" }));
+        Assert.That(mikkelTexts, Is.EqualTo(new[] { "Mikkel saw a cormorant" }));
+    }
 }
