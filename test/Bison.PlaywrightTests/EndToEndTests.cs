@@ -94,4 +94,19 @@ public class EndToEndTests : PageTest
         await Page.GetByRole(AriaRole.Link, new() { Name = "My Observations" }).ClickAsync();
         await Expect(Page.GetByText(text)).ToBeVisibleAsync();
     }
+    [Test]
+    public async Task EmptyObservationIsNotStored()
+    {
+        string email = await RegisterNewUserAsync();
+
+        await Page.GotoAsync($"{server.BaseUrl}/new");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Post observation" }).ClickAsync();
+
+        await Expect(Page.GetByText("The Text field is required.")).ToBeVisibleAsync();
+        await Expect(Page).ToHaveURLAsync($"{server.BaseUrl}/new");
+
+        using var db = server.OpenDatabase();
+        Assert.That(await db.readings.CountAsync(o => o.Author.Email == email), Is.Zero);
+        Assert.That(await db.users.AnyAsync(a => a.Email == email), Is.False);
+    }
 }
