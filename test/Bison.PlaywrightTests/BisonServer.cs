@@ -36,7 +36,30 @@ public sealed class BisonServer : IAsyncDisposable
         var process = Process.Start(startInfo)
             ?? throw new InvalidOperationException("Could not start Bison.Razor");
 
-        return new BisonServer(process, baseUrl, dbPath);
+        var server = new BisonServer(process, baseUrl, dbPath);
+        await server.WaitUntilReadyAsync(TimeSpan.FromMinutes(2));
+        return server;
+    }
+    private async Task WaitUntilReadyAsync(TimeSpan timeout)
+    {
+        using var http = new HttpClient(new HttpClientHandler { UseProxy = false });
+        var deadline = DateTime.UtcNow + timeout;
+
+        while (DateTime.UtcNow < deadline)
+        {
+            if (process.HasExited)
+                throw new InvalidOperationException($"Bison.Razor exited early with code {process.ExitCode}");
+            try
+            {
+                var response = await http.GetAsync(BaseUrl);
+                if (response.IsSuccessStatusCode) return;
+            }
+            catch (HttpRequestException)
+            {
+            }
+            await Task.Delay(500);
+        }
+        throw new TimeoutException($"Bison.Razor did not answer on {BaseUrl} within {timeout}");
     }
     public async ValueTask DisposeAsync()
     {
