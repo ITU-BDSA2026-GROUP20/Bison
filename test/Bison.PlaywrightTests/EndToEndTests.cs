@@ -82,4 +82,16 @@ public class EndToEndTests : PageTest
         Assert.That(seanTexts, Is.EqualTo(new[] { "Sean saw a spoonbill" }));
         Assert.That(mikkelTexts, Is.EqualTo(new[] { "Mikkel saw a cormorant" }));
     }
+    [Test]
+    public async Task PostedObservationIsShownOnItsPageAndInMyObservations()
+    {
+        await RegisterNewUserAsync();
+        string text = $"Little egret in the harbour {Guid.NewGuid():N}";
+
+        await PostObservationAsync(text);
+        await Expect(Page.GetByText(text)).ToBeVisibleAsync();
+
+        await Page.GetByRole(AriaRole.Link, new() { Name = "My Observations" }).ClickAsync();
+        await Expect(Page.GetByText(text)).ToBeVisibleAsync();
+    }
 }
