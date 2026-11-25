@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
+using Bison.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bison.PlaywrightTests;
 
@@ -60,6 +62,13 @@ public sealed class BisonServer : IAsyncDisposable
             await Task.Delay(500);
         }
         throw new TimeoutException($"Bison.Razor did not answer on {BaseUrl} within {timeout}");
+    }
+    public Database OpenDatabase()
+    {
+        var options = new DbContextOptionsBuilder<Database>()
+            .UseSqlite($"Data Source={DbPath}")
+            .Options;
+        return new Database(options);
     }
     public async ValueTask DisposeAsync()
     {
