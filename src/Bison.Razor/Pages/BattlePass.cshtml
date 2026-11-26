@@ -1,0 +1,105 @@
+@page
+@model Bison.Razor.Pages.BattlePassModel
+@using Bison.Core.models.BattlePass
+@{
+    ViewData["Title"] = "Battle Pass";
+
+    var tiers = Model.Items
+        .GroupBy(i => i.Tier)
+        .OrderBy(g => g.Key)
+        .ToList();
+}
+
+@functions {
+    static string Hex(uint argb) => "#" + (argb & 0x00FFFFFF).ToString("X6");
+}
+
+<style>
+    .bp { background: #1a1410; color: #ebe0d3; padding: 1.5rem; border-radius: 8px; }
+    .bp h2 { margin: 0 0 1rem; color: #f0c060; text-transform: uppercase; letter-spacing: 0.15em; }
+
+    .bp__track { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+
+    .tier { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .tier__label { font-size: 0.75rem; color: #8c7355; text-transform: uppercase; }
+
+    .cell {
+        width: 100px;
+        height: 130px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        border: 2px solid;
+        border-radius: 6px;
+    }
+
+    .cell--free  { background: #2a2016; border-color: #5a4535; }
+    .cell--paid  { background: #3a2a18; border-color: #f0c060; }
+    .cell--empty { background: transparent; border-style: dashed; opacity: 0.3; }
+
+    .cell__num { font-size: 2.2rem; font-weight: 800; }
+    .cell--paid .cell__num { color: #f0c060; }
+
+    .cell__reward { font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; }
+
+    .reskin { display: grid; grid-template-columns: 1fr 1fr; width: 40px; height: 24px; border-radius: 3px; overflow: hidden; }
+    .reskin span { display: block; }
+</style>
+
+<section class="bp">
+    <h2>Bison Battle Pass</h2>
+
+    <div class="bp__track">
+        @foreach (var tier in tiers)
+        {
+            var free = tier.FirstOrDefault(i => !i.IsPaid);
+            var paid = tier.FirstOrDefault(i => i.IsPaid);
+
+            <div class="tier">
+                <div class="cell @(free is null ? "cell--empty" : "cell--free")">
+                    @if (free is not null)
+                    {
+                        <div class="cell__num">@tier.Key</div>
+                        @if (free is Unlock uf)
+                        {
+                            <div class="cell__reward">@uf.Feature</div>
+                        }
+                        else if (free is ReSkin rf)
+                        {
+                            <div class="reskin">
+                                <span style="background:@Hex(rf.PrimaryColor)"></span>
+                                <span style="background:@Hex(rf.SecondaryColor)"></span>
+                                <span style="background:@Hex(rf.BackgroundColor)"></span>
+                                <span style="background:@Hex(rf.TextColor)"></span>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <div class="cell @(paid is null ? "cell--empty" : "cell--paid")">
+                    @if (paid is not null)
+                    {
+                        <div class="cell__num">@tier.Key</div>
+                        @if (paid is Unlock up)
+                        {
+                            <div class="cell__reward">@up.Feature</div>
+                        }
+                        else if (paid is ReSkin rp)
+                        {
+                            <div class="reskin">
+                                <span style="background:@Hex(rp.PrimaryColor)"></span>
+                                <span style="background:@Hex(rp.SecondaryColor)"></span>
+                                <span style="background:@Hex(rp.BackgroundColor)"></span>
+                                <span style="background:@Hex(rp.TextColor)"></span>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <div class="tier__label">T@(tier.Key)</div>
+            </div>
+        }
+    </div>
+</section>
