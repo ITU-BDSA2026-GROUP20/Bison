@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         
         services.AddScoped<DatabaseInitializer>();
+        services.AddScoped<BattlePassInitializer>();
 
         return services;
     }

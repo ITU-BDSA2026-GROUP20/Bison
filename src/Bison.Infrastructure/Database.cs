@@ -1,4 +1,5 @@
 using Bison.Core.models;
+using Bison.Core.models.BattlePass;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -13,5 +14,6 @@ namespace Bison.Infrastructure
         public DbSet<Proposal> proposals { get; set; }
         public DbSet<Taxon> taxons { get; set; }
         public DbSet<Author> users { get; set; }
+        public DbSet<BattlePass> battlePass { get; set; }
     }
 }

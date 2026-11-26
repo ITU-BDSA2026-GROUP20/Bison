@@ -1,4 +1,5 @@
-namespace Bison.Core.Models;
+namespace Bison.Core.models.BattlePass;
+
 public sealed class ReSkin : BattlePassItem
 {
     public uint PrimaryColor { get; set; }

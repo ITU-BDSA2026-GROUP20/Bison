@@ -1,3 +1,5 @@
+namespace Bison.Core.models.BattlePass;
+
 public class BattlePass
 {
     public int tierCount { get; set; }
