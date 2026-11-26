@@ -10,10 +10,12 @@
     <form method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly"></div>
         <p>
+            <label asp-for="Text">Observation</label>
             <textarea asp-for="Text" rows="4" maxlength="500" style="width: 100%; max-width: 500px;"></textarea>
             <span asp-validation-for="Text"></span>
         </p>
         <p>
+            <label asp-for="TaxonId">Taxon</label>
             <select asp-for="TaxonId" style="max-width: 200px; width: 100%;">
                 <option value="">Unknown taxon</option>
                 @foreach (var taxon in Model.Taxons)

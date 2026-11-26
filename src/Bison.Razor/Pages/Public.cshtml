@@ -8,7 +8,8 @@
 <div>
     <h2> Public Timeline </h2>
     <form method="get">
-        <select name="taxon", style="max-width: 200px; width: 100%;", onchange="this.form.submit()">
+        <label for="taxon-filter">Filter by taxon</label>
+        <select id="taxon-filter" name="taxon" style="max-width: 200px; width: 100%;" onchange="this.form.submit()">
             <option value=""selected="@(Model.TaxonFilter == null)">No taxon filter</option>
             @if (Model.UniTaxons != null)
             {
