@@ -44,7 +44,8 @@ public class APITests : IDisposable
             new CommentRepository(mem.Db),
             new ProposalRepository(mem.Db),
             new TaxonRepository(mem.Db),
-            authorRepository);
+            authorRepository,
+            new BattlePassRepository(mem.Db));
     }
     public void Dispose() => mem.Dispose();
     private async Task<int> CreateAuthor()
