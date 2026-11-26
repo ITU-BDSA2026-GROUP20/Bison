@@ -5,6 +5,8 @@ public class Author
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
+    public int BattlePassTier { get; set; } = 0;
+    public bool BattlePassUpgraded { get; set; } = false;
     [JsonIgnore] // Is needed so public timeline filter doesn't try to set Posts
     public List<Post> Posts { get; set; } = new();
 }
