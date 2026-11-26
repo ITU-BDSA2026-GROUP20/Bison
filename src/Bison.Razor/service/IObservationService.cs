@@ -1,4 +1,5 @@
 using Bison.Core.models;
+using Bison.Core.models.BattlePass;
 public interface IObservationService
 {
     public List<Observation> GetObservationEntities();
@@ -13,4 +14,5 @@ public interface IObservationService
     public Task<ObservationDTO?> AddObservation(CreateObservationDTO dto);
     public Task<CommentDTO?> AddComment(CreateCommentDTO dto);
     public Task<ProposalDTO?> AddProposal(CreateProposalDTO dto);
+    public List<BattlePassItemDTO> GetBattlePassItems();
 }

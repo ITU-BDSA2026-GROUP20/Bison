@@ -17,4 +17,9 @@ public class AuthorRepository(Database database) : IAuthorRepository
         }
         return author;
     }
+
+    public async Task<Author?> GetAuthorById(int authorId)
+    {
+        return await database.users.FindAsync(authorId);
+    }
 }

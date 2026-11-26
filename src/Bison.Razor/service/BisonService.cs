@@ -1,5 +1,6 @@
 using Bison.Core.Repositories;
 using Bison.Core.models;
+using Bison.Core.models.BattlePass;
 using Bison.Razor;
 
 public class ObservationService : IObservationService
@@ -10,18 +11,22 @@ public class ObservationService : IObservationService
     private readonly IProposalRepository proposalRepository;
     private readonly ITaxonRepository taxonRepository;
     private readonly IAuthorRepository authorRepository;
+    private readonly IBattlePassRepository battlePassRepository;
+
     public ObservationService(
         IObservationRepository repository,
         ICommentRepository commentRepository,
         IProposalRepository proposalRepository,
         ITaxonRepository taxonRepository,
-        IAuthorRepository authorRepository)
+        IAuthorRepository authorRepository,
+        IBattlePassRepository battlePassRepository)
     {
         this.repository = repository;
         this.commentRepository = commentRepository;
         this.proposalRepository = proposalRepository;
         this.taxonRepository = taxonRepository;
         this.authorRepository = authorRepository;
+        this.battlePassRepository = battlePassRepository;
     }
 
     public List<Observation> GetObservationEntities()
@@ -136,6 +141,35 @@ public class ObservationService : IObservationService
         return ToProposalDTO(proposal);
     }
 
+    public List<BattlePassItemDTO> GetBattlePassItems()
+    {
+        return battlePassRepository.getBattlePassItems()
+            .GetAwaiter().GetResult()
+            .Select(BattlePassItemDTO (t) => t switch
+            {
+                Unlock u => ToUnlockDTO(u),
+                ReSkin r => ToReskinDTO(r),
+                _ => throw new NotImplementedException($"Unknown BattlePassItem type: {t.GetType().Name}")
+            })
+            .ToList();
+    }
+
+    public Author GetAuthor(int id)
+    {
+        return authorRepository.GetAuthorById(id)
+        .GetAwaiter().GetResult() ?? new Author();
+    }
+
+    public bool HasUpgradedBattlePass(int userId)
+    {
+        return GetAuthor(userId).BattlePassUpgraded;
+    }
+
+    public int GetBattlePassTier(int userId)
+    {
+        return GetAuthor(userId).BattlePassTier;
+    }
+
     public Taxon GetTaxon(int id)
     {
         return taxonRepository.GetTaxon(id)
@@ -155,6 +189,8 @@ public class ObservationService : IObservationService
             o.PhotoName);
     }
 
+    private static UnlockDTO ToUnlockDTO(Unlock u) => new(u.Id, u.Tier, u.IsPaid, u.Feature);
+    private static ReskinDTO ToReskinDTO(ReSkin r) => new(r.Id, r.Tier, r.IsPaid, r.PrimaryColor, r.SecondaryColor, r.BackgroundColor, r.TextColor);
     private static CommentDTO ToCommentDTO(Comment c) => new(c.AuthorId, c.Author.Name, c.Text, c.TimeStamp.ToString("yyyy-MM-dd"));
     private static ProposalDTO ToProposalDTO(Proposal p) => new(p.AuthorId, p.Author.Name, p.Taxon.VernacularName, p.Text, p.TimeStamp.ToString("yyyy-MM-dd"));
 }
