@@ -2,6 +2,8 @@ using Microsoft.Playwright.NUnit;
 using Microsoft.Playwright;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Deque.AxeCore.Commons;
+using Deque.AxeCore.Playwright;
 
 namespace Bison.PlaywrightTests;
 
@@ -37,6 +39,15 @@ public class EndToEndTests : PageTest
         await Page.GetByRole(AriaRole.Button, new() { Name = "Post observation" }).ClickAsync();
         await Expect(Page).ToHaveURLAsync(new Regex(@"/ob/\d+$"));
         return int.Parse(Page.Url.Split('/').Last());
+    }
+    private async Task AssertNoAccessibilityProblemsAsync()
+    {
+        AxeResult result = await Page.RunAxe();
+
+        var problems = result.Violations.Select(v =>
+            $"{v.Id} ({v.Impact}): {v.Help}\n    on: {string.Join("\n        ", v.Nodes.Select(n => n.Html))}");
+
+        Assert.That(problems, Is.Empty, $"Axe found accessibility problems on {Page.Url}");
     }
 
     [Test]
@@ -82,7 +93,7 @@ public class EndToEndTests : PageTest
         Assert.That(seanTexts, Is.EqualTo(new[] { "Sean saw a spoonbill" }));
         Assert.That(mikkelTexts, Is.EqualTo(new[] { "Mikkel saw a cormorant" }));
     }
-    
+
     [Test]
     public async Task PostedObservationIsShownOnItsPageAndInMyObservations()
     {
@@ -153,5 +164,34 @@ public class EndToEndTests : PageTest
         Assert.That(proposal.ObservationId, Is.EqualTo(1));
         Assert.That(proposal.Author.Email, Is.EqualTo(email));
         Assert.That(proposal.Taxon.VernacularName, Is.EqualTo("Sølvhejre"));
+    }
+    
+    [Test]
+    public async Task PublicTimelineHasNoAccessibilityProblems()
+    {
+        await Page.GotoAsync(server.BaseUrl);
+        await AssertNoAccessibilityProblemsAsync();
+    }
+        [Test]
+    public async Task NewObservationPageHasNoAccessibilityProblems()
+    {
+        await RegisterNewUserAsync();
+        await Page.GotoAsync($"{server.BaseUrl}/new");
+        await AssertNoAccessibilityProblemsAsync();
+    }
+
+    [Test]
+    public async Task ObservationDetailsPageHasNoAccessibilityProblems()
+    {
+        await RegisterNewUserAsync();
+        await Page.GotoAsync($"{server.BaseUrl}/ob/1");
+        await AssertNoAccessibilityProblemsAsync();
+    }
+    
+    [Test]
+    public async Task LoginPageHasNoAccessibilityProblems()
+    {
+        await Page.GotoAsync($"{server.BaseUrl}/Identity/Account/Login");
+        await AssertNoAccessibilityProblemsAsync();
     }
 }
