@@ -47,7 +47,7 @@ div.page {
   margin: 30px auto;
 }
 
-div.page > h1 {
+div.page > header > h1 {
   background: #cc6e6e;
   margin: 0;
   padding: 10px 14px;
@@ -106,7 +106,7 @@ div.page div.body {
 
 div.page div.footer {
   background: #eee;
-  color: #888;
+  color: #555;
   padding: 5px 10px;
   font-size: 12px;
 }
@@ -170,7 +170,7 @@ div.page ul.observations li img {
 
 div.page ul.observations li small {
   font-size: 0.9em;
-  color: #888;
+  color: #555;
 }
 
 div.page div.observationbox {
@@ -272,7 +272,7 @@ form * {
 }
 
 button {
-    background-color: #cc6e6e;
+    background-color: #8b4949;
     border: none;
     color: white;
     padding: 8px 16px;
@@ -282,7 +282,7 @@ button {
 }
 
 button:hover {
-    background-color: #8b4949;
+    background-color: #6e3a3a;
 }
 
 ul.nav {

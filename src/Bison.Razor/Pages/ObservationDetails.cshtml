@@ -76,6 +76,7 @@
             <h3>Propose a taxon</h3>
             <form method="post" asp-page-handler="Proposal" asp-route-id="@Model.Id">
                 <p>
+                    <label>asp-for="ProposalTaxonId">TaxonId</label>
                     <select asp-for="ProposalTaxonId" required style="max-width: 200px; width: 100%;">
                         <option value="">Choose a taxon</option>
                         @foreach (var taxon in Model.Taxons)
@@ -92,6 +93,7 @@
         <div class="observationbox">
             <h3>Add a comment</h3>
             <form method="post" asp-page-handler="Comment" asp-route-id="@Model.Id">
+                <label asp for="CommentText">Comment</label>
                 <input style="float: left" type="text" asp-for="CommentText" maxlength="500" required>
                 <input type="submit" value="Comment">
                 <span asp-validation-for="CommentText"></span>

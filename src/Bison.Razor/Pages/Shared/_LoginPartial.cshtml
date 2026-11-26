@@ -2,7 +2,7 @@
 @using Bison.Infrastructure
 @inject SignInManager<ApplicationUser> SignInManager  
 @inject UserManager<ApplicationUser> UserManager
-<div class="navigation">
+<div class="navigation" role="navigation">
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
