@@ -1,4 +1,4 @@
 public class BattlePassItem
 {
-    public string Identifier { get; set; }
+    public string? Identifier { get; set; }
 }

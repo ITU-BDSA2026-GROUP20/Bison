@@ -1,4 +1,4 @@
-﻿namespace Bison.Core.models;
+namespace Bison.Core.models;
 using System.Text.Json.Serialization;
 public class Author
 {
