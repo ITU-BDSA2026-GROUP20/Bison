@@ -14,6 +14,14 @@ namespace Bison.Infrastructure
         public DbSet<Proposal> proposals { get; set; }
         public DbSet<Taxon> taxons { get; set; }
         public DbSet<Author> users { get; set; }
-        public DbSet<BattlePass> battlePass { get; set; }
+        public DbSet<BattlePassItem> battlePass { get; set; }
+    }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.Entity<ReSkin>();
+        builder.Entity<Unlock>();
+        builder.Entity<BattlePassItem>().HasIndex(i => new { i.Tier, i.IsPaid }).IsUnique();
     }
 }
