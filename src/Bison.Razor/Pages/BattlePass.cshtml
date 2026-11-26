@@ -5,7 +5,7 @@
     ViewData["Title"] = "Battle Pass";
 
     var tiers = Model.Items
-        .GroupBy(i => i.Tier)
+        .GroupBy(i => i.ItemTier)
         .OrderBy(g => g.Key)
         .ToList();
 }
@@ -62,11 +62,11 @@
                     @if (free is not null)
                     {
                         <div class="cell__num">@tier.Key</div>
-                        @if (free is Unlock uf)
+                        @if (free is UnlockDTO uf)
                         {
                             <div class="cell__reward">@uf.Feature</div>
                         }
-                        else if (free is ReSkin rf)
+                        else if (free is ReskinDTO rf)
                         {
                             <div class="reskin">
                                 <span style="background:@Hex(rf.PrimaryColor)"></span>
@@ -82,11 +82,11 @@
                     @if (paid is not null)
                     {
                         <div class="cell__num">@tier.Key</div>
-                        @if (paid is Unlock up)
+                        @if (paid is UnlockDTO up)
                         {
                             <div class="cell__reward">@up.Feature</div>
                         }
-                        else if (paid is ReSkin rp)
+                        else if (paid is ReskinDTO rp)
                         {
                             <div class="reskin">
                                 <span style="background:@Hex(rp.PrimaryColor)"></span>

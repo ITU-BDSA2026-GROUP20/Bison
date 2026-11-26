@@ -6,17 +6,17 @@ namespace Bison.Razor.Pages;
 
 public class BattlePassModel : PageModel
 {
-    private readonly IBattlePassRepository repository;
+    private readonly IObservationService service;
 
-    public BattlePassModel(IBattlePassRepository repository)
+    public BattlePassModel(IObservationService service)
     {
-        this.repository = repository;
+        this.service = service;
     }
 
-    public IReadOnlyList<BattlePassItem> Items { get; private set; } = Array.Empty<BattlePassItem>();
+    public IReadOnlyList<BattlePassItemDTO> Items { get; private set; } = Array.Empty<BattlePassItemDTO>();
 
     public async Task OnGetAsync()
     {
-        Items = await repository.getBattlePassItems();
+        Items = service.GetBattlePassItems();
     }
 }
