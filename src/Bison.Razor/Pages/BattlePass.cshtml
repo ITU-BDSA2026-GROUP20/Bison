@@ -3,6 +3,7 @@
 @using Bison.Core.models.BattlePass
 @{
     ViewData["Title"] = "Battle Pass";
+    Layout = "Shared/_Layout";
 
     var tiers = Model.Items
         .GroupBy(i => i.ItemTier)
@@ -15,40 +16,39 @@
 }
 
 <style>
-    .bp { background: #1a1410; color: #ebe0d3; padding: 1.5rem; border-radius: 8px; }
-    .bp h2 { margin: 0 0 1rem; color: #f0c060; text-transform: uppercase; letter-spacing: 0.15em; }
+    .bp__track { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; }
 
-    .bp__track { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
-
-    .tier { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
-    .tier__label { font-size: 0.75rem; color: #8c7355; text-transform: uppercase; }
+    .tier { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .tier__label { font-size: 12px; color: #555; }
 
     .cell {
-        width: 100px;
-        height: 130px;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        width: 84px;
+        height: 96px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 0.4rem;
-        border: 2px solid;
-        border-radius: 6px;
+        gap: 6px;
+        border: 1px solid;
+        border-radius: 2px;
     }
 
-    .cell--free  { background: #2a2016; border-color: #5a4535; }
-    .cell--paid  { background: #3a2a18; border-color: #f0c060; }
-    .cell--empty { background: transparent; border-style: dashed; opacity: 0.3; }
+    .cell--free  { background: #F0FAF9; border-color: #26776F; }
+    .cell--paid  { background: #FAE4E4; border-color: #cc6e6e; }
+    .cell--empty { background: transparent; border-color: #ccc; border-style: dashed; }
 
-    .cell__num { font-size: 2.2rem; font-weight: 800; }
-    .cell--paid .cell__num { color: #f0c060; }
+    .cell__num { font-size: 24px; color: #26776F; }
+    .cell--paid .cell__num { color: #571010; }
 
-    .cell__reward { font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; }
+    .cell__reward { font-size: 12px; color: #333; }
 
-    .reskin { display: grid; grid-template-columns: 1fr 1fr; width: 40px; height: 24px; border-radius: 3px; overflow: hidden; }
+    .reskin { display: grid; grid-template-columns: 1fr 1fr; width: 40px; height: 24px; border: 1px solid #ccc; }
     .reskin span { display: block; }
 </style>
 
-<section class="bp">
+<div>
     <h2>Bison Battle Pass</h2>
 
     <div class="bp__track">
@@ -102,4 +102,4 @@
             </div>
         }
     </div>
-</section>
+</div>
