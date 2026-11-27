@@ -29,6 +29,9 @@ namespace Bison.Infrastructure.Migrations
                     b.Property<bool>("BattlePassUpgraded")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CurrentXP")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");

@@ -5,6 +5,9 @@ using Bison.Razor;
 
 public class ObservationService : IObservationService
 {
+    private const int ObservationXp = 50;
+    private const int ProposalXp = 20;
+    private const int CommentXp = 10;
 
     private readonly IObservationRepository repository;
     private readonly ICommentRepository commentRepository;
@@ -101,6 +104,7 @@ public class ObservationService : IObservationService
                 return null;
         }
         var author = await authorRepository.GetOrCreateAuthor(dto.AuthorId, dto.AuthorName, dto.AuthorEmail);
+        author.AddXp(ObservationXp);
 
         var observation = await repository.AddObservation(new Observation
         {
@@ -123,6 +127,7 @@ public class ObservationService : IObservationService
         if (await repository.GetObservation(dto.ObservationId) is null) return null;
 
         var author = await authorRepository.GetOrCreateAuthor(dto.AuthorId, dto.AuthorName, dto.AuthorEmail);
+        author.AddXp(CommentXp);
         var comment = await commentRepository.AddComment(new Comment { Text = dto.Text.Trim(), TimeStamp = DateTime.UtcNow, AuthorId = author.Id, Author = author, ObservationId = dto.ObservationId });
         return ToCommentDTO(comment);
     }
@@ -137,6 +142,7 @@ public class ObservationService : IObservationService
         if (taxon is null) return null;
 
         var author = await authorRepository.GetOrCreateAuthor(dto.AuthorId, dto.AuthorName, dto.AuthorEmail);
+        author.AddXp(ProposalXp);
         var proposal = await proposalRepository.AddProposal(new Proposal { Text = dto.Text.Trim(), TimeStamp = DateTime.UtcNow, AuthorId = author.Id, Author = author, ObservationId = dto.ObservationId, TaxonId = taxon.TaxonId, Taxon = taxon });
         return ToProposalDTO(proposal);
     }
