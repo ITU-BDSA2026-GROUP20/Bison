@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddScoped<IProposalRepository, ProposalRepository>();
         services.AddScoped<ITaxonRepository, TaxonRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
+        services.AddScoped<IBattlePassRepository, BattlePassRepository>();
         
         services.AddScoped<DatabaseInitializer>();
         services.AddScoped<BattlePassInitializer>();

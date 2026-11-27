@@ -10,7 +10,7 @@ public sealed class BattlePassInitializer(Database database)
     {
         await database.Database.MigrateAsync();
 
-        if (!database.users.Any() || !database.readings.Any())
+        if (!database.battlePass.Any())
         {
             SeedDatabase();
 
@@ -20,7 +20,7 @@ public sealed class BattlePassInitializer(Database database)
 
     private void SeedDatabase()
     {
-        if (!(database.users.Any() && database.readings.Any()))
+        if (!database.battlePass.Any())
         {
             List<BattlePassItem> items = new List<BattlePassItem>()
             {

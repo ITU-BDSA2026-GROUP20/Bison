@@ -61,6 +61,11 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<DatabaseInitializer>();
 
     await initializer.InitializeAsync();
+
+    var battlePassInitializer = scope.ServiceProvider
+        .GetRequiredService<BattlePassInitializer>();
+
+    await battlePassInitializer.InitializeAsync();
 }
 
 app.Run();

@@ -23,6 +23,12 @@ namespace Bison.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("BattlePassTier")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("BattlePassUpgraded")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -34,6 +40,35 @@ namespace Bison.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
+                });
+
+            modelBuilder.Entity("Bison.Core.models.BattlePass.BattlePassItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Tier")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Tier", "IsPaid")
+                        .IsUnique();
+
+                    b.ToTable("battlePass");
+
+                    b.HasDiscriminator().HasValue("BattlePassItem");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Bison.Core.models.Post", b =>
@@ -289,6 +324,35 @@ namespace Bison.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Bison.Core.models.BattlePass.ReSkin", b =>
+                {
+                    b.HasBaseType("Bison.Core.models.BattlePass.BattlePassItem");
+
+                    b.Property<uint>("BackgroundColor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("PrimaryColor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("SecondaryColor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("TextColor")
+                        .HasColumnType("INTEGER");
+
+                    b.HasDiscriminator().HasValue("ReSkin");
+                });
+
+            modelBuilder.Entity("Bison.Core.models.BattlePass.Unlock", b =>
+                {
+                    b.HasBaseType("Bison.Core.models.BattlePass.BattlePassItem");
+
+                    b.Property<int>("Feature")
+                        .HasColumnType("INTEGER");
+
+                    b.HasDiscriminator().HasValue("Unlock");
                 });
 
             modelBuilder.Entity("Bison.Core.models.Comment", b =>
